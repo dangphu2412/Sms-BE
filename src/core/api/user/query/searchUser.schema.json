@@ -1,0 +1,8 @@
+{
+  "main": "users",
+  "associates": [],
+  "locks": {
+    "filters": ["id"],
+    "sorts": ["id"]
+  }
+}

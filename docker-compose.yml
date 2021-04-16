@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  db:
+      image: postgres
+      environment: 
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: blog
+      volumes: [/pgdata:/var/lib/postgresql/data]
+      ports: 
+        - '5432:5432'
+  app:
+    container_name: node-psql
+    depends_on: 
+      - db
+    volumes: ['./:/usr/src/app']
+    restart: always
+    build: .
+    ports:
+      - '8080:3000'
+    env_file: .env
+  

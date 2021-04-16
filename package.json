@@ -1,0 +1,66 @@
+{
+  "name": "mongoose-boilerplate",
+  "version": "1.0.0",
+  "description": "This is a mongoose boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --fix --ext .js .",
+    "dev": "nodemon --exec babel-node src/core/bin/www.js",
+    "start": "npm run build && node ./dist/core/bin/www.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "build:babel": "babel ./src --out-dir dist --copy-files",
+    "build": "yarn run clean && yarn run build:babel",
+    "heroku-postbuild": "yarn install && yarn migrate:reset && yarn run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dangphu2412/express-mongoose-boilerplate.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "mongoose"
+  ],
+  "author": "dangphu2412",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dangphu2412/express-mongoose-boilerplate/issues"
+  },
+  "homepage": "https://github.com/dangphu2412/express-mongoose-boilerplate#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "debug": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http-status": "^1.5.0",
+    "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.12.3",
+    "swagger-ui-express": "^4.1.6",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.10.4",
+    "@babel/node": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-decorators": "^7.12.1",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-async-to-generator": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.5",
+    "@babel/runtime": "^7.10.4",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "eslint": "^7.3.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "husky": "^4.3.8",
+    "nodemon": "^2.0.7"
+  }
+}

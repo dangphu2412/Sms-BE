@@ -55,7 +55,7 @@ export class RequestFormation {
     }
 
     /**
-     * Method to communicate wit others class
+     * Method to communicate with other classes
      * @returns {{
         pagination: {
             page: number,

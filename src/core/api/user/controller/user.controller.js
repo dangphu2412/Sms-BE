@@ -2,6 +2,7 @@ import { UserService } from '../../../modules/user/service/user.service';
 import { RequestFormation } from '../../../../packages/restBuilder/core/requestFormation';
 import SearchUserSchema from '../query/searchUser.schema.json';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
+import { CreateDto } from '../../../modules/user/dto/user.dto';
 
 class Controller {
     constructor() {
@@ -23,7 +24,7 @@ class Controller {
             .build();
     }
 
-    createOne = req => this.service.createOne(req.body)
+    createOne = req => this.service.createOne(CreateDto(req.body))
 
     findOne = req => this.service.findOne(req.params)
 

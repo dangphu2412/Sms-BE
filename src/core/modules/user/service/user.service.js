@@ -1,4 +1,4 @@
-import { NotFoundException } from '../../../../packages/httpException';
+import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { UserModel } from '../model/userModel';
 import { BcryptService } from '../../auth/bcrypt';
 
@@ -14,12 +14,13 @@ class Service {
         .exec();
     }
 
-    createOne({ email, password, roles }) {
-        const userModel = new UserModel();
-        userModel.email = email;
-        userModel.password = this.bcrypt.hash(password);
-        userModel.roles = roles;
-      return userModel.save();
+    async createOne(data) {
+        const user = await UserModel.findOne({ email: data.email });
+        if (user) {
+          throw new DuplicateException('Email is used');
+        }
+        data.password = this.bcrypt.hash(data.password);
+        return UserModel.create(data);
     }
 
     async findOne({ id }) {
@@ -50,7 +51,7 @@ class Service {
     }
 
     count() {
-        return UserModel.count({}).exec();
+        return UserModel.countDocuments({}).exec();
     }
 }
 

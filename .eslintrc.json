@@ -33,6 +33,7 @@
         "default-case": 0,
         "class-methods-use-this": 0,
         "import/prefer-default-export": "off",
+        "no-param-reassign":"off",
         "arrow-parens": [
             "error",
             "as-needed"

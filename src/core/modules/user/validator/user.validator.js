@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { joiFilter } from '../../../utils';
+import { UserStatus } from '../../../common/enum';
 
 class Validator {
     validateParam() {
@@ -18,42 +19,47 @@ class Validator {
     }
 
     validatePost() {
+      const profileSchema = Joi.object().keys({
+        firstName: Joi.string().min(0).optional(),
+        lastName: Joi.string().min(0).optional(),
+        birthday: Joi.date().timestamp().optional(),
+        phone: Joi.string().optional(),
+        hometown: Joi.string().optional(),
+        gender: Joi.boolean().optional(),
+        facebook: Joi.string().regex(/(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i).optional(),
+        universityId: Joi.string().regex(/^[0-9a-fA-F]{24}$/).optional(),
+      });
       const schema = Joi.object({
         email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
         password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-        roles: Joi.array().items(Joi.string()).optional(),
-        firstName: Joi.string().pattern(new RegExp('[a-zA-Z]')).optional(),
-        lastName: Joi.string().pattern(new RegExp('[a-zA-Z]')).optional(),
-        birthday: Joi.date().timestamp().optional(),
-        gender: Joi.boolean().optional(),
-        hometown: Joi.string().optional(),
-        status: Joi.string().valid('AVAILABLE', 'PENDING', 'SUSPEND').optional(),
-        phone: Joi.string().optional(),
-        address: Joi.string().optional(),
         fingerprint: Joi.string().optional(),
-        facebook: Joi.string().regex(/(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i).message('Not facebook profile url pattern').optional(),
-        universityId: Joi.string().regex(/^[0-9a-fA-F]{24}$/).message('ID param is not ObjectID pattern')
+        status: Joi.string()
+        .valid(UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND)
+        .optional(),
+        profile: profileSchema.optional(),
       });
       return joiFilter(schema, 'body');
     }
 
     validatePatch() {
-      const schema = Joi.object({
-        email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-        password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-        roles: Joi.array().items(Joi.string()).optional(),
-        firstName: Joi.string().pattern(new RegExp('[a-zA-Z]')).optional(),
-        lastName: Joi.string().pattern(new RegExp('[a-zA-Z]')).optional(),
+      const profileSchema = Joi.object().keys({
+        firstName: Joi.string().min(0).optional(),
+        lastName: Joi.string().min(0).optional(),
         birthday: Joi.date().timestamp().optional(),
-        gender: Joi.boolean().optional(),
-        hometown: Joi.string().optional(),
-        status: Joi.string().valid('AVAILABLE', 'PENDING', 'SUSPEND').optional(),
         phone: Joi.string().optional(),
-        address: Joi.string().optional(),
+        hometown: Joi.string().optional(),
+        gender: Joi.boolean().optional(),
+        facebook: Joi.string().regex(/(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i).optional(),
+        universityId: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
+      });
+      const schema = Joi.object({
+        email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).optional(),
+        password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).optional(),
         fingerprint: Joi.string().optional(),
-        facebook: Joi.string().regex(/(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i).message('Not facebook profile url pattern').optional(),
-        universityId: Joi.string().regex(/^[0-9a-fA-F]{24}$/).message('ID param is not ObjectID pattern')
-      }).min(1);
+        status: Joi.string().valid('AVAILABLE', 'PENDING', 'SUSPEND').optional(),
+        roles: Joi.string().valid('SUPER ADMIN', 'ADMIN', 'USER').optional(),
+        profile: profileSchema.optional(),
+      });
       return joiFilter(schema, 'body');
     }
 

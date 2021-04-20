@@ -1,16 +1,40 @@
+import { SwaggerDocument } from '../../../../packages/swagger';
+import { ApiDocument } from '../../../config/swagger';
+
+ApiDocument.addModel('Profile',
+{
+    firstName: SwaggerDocument.ApiProperty({ type: 'string' }),
+    lastName: SwaggerDocument.ApiProperty({ type: 'string' }),
+    birthday: SwaggerDocument.ApiProperty({ type: 'string' }),
+    phone: SwaggerDocument.ApiProperty({ type: 'string' }),
+    hometown: SwaggerDocument.ApiProperty({ type: 'string' }),
+    gender: SwaggerDocument.ApiProperty({ type: 'bool' }),
+    facebook: SwaggerDocument.ApiProperty({ type: 'string' }),
+    universityId: SwaggerDocument.ApiProperty({ type: 'string' })
+});
+
+ApiDocument.addModel('CreateDto',
+{
+    email: SwaggerDocument.ApiProperty({ type: 'string' }),
+    password: SwaggerDocument.ApiProperty({ type: 'string' }),
+    fingerprint: SwaggerDocument.ApiProperty({ type: 'string' }),
+    status: SwaggerDocument.ApiProperty({ type: 'string' }),
+    profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
+});
+
 export const CreateDto = body => ({
     email: body.email,
     password: body.password,
-    gender: body.gender,
-    address: body.address,
-    facebook: body.facebook,
-    roles: body.roles,
+    fingerprint: body.fingerprint,
+    status: body.status,
     profile: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        birthday: body.birthday,
-        hometown: body.hometown,
-        phone: body.phone,
-        university: body.university,
+        firstName: body.profile.firstName,
+        lastName: body.profile.lastName,
+        birthday: body.profile.birthday,
+        phone: body.profile.phone,
+        hometown: body.profile.hometown,
+        gender: body.profile.gender,
+        facebook: body.profile.facebook,
+        universityId: body.profile.universityId,
     }
 });

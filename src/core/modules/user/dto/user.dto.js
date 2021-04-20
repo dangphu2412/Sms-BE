@@ -1,25 +1,25 @@
 import { SwaggerDocument } from '../../../../packages/swagger';
 import { ApiDocument } from '../../../config/swagger';
 
-ApiDocument.addModel('profile',
+ApiDocument.addModel('Profile',
 {
-    firstName: SwaggerDocument.ApiProperty({ type: 'String' }),
-    lastName: SwaggerDocument.ApiProperty({ type: 'String' }),
-    birthday: SwaggerDocument.ApiProperty({ type: 'String' }),
-    phone: SwaggerDocument.ApiProperty({ type: 'String' }),
-    hometown: SwaggerDocument.ApiProperty({ type: 'String' }),
-    gender: SwaggerDocument.ApiProperty({ type: 'Boolean' }),
-    facebook: SwaggerDocument.ApiProperty({ type: 'String' }),
-    universityId: SwaggerDocument.ApiProperty({ type: 'String' })
+    firstName: SwaggerDocument.ApiProperty({ type: 'string' }),
+    lastName: SwaggerDocument.ApiProperty({ type: 'string' }),
+    birthday: SwaggerDocument.ApiProperty({ type: 'string' }),
+    phone: SwaggerDocument.ApiProperty({ type: 'string' }),
+    hometown: SwaggerDocument.ApiProperty({ type: 'string' }),
+    gender: SwaggerDocument.ApiProperty({ type: 'bool' }),
+    facebook: SwaggerDocument.ApiProperty({ type: 'string' }),
+    universityId: SwaggerDocument.ApiProperty({ type: 'string' })
 });
 
 ApiDocument.addModel('CreateDto',
 {
-    email: SwaggerDocument.ApiProperty({ type: 'String' }),
-    password: SwaggerDocument.ApiProperty({ type: 'String' }),
-    fingerprint: SwaggerDocument.ApiProperty({ type: 'String' }),
-    status: SwaggerDocument.ApiProperty({ type: 'String' }),
-    profile: SwaggerDocument.ApiProperty({ model: 'profile' }),
+    email: SwaggerDocument.ApiProperty({ type: 'string' }),
+    password: SwaggerDocument.ApiProperty({ type: 'string' }),
+    fingerprint: SwaggerDocument.ApiProperty({ type: 'string' }),
+    status: SwaggerDocument.ApiProperty({ type: 'string' }),
+    profile: SwaggerDocument.ApiProperty({ model: 'Profile' }),
 });
 
 export const CreateDto = body => ({

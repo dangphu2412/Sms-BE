@@ -27,7 +27,8 @@ export const UserResolver = Module.builder()
             route: '/',
             method: 'post',
             middlewares: [UserValidator.validatePost()],
-            controller: UserController.createOne
+            controller: UserController.createOne,
+            body: 'CreateDto',
         },
         {
             route: '/:id',

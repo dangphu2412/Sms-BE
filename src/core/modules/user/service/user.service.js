@@ -15,12 +15,13 @@ class Service {
     }
 
     async createOne(data) {
-        const user = await UserModel.findOne({ email: data.email });
+        const user = await UserModel.findOne({ email: data.email }).select('email');
         if (user) {
           throw new DuplicateException('Email is used');
         }
         data.password = this.bcrypt.hash(data.password);
-        return UserModel.create(data);
+        const createdUser = await UserModel.create(data);
+        return { _id: createdUser._id };
     }
 
     async findOne({ id }) {

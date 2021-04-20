@@ -15,7 +15,7 @@ class Service {
     }
 
     async createOne(data) {
-        const user = await UserModel.findOne({ email: data.email });
+        const user = await UserModel.findOne({ email: data.email }).select('email');
         if (user) {
           throw new DuplicateException('Email is used');
         }

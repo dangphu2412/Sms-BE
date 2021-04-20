@@ -1,16 +1,16 @@
 export const CreateDto = body => ({
     email: body.email,
     password: body.password,
-    gender: body.gender,
-    address: body.address,
-    facebook: body.facebook,
-    roles: body.roles,
+    fingerprint: body.fingerprint,
+    status: body.status,
     profile: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        birthday: body.birthday,
-        hometown: body.hometown,
-        phone: body.phone,
-        university: body.university,
+        firstName: body.profile.firstName,
+        lastName: body.profile.lastName,
+        birthday: body.profile.birthday,
+        phone: body.profile.phone,
+        hometown: body.profile.hometown,
+        gender: body.gender,
+        facebook: body.facebook,
+        universityId: body.profile.universityId,
     }
 });

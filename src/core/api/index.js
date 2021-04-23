@@ -9,7 +9,8 @@ import { TimetableResolver } from './timetable/resolver/timetable.resolver';
 export const ModuleResolver = HandlerResolver
     .builder()
     .addSwaggerBuilder(ApiDocument)
-    .addModule([UserResolver,
+    .addModule([
+        UserResolver,
         AuthResolver,
         GroupResolver,
         TimetableSettingResolver,

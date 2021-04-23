@@ -11,7 +11,7 @@ class Service {
     }
 
     async createOne(groupDto) {
-        let insertedGroup;
+        let createdGroup;
         const existedGroup = await this.groupRepository.findGroupByName(groupDto.name);
         if (existedGroup.length > 0 && existedGroup[0].deletedAt == null) {
             throw new DuplicateException(`Group ${groupDto.name} is already existed`);
@@ -24,16 +24,6 @@ class Service {
             to show if groupId in groupDto.childIds is existed in groupChild.
             Ex: [false, true, false, false, false, true] */
 
-            checkGroupId.forEach((isIdAvailable, index) => {
-                if (!isIdAvailable) {
-                    throw new NotFoundException(`group with ID: ${groupDto.childIds[index]} not found for childs`);
-                }
-            });
-            groupChilds.forEach(async group => {
-                if (group.deletedAt) {
-                    throw new NotFoundException(`group with ID: ${group._id} has been deleted`);
-                }
-            });
             checkGroupId.forEach((isIdAvailable, index) => {
                 if (!isIdAvailable) {
                     throw new NotFoundException(`group with ID: ${groupDto.childIds[index]} not found for childs`);
@@ -75,29 +65,30 @@ class Service {
             if (leader.length <= 0) {
                 throw new NotFoundException(`user with ID: ${groupDto.leaderId} not found for leader`);
             } else if (leader[0].deletedAt) {
-                throw new NotFoundException(`user with ID: ${leader._id} has been deleted`);
+                throw new NotFoundException(`user with ID: ${leader[0]._id} has been deleted`);
             }
         }
+
         try {
-            insertedGroup = await this.groupRepository.create(groupDto);
-            if (insertedGroup.childIds.length > 0) {
-                insertedGroup.childIds.forEach(async childId => {
+            createdGroup = await this.groupRepository.create(groupDto);
+            if (createdGroup.childIds.length > 0) {
+                createdGroup.childIds.forEach(async childId => {
                     const childGroup = await this.groupRepository.findById(childId, ['parentId']);
-                    childGroup.parentId = insertedGroup._id ?? null;
+                    childGroup.parentId = createdGroup._id ?? null;
                     childGroup.save();
                 });
             }
-            if (insertedGroup.parentId) {
-                const parentGroup = await this.groupRepository.findById(insertedGroup.parentId, ['childIds']);
-                if (!parentGroup.childIds.includes(insertedGroup._id)) {
-                    parentGroup.childIds.push(insertedGroup._id);
+            if (createdGroup.parentId) {
+                const parentGroup = await this.groupRepository.findById(createdGroup.parentId, ['childIds']);
+                if (!parentGroup.childIds.includes(createdGroup._id)) {
+                    parentGroup.childIds.push(createdGroup._id);
                     parentGroup.save();
                 }
             }
         } catch (error) {
             this.logger.error(error.message);
         }
-        return { _id: insertedGroup._id };
+        return { _id: createdGroup._id };
     }
 
     async findAll(reqTransformed) {

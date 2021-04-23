@@ -19,7 +19,7 @@ export const GroupResolver = Module.builder()
             body: 'createGroupDto',
             controller: GroupController.createOne,
             // preAuthorization: true
-        },        
+        },
         {
             route: '/:id',
             method: 'get',

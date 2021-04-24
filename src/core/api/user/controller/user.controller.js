@@ -1,8 +1,8 @@
 import { UserService } from '../../../modules/user/service/user.service';
-import { RequestFormation } from '../../../../packages/restBuilder/core/requestFormation';
+import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
 import SearchUserSchema from '../query/searchUser.schema.json';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
-import { CreateDto } from '../../../modules/user/dto/user.dto';
+import { CreateUserDto } from '../../../modules/user/dto/createUser.dto';
 
 class Controller {
     constructor() {
@@ -10,21 +10,21 @@ class Controller {
     }
 
     findAll = async req => {
-        const reqFormation = new RequestFormation(req.query, SearchUserSchema);
-        const data = await this.service.findAll(reqFormation.translate());
+        const reqTransformed = new RequestTransformer(req.query, SearchUserSchema);
+        const data = await this.service.findAll(reqTransformed.translate());
         const count = await this.service.count();
         return Pageable.of(data)
             .addMeta(
                 PageableMeta
                     .builder()
-                    .appendRequestFormation(reqFormation)
+                    .appendRequestFormation(reqTransformed)
                     .appendTotalRecord(count)
                     .build()
             )
             .build();
     }
 
-    createOne = req => this.service.createOne(CreateDto(req.body))
+    createOne = req => this.service.createOne(CreateUserDto(req.body))
 
     findOne = req => this.service.findOne(req.params)
 

@@ -23,14 +23,14 @@ export const UserResolver = Module.builder()
             method: 'get',
             params: [ObjectId],
             interceptors: [new IdObjectInterceptor()],
-            controller: UserController.findOne,
+            controller: UserController.findOne
         },
         {
             route: '/',
             method: 'post',
             body: 'CreateDto',
             interceptors: [new CreateUserInterceptor()],
-            controller: UserController.createOne,
+            controller: UserController.createOne
         },
         {
             route: '/:id',

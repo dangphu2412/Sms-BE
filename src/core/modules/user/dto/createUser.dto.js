@@ -22,7 +22,7 @@ ApiDocument.addModel('CreateDto',
     profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
 });
 
-export const CreateDto = body => ({
+export const CreateUserDto = body => ({
     email: body.email,
     password: body.password,
     fingerprint: body.fingerprint,

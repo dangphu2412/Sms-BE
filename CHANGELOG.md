@@ -59,3 +59,4 @@
     export const ExampleRepository = new Repository();
     
     ```
+- RequestFormation change name into RequestTransformer

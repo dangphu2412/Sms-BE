@@ -11,11 +11,52 @@ class Service {
         this.logger = logger;
     }
 
-    findAll(queryFormation) {
-      return UserModel.find()
-        .limit(queryFormation.pagination.size)
-        .skip(queryFormation.pagination.offset)
-        .exec();
+    /**
+     * ENHANCEMENT:
+     * - Will move all these logic into restBuilder package
+     * - Package contains: FilterDocument, SortDocument, SearchDocument
+     * @param reqTransformed
+     * @returns {Promise<Array<Document>>}
+     */
+    findAll(reqTransformed) {
+        const queryBuilder = this.userRepository.model.find();
+        const filterDocument = {};
+        const sortDocument = {};
+
+        reqTransformed.filters.forEach(filter => {
+            if (!filterDocument[filter.column]) {
+                filterDocument[filter.column] = {};
+            }
+
+            filterDocument[filter.column][filter.sign] = filter.value;
+        });
+
+        reqTransformed.sorts.forEach(sortItem => {
+            sortDocument[sortItem.sort] = sortItem.order;
+        });
+
+        if (reqTransformed.search) {
+            const searchObj = {
+                $or: []
+            };
+
+            const searchRegex = {
+                $regex: reqTransformed.search.value, $options: 'i'
+            };
+            reqTransformed.search.criteria.forEach(searchField => {
+                const obj = {};
+                obj[searchField] = searchRegex;
+                searchObj['$or'].push(obj);
+            });
+            queryBuilder.find(searchObj);
+        }
+
+        queryBuilder.find(filterDocument);
+        queryBuilder.sort(sortDocument);
+        return queryBuilder
+            .limit(reqTransformed.pagination.size)
+            .skip(reqTransformed.pagination.offset)
+            .exec();
     }
 
     async createOne(data) {

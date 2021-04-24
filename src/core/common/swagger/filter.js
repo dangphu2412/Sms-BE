@@ -17,7 +17,7 @@ export const ApiFilterSwagger = [
         name: 'sort',
         paramsIn: 'query',
         required: false,
-        type: 'string',
+        type: 'array',
     }),
     SwaggerDocument.ApiParams({
         name: 'filter',

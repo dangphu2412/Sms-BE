@@ -11,9 +11,15 @@ class Validator {
     }
 
     validateQuery() {
+      const filterString = Joi.string();
+      const sortString = Joi.string();
       const schema = Joi.object({
         page: Joi.number().optional(),
         size: Joi.number().optional(),
+        offset: Joi.number().optional(),
+        search: Joi.string(),
+        sort: Joi.alternatives().try(Joi.array().items(sortString), sortString),
+        filter: Joi.alternatives().try(Joi.array().items(filterString), filterString),
       });
       return joiFilter(schema, 'query');
     }

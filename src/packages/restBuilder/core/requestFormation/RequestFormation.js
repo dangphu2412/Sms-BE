@@ -48,6 +48,7 @@ export class RequestFormation {
         this.content.pagination = RequestFormation.paginationFactory.produce(req);
         this.content.filters = RequestFormation.filterFactory.produce(req);
         this.content.sorts = RequestFormation.sortFactory.produce(req);
+        req.searchSchema = relationSchema?.searchCriteria;
         this.content.search = RequestFormation.searchFactory.produce(req);
         this.content.main = relationSchema?.main;
         this.content.associates = relationSchema?.associates;

@@ -8,7 +8,31 @@ class Service {
     }
 
     findAll(queryFormation) {
-      return UserModel.find()
+      const queryBuilder = UserModel.find();
+      const filterObj = {};
+      const sortObj = {};
+      queryFormation.filters.forEach(filter => {
+        if (!filterObj[filter.column]) { filterObj[filter.column] = {}; }
+        filterObj[filter.column][filter.sign] = filter.value;
+      });
+
+      queryFormation.sorts.forEach(sortItem => {
+        sortObj[sortItem.sort] = sortItem.order;
+      });
+
+      if (queryFormation.search) {
+        const searchObj = { $or: [] };
+        const searchRegex = { $regex: queryFormation.search.value, $options: 'i' };
+        queryFormation.search.criteria.forEach(searchField => {
+          const obj = {};
+          obj[searchField] = searchRegex;
+          searchObj['$or'].push(obj);
+        });
+        queryBuilder.find(searchObj);
+      }
+      queryBuilder.find(filterObj);
+      queryBuilder.sort(sortObj);
+      return queryBuilder
         .limit(queryFormation.pagination.size)
         .skip(queryFormation.pagination.offset)
         .exec();

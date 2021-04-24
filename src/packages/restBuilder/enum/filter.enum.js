@@ -1,6 +1,6 @@
 export const FilterSign = {
     $eq: '=',
     $gt: '>',
-    $ls: '<',
+    $lt: '<',
     $like: 'like'
 };

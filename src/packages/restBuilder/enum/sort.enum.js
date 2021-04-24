@@ -1,4 +1,4 @@
 export const SortDirection = {
-    '-': 'DESC',
-    '+': 'ASC'
+    '-': '-1',
+    '+': '1'
 };

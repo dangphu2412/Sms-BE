@@ -1,10 +1,14 @@
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { UserModel } from '../model/userModel';
-import { BcryptService } from '../../auth/bcrypt';
+import { BcryptService } from '../../auth/service/bcrypt.service';
+import { UserRepository } from '../repository/user.repository';
+import { logger } from '../../logger/winston';
 
 class Service {
     constructor() {
         this.bcrypt = BcryptService;
+        this.userRepository = UserRepository;
+        this.logger = logger;
     }
 
     findAll(queryFormation) {
@@ -15,17 +19,26 @@ class Service {
     }
 
     async createOne(data) {
-        const user = await UserModel.findOne({ email: data.email }).select('email');
+        let createdUser;
+        const user = await this.userRepository.findOneByEmail(data.email, ['email']);
+
         if (user) {
           throw new DuplicateException('Email is used');
         }
+
         data.password = this.bcrypt.hash(data.password);
-        const createdUser = await UserModel.create(data);
+
+        try {
+            createdUser = await this.userRepository.create(data);
+        } catch (e) {
+            this.logger.error(e.message);
+            return null;
+        }
         return { _id: createdUser._id };
     }
 
     async findOne({ id }) {
-      const user = await UserModel.findById(id).exec();
+      const user = await this.userRepository.findById(id);
       if (!user) {
         throw new NotFoundException('User not found');
       }
@@ -33,22 +46,27 @@ class Service {
     }
 
     async patchOne({ id }, { email, password, roles }) {
-      const user = await UserModel.findById(id).exec();
+      const user = await this.userRepository.findById(id);
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      user.email = email || user.email;
-      user.password = password || user.password;
-      user.roles = roles || user.roles;
+      user.email = email ?? user.email;
+      user.password = password ?? user.password;
+      user.roles = roles ?? user.roles;
       return user.save();
     }
 
     async deleteOne({ id }) {
-      const user = await UserModel.findByIdAndDelete(id).exec();
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      return user;
+        let user;
+        try {
+            user = await this.userRepository.findByIdAndDelete(id);
+        } catch (e) {
+          this.logger.error(e.message);
+        }
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        return user;
     }
 
     count() {

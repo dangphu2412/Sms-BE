@@ -1,8 +1,8 @@
 import { sign, decode } from 'jsonwebtoken';
-import { JWT_SECRET, EXPIRE_DAYS } from '../../env';
-import { logger } from '../logger/winston';
+import { JWT_SECRET, EXPIRE_DAYS } from '../../../env';
+import { logger } from '../../logger/winston';
 
-class Jwt {
+class JwtService {
     static logger = logger;
 
     secret = JWT_SECRET;
@@ -10,7 +10,7 @@ class Jwt {
     expiresIn = EXPIRE_DAYS;
 
     constructor() {
-        Jwt.logger.info('Building jwt module');
+        JwtService.logger.info('Building jwt module');
     }
 
     sign(payload) {
@@ -24,4 +24,4 @@ class Jwt {
     }
 }
 
-export const JwtSingleton = new Jwt();
+export const JwtSingleton = new JwtService();

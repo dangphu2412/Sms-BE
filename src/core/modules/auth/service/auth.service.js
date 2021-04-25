@@ -1,6 +1,6 @@
 import { UserModel } from '../../user/model/userModel';
-import { BcryptService } from '../bcrypt';
-import { JwtSingleton } from '../jwt';
+import { BcryptService } from './bcrypt.service';
+import { JwtSingleton } from './jwt.service';
 import { JwtPayload } from '../dto/index';
 import { UnAuthorizedException } from '../../../../packages/httpException';
 

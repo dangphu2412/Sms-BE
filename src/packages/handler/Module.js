@@ -6,6 +6,9 @@ import { SwaggerContentCreator } from '../swagger/rebuild/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
 import { HttpException } from '../httpException/HttpException';
 import { ERROR_CODE } from '../httpException/error.enum';
+import { AUTH_CONTEXT } from '../authModel/common/enum/authContext';
+import { UnAuthorizedException } from '../httpException';
+import { MethodRequired } from './exceptions/MethodRequired';
 
 export class Module {
     static logger = logger;
@@ -43,6 +46,34 @@ export class Module {
 
     static builder() {
         return new Module();
+    }
+
+    static #producePreAuthorizeMiddleware = (req, res, next) => {
+        if (!req[AUTH_CONTEXT.KEY_AUTH_CONTEXT]) {
+            throw new UnAuthorizedException();
+        }
+        return next();
+    }
+
+    static #produceGuard = guardClass => {
+        if (!guardClass['canActive']) {
+            throw new MethodRequired(guardClass.constructor.name, 'canActive');
+        }
+        return async (req, res, next) => {
+            const canActive = await guardClass.canActive(req);
+
+            if (!canActive) {
+                throw new UnAuthorizedException('Unauthorized');
+            }
+            return next();
+        };
+    }
+
+    static #produceInterceptor = interceptorClass => {
+        if (!interceptorClass['intercept']) {
+            throw new MethodRequired(interceptorClass.constructor.name, 'intercept');
+        }
+        return interceptorClass.intercept;
     }
 
     #createHandler = controller => async (request, response) => {
@@ -113,7 +144,8 @@ export class Module {
             route,
             controller,
             method,
-            middlewares,
+            interceptors,
+            guards,
             preAuthorization,
             description,
             model?:any,
@@ -132,8 +164,24 @@ export class Module {
                  * @requires remove it whenever we finish
                  */
                 // eslint-disable-next-line no-unused-vars
-                route, controller, method, middlewares = [], preAuthorization
+                route, controller, method, preAuthorization, interceptors, guards
             } = api;
+            const middlewares = [];
+            if (preAuthorization) {
+                middlewares.push(Module.#producePreAuthorizeMiddleware);
+            }
+
+            if (interceptors?.length > 0) {
+                interceptors.forEach(interceptor => {
+                    middlewares.push(Module.#produceInterceptor(interceptor));
+                });
+            }
+
+            if (guards?.length > 0) {
+                guards.forEach(guard => {
+                    middlewares.push(Module.#produceGuard(guard));
+                });
+            }
             this.#router[method](route, ...middlewares, this.#createHandler(controller));
 
             Module.logger.info(`🌶🌶🌶 [${this.#prefix.module}] ${method} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);

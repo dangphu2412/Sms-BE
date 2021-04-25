@@ -35,7 +35,7 @@ const schema = new Schema({
         gender: { type: Boolean, default: null },
         facebook: { type: String, trim: true, default: null },
         universityId: { type: Schema.Types.ObjectId, ref: 'University', default: null },
-        },
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     deletedAt: { type: Date, default: null },

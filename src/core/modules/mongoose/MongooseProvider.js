@@ -55,7 +55,7 @@ export class MongooseProvider {
     /**
      *
      * @param {string} name Name of schema
-     * @param {import('mongoose').SchemaOptions} config Schema configuration
+     * @param {import('mongoose').schema} config Schema configuration
      * @returns {import('mongoose').Model<Document>} Mongoose schema
      */
     buildModel(name, config) {

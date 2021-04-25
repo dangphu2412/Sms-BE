@@ -1,7 +1,7 @@
 // @ts-check
 import { compareSync, hashSync, genSaltSync } from 'bcryptjs';
-import { SALT_ROUNDS } from '../../env';
-import { logger } from '../logger/winston';
+import { SALT_ROUNDS } from '../../../env';
+import { logger } from '../../logger/winston';
 
 class Bcrypt {
     saltRounds;

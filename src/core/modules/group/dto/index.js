@@ -1,1 +1,1 @@
-export * from './create_group.dto';
+export * from './createGroup.dto';

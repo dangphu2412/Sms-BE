@@ -8,6 +8,7 @@ class Validator {
             description: Joi.string().optional(),
             childIds: Joi.array().items(Joi.string()).optional(),
             parentId: Joi.string().optional(),
+            leaderId: Joi.string().required(),
             userIds: Joi.array().items(Joi.string()).optional()
         });
         return joiFilter(schema, 'body');

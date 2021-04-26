@@ -36,32 +36,14 @@ class Service {
             });
             checkGroupId.forEach((isIdAvailable, index) => {
                 if (!isIdAvailable) {
-                    throw new NotFoundException(`group with ID: ${groupDto.childIds[index]} not found`);
-                } else {
-                    groupChilds.forEach(group => { 
-                        if(groupDto.childIds[index])
-                    })
+                    throw new NotFoundException(`group with ID: ${groupDto.childIds[index]} not found for childs`);
                 }
-            })
-            if (groupChilds.length !== groupDto.childIds.length) {
-                groupDto.childIds.forEach(groupId => {
-                    groupChilds.forEach(groupChild => {
-                        if (groupId === groupChild._id && groupChild.deletedAt) {
-                            throw new NotFoundException(`group with ID: ${groupChild._id} has been deleted`);
-                        } else
-                    })
-                    if (groupChilds.indexOf(groupId) < 0) {
-
-
-                    }
-                });
-            } else {
-                groupChild.forEach(group => {
-                    if (group.deletedAt !== null) {
-                        throw new NotFoundException(`group with ID: ${group._id} has been deleted`);
-                    }
-                });
-            }
+            });
+            groupChilds.forEach(group => {
+                if (group.deletedAt) {
+                    throw new NotFoundException(`group with ID: ${group._id} has been deleted`);
+                }
+            });
         }
 
         if (groupDto.parentId) {
@@ -120,3 +102,4 @@ class Service {
 }
 
 export const GroupService = new Service();
+

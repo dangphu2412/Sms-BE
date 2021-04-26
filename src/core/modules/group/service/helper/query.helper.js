@@ -2,19 +2,19 @@ import { GroupModel } from '../../model/groupModel';
 import { UserModel } from '../../../user/model/userModel';
 
 class Query {
-    async groupQueryName(groupName) {
-        const group = await GroupModel.findOne({ name: groupName });
-        return group;
+    async findGroupByName(groupName) {
+        const NumberofGroup = await GroupModel.find({ name: groupName }).select('_id deletedAt');
+        return NumberofGroup;
     }
 
-    async groupQueryId(groupId) {
-        const group = await GroupModel.findById(groupId);
-        return group;
+    async findGroupById(reqGroupIds) {
+        const groups = await GroupModel.find({ _id: { $in: reqGroupIds } }).select('_id deletedAt');
+        return groups;
     }
 
-    async userQueryId(userId) {
-        const user = await UserModel.findById(userId).select('_id');
-        return user;
+    async countUserById(reqUserIds) {
+        const numberOfUser = await UserModel.countDocuments({ _id: { $in: reqUserIds } });
+        return numberOfUser;
     }
 }
 export const GroupQueryHelper = new Query();

@@ -25,7 +25,7 @@ export class PageableMeta {
 
     /**
      * @notes This method will automatically collect page and size from requestFormation
-     * @param {import('../requestFormation').RequestFormation} query
+     * @param {import('../requestTransformer').RequestTransformer} query
      * @returns {PageableMeta}
      */
     appendRequestFormation(query) {

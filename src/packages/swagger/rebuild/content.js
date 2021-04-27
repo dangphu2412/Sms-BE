@@ -31,7 +31,7 @@ export class SwaggerContentCreator {
             return [...autoGenParams];
         }
 
-        return [...this.#rawContent.params, ...autoGenParams];
+        return [...this.#rawContent.params];
     }
 
     fromJson(rawContent) {

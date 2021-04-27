@@ -18,7 +18,7 @@ import { SearchFactory } from '../../modules/factory/search.factory';
         associates
      }
  */
-export class RequestFormation {
+export class RequestTransformer {
     content;
 
     static paginationFactory = new PaginationFactory();
@@ -45,13 +45,14 @@ export class RequestFormation {
      */
     constructor(req, relationSchema) {
         this.content = {};
-        this.content.pagination = RequestFormation.paginationFactory.produce(req);
-        this.content.filters = RequestFormation.filterFactory.produce(req);
-        this.content.sorts = RequestFormation.sortFactory.produce(req);
-        this.content.search = RequestFormation.searchFactory.produce(req);
+        req.searchSchema = relationSchema?.searchCriteria;
+        this.content.pagination = RequestTransformer.paginationFactory.produce(req);
+        this.content.filters = RequestTransformer.filterFactory.produce(req);
+        this.content.sorts = RequestTransformer.sortFactory.produce(req);
+        this.content.search = RequestTransformer.searchFactory.produce(req);
         this.content.main = relationSchema?.main;
         this.content.associates = relationSchema?.associates;
-        RequestFormation.constructValidator(this.content, relationSchema?.locks);
+        RequestTransformer.constructValidator(this.content, relationSchema?.locks);
     }
 
     /**
@@ -100,14 +101,14 @@ export class RequestFormation {
 
     addSort(input) {
         this.content.sorts.push(
-            RequestFormation.sortFactory.produce(input)[0]
+            RequestTransformer.sortFactory.produce(input)[0]
         );
         return this;
     }
 
     addFilter(input) {
         this.content.filters.push(
-            RequestFormation.filterFactory.produce(input)[0]
+            RequestTransformer.filterFactory.produce(input)[0]
         );
         return this;
     }

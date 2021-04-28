@@ -1,9 +1,9 @@
 import { responseJoiError } from '../../../utils';
-import { createUserSchema } from './userValidator.schema';
+import { upsertUserSchema } from './userValidator.schema';
 
 export class CreateUserInterceptor {
     async intercept(req, res, next) {
-        const result = await createUserSchema.validate(req['body']);
+        const result = await upsertUserSchema.validate(req['body']);
 
         if (result.error) {
             return responseJoiError(res, result);

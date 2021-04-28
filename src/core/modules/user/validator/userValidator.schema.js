@@ -13,11 +13,11 @@ const profileSchema = Joi.object().keys({
     universityId: Joi.string().regex(/^[0-9a-fA-F]{24}$/).optional(),
 });
 
-export const createUserSchema = Joi.object({
+export const upsertUserSchema = Joi.object({
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
     password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     fingerprint: Joi.string().optional(),
-    status: Joi.string()
+    status: Joi.number()
         .valid(UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND)
         .optional(),
     profile: profileSchema.optional(),

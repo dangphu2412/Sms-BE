@@ -60,3 +60,61 @@
     
     ```
 - RequestFormation change name into RequestTransformer
+
+#CHANGELOG-28/4/2021
+## [Structure]: ☕ Improve response of success api
+
+- Changes response api format
+- All response of core will based on HttpResponse class.
+- HttpResponse class will have some method that support build
+not only valid response but also the failed response.
+```javascript
+export class HttpResponse {
+    status;
+
+    data;
+
+    constructor(status, data) {
+        this.status = status;
+        this.data = data;
+    }
+
+    toResponse(res) {
+        return res.status(this.status).json(this.data);
+    }
+}
+```
+- Basically, the base handler will automatically call method toResponse and
+passing response from express params here.
+- Every sub method build class based on HttpResponse
+will have some specific case on status and data.
+```javascript
+    import { UserService } from '../../../modules/user/service/user.service';
+    import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
+    import SearchUserSchema from '../query/searchUser.schema.json';
+    import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
+    import { CreateUserDto } from '../../../modules/user/dto/createUser.dto';
+    import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
+    
+    class Controller {
+        constructor() {
+            this.service = UserService;
+        }
+    
+        createOne = async req => {
+            const data = await this.service.createOne(CreateUserDto(req.body));
+            return ValidHttpResponse.toCreatedResponse(data);
+        }
+    
+        findOne = async req => {
+            const data = await this.service.findOne(req.params);
+            return ValidHttpResponse.toOkResponse(data);
+        }
+    
+        patchOne = async req => {
+            await this.service.patchOne(req.params, req.body);
+            return ValidHttpResponse.toNoContentResponse();
+        }
+    }
+```
+

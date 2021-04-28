@@ -20,7 +20,7 @@ const schema = new Schema({
             type: Number,
             default: UserStatus.AVAILABLE,
             enum: [UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND]
-        },
+    },
     roles: {
             type: Array,
             default: [Role.MEMBER],

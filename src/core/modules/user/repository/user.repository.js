@@ -6,8 +6,8 @@ class Repository extends RepositoryBase {
         super(UserModel);
     }
 
-    findOneByEmail(email, fields = []) {
-        return this.model.findOne({ email }).select(fields);
+    findOne(filter, fields = ['*']) {
+        return this.model.findOne(filter).select(fields);
     }
 }
 

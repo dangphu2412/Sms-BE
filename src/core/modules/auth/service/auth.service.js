@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import { UserRepository } from '../../user/repository/user.repository';
 import { UserModel } from '../../user/model/userModel';
 import { BcryptService } from './bcrypt.service';
 import { JwtSingleton } from './jwt.service';
@@ -8,18 +10,20 @@ class Service {
     constructor() {
         this.bcrypt = BcryptService;
         this.jwt = JwtSingleton;
+        this.userRepository = UserRepository;
     }
 
     async login(loginDto) {
-        const userData = await UserModel.findOne({ email: loginDto.email });
-        if (!userData) {
-            throw new UnAuthorizedException('Username or password is incorrect');
+        const user = await this.userRepository.findOne({ email: loginDto.email, deletedAt: null });
+        if (user) {
+            if (this.bcrypt.compare(loginDto.password, user.password)) {
+                return {
+                    user: _.pick(user, ['_id', 'profile', 'roles', 'email', 'status']),
+                    token: this.jwt.sign(JwtPayload(user))
+                };
+            }
         }
-        const isInvalidPassword = !this.bcrypt.compare(loginDto.password, userData.password);
-        if (isInvalidPassword) {
-            throw new UnAuthorizedException('Username or password is incorrect');
-        }
-        return this.jwt.sign(JwtPayload(userData));
+        throw new UnAuthorizedException('Email or password is incorrect');
     }
 }
 

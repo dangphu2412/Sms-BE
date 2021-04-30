@@ -13,7 +13,7 @@ ApiDocument.addModel('Profile',
     universityId: SwaggerDocument.ApiProperty({ type: 'string' })
 });
 
-ApiDocument.addModel('CreateDto',
+ApiDocument.addModel('UpsertUserDto',
 {
     email: SwaggerDocument.ApiProperty({ type: 'string' }),
     password: SwaggerDocument.ApiProperty({ type: 'string' }),

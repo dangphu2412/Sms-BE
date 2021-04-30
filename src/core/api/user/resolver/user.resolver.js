@@ -28,7 +28,7 @@ export const UserResolver = Module.builder()
         {
             route: '/',
             method: 'post',
-            body: 'CreateDto',
+            body: 'UpsertUserDto',
             interceptors: [new CreateUserInterceptor()],
             controller: UserController.createOne
         },
@@ -36,6 +36,7 @@ export const UserResolver = Module.builder()
             route: '/:id',
             method: 'patch',
             params: [ObjectId],
+            body: 'UpsertUserDto',
             interceptors: [
                 new IdObjectInterceptor(),
                 new CreateUserInterceptor()

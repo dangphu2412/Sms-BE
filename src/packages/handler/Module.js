@@ -1,14 +1,14 @@
 import express from 'express';
-import { OK, INTERNAL_SERVER_ERROR } from 'http-status';
 import { logger } from '../../core/modules/logger/winston';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
 import { SwaggerContentCreator } from '../swagger/rebuild/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
 import { HttpException } from '../httpException/HttpException';
-import { ERROR_CODE } from '../httpException/error.enum';
 import { AUTH_CONTEXT } from '../authModel/common/enum/authContext';
 import { UnAuthorizedException } from '../httpException';
 import { MethodRequired } from './exceptions/MethodRequired';
+import { HttpResponse } from './response/http.response';
+import { InValidHttpResponse } from './response/invalidHttp.response';
 
 export class Module {
     static logger = logger;
@@ -79,24 +79,24 @@ export class Module {
     #createHandler = controller => async (request, response) => {
         try {
             const data = await controller(request);
-            return response.status(OK).json({
-                status: OK,
-                data,
-            });
+            if (!(data instanceof HttpResponse)) {
+                return InValidHttpResponse
+                    .toInternalResponse(
+                        `${data.constructor.name} is not instance of HttpResponse.`
+                        + 'Should use HttpResponse to build http response'
+                    )
+                    .toResponse(response);
+            }
+            return data.toResponse(response);
         } catch (err) {
             if (err instanceof HttpException) {
-                return response.status(err.status).json({
-                    status: err.status,
-                    error: err.message,
-                    code: err.code
-                });
+                return new InValidHttpResponse(err.status, err.code, err.message)
+                    .toResponse(response);
             }
             Module.logger.error(err.message);
-            return response.status(INTERNAL_SERVER_ERROR).json({
-                status: INTERNAL_SERVER_ERROR,
-                error: err.message,
-                code: ERROR_CODE.INTERNAL
-            });
+            return InValidHttpResponse
+                .toInternalResponse(err.message)
+                .toResponse(response);
         }
     }
 

@@ -1,5 +1,4 @@
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
-import { UserModel } from '../model/userModel';
 import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
 import { logger } from '../../logger/winston';
@@ -16,10 +15,10 @@ class Service {
      * - Will move all these logic into restBuilder package
      * - Package contains: FilterDocument, SortDocument, SearchDocument
      * @param reqTransformed
-     * @returns {Promise<Array<Document>>}
      */
-    findAll(reqTransformed) {
-        const queryBuilder = this.userRepository.model.find();
+    async findAll(reqTransformed) {
+        const findBuilder = this.userRepository.model.find();
+        const countBuilder = this.userRepository.model.find();
         const filterDocument = {};
         const sortDocument = {};
 
@@ -48,15 +47,24 @@ class Service {
                 obj[searchField] = searchRegex;
                 searchObj['$or'].push(obj);
             });
-            queryBuilder.find(searchObj);
+            findBuilder.find(searchObj);
+            countBuilder.find(searchObj);
         }
 
-        queryBuilder.find(filterDocument);
-        queryBuilder.sort(sortDocument);
-        return queryBuilder
+        findBuilder.find(filterDocument);
+        findBuilder.sort(sortDocument);
+
+        countBuilder.find(filterDocument);
+        countBuilder.sort(sortDocument);
+        const users = findBuilder
             .limit(reqTransformed.pagination.size)
-            .skip(reqTransformed.pagination.offset)
-            .exec();
+            .skip(reqTransformed.pagination.offset);
+
+        const countUsers = countBuilder.countDocuments();
+        return Promise.all([
+            users,
+            countUsers
+        ]);
     }
 
     async createOne(data) {
@@ -108,10 +116,6 @@ class Service {
             throw new NotFoundException('User not found');
         }
         return user;
-    }
-
-    count() {
-        return UserModel.countDocuments({}).exec();
     }
 }
 

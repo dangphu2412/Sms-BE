@@ -7,6 +7,10 @@ class Controller {
         this.service = GroupService;
     }
 
-    createOne = req => this.service.createOne(CreateGroupDto(req.body));
+    createOne = req => this.service.createOne(CreateGroupDto(req.body))
+
+    // findAll = async req => {
+    //     const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
+    // }
 }
 export const GroupController = new Controller();

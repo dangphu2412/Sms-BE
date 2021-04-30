@@ -40,16 +40,8 @@ const schema = new Schema({
     deletedAt: { type: Date, default: null },
 });
 
-<<<<<<< HEAD
 schema.pre('save', function onSave(next) {
     this.updatedAt = Date.now();
     return next();
 });
 export const UserModel = model('users', schema);
-=======
-// You can define your hook here to create trigger middleware
-// Docs: https://mongoosejs.com/docs/middleware.html
-
-export const UserModel = DatabaseInstance
-    .buildModel('user', schema);
->>>>>>> ddd7bc2 ([SMS-17]:hammer:add validator to post req create group)

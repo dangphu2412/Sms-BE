@@ -1,6 +1,6 @@
 import { Module } from '../../../../packages/handler/Module';
 import { GroupController } from '../controller/group.controller';
-// import { ApiFilterSwagger } from '../../../common/swagger/filter';
+import { ApiFilterSwagger } from '../../../common/swagger/filter';
 import { CreateGroupInterceptor } from '../../../modules/group/validator/createGroup.interceptor';
 import { IdObjectInterceptor } from '../../../modules/interceptor/IdObject/idObject.interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';

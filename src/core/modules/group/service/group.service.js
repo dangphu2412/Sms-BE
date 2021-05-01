@@ -99,6 +99,44 @@ class Service {
         }
         return { _id: insertedGroup._id };
     }
+
+    findAll(reqTransformed) {
+        const queryBuilder = this.groupRepository.model.find();
+        const filterDocument = {};
+
+        reqTransformed.filters.forEach(filter => {
+            if (!filterDocument[filter.column]) {
+                filterDocument[filter.column] = {};
+            }
+
+            filterDocument[filter.column][filter.sign] = filter.value;
+        });
+
+        if (reqTransformed.search) {
+            const searchObj = {
+                $or: []
+            };
+
+            const searchRegex = {
+                $regex: reqTransformed.search.value, $options: 'i'
+            };
+            reqTransformed.search.criteria.forEach(searchField => {
+                const obj = {};
+                obj[searchField] = searchRegex;
+                searchObj['$or'].push(obj);
+            });
+            queryBuilder.find(searchObj);
+        }
+        queryBuilder.find(filterDocument);
+        return queryBuilder
+            .limit(reqTransformed.pagination.size)
+            .skip(reqTransformed.pagination.offset)
+            .exec();
+    }
+
+    count() {
+        return GroupModel.countDocuments({}).exec();
+    }
 }
 
 export const GroupService = new Service();

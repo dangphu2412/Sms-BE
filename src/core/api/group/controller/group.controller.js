@@ -9,8 +9,19 @@ class Controller {
 
     createOne = req => this.service.createOne(CreateGroupDto(req.body))
 
-    // findAll = async req => {
-    //     const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
-    // }
+    findAll = async req => {
+        const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
+        const data = await this.service.findAll(reqTransformed.translate());
+        const count = await this.service.count();
+        return Pageable.of(data)
+            .addMeta(
+                PageableMeta
+                    .builder()
+                    .appendRequestFormation(reqTransformed)
+                    .appendTotalRecord(count)
+                    .build()
+            )
+            .build();
+    }
 }
 export const GroupController = new Controller();

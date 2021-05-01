@@ -45,7 +45,7 @@ export class RequestTransformer {
      */
     constructor(req, relationSchema) {
         this.content = {};
-        req.seardchSchema = relationSchema?.searchCriteria;
+        req.searchSchema = relationSchema?.searchCriteria;
         this.content.pagination = RequestTransformer.paginationFactory.produce(req);
         this.content.filters = RequestTransformer.filterFactory.produce(req);
         this.content.sorts = RequestTransformer.sortFactory.produce(req);

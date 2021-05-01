@@ -48,9 +48,9 @@ class Service {
 
         if (groupDto.parentId) {
             const groupParent = await this.groupRepository.findGroupById(groupDto.parentId);
-            if (!groupParent) {
+            if (groupParent.length <= 0) {
                 throw new NotFoundException(`group with ID: ${groupDto.parentId} not found for parent`);
-            } else if (groupParent.deletedAt) {
+            } else if (groupParent[0].deletedAt) {
                 throw new NotFoundException(`group with ID: ${groupDto.parentId} has been deleted`);
             }
         }
@@ -95,7 +95,7 @@ class Service {
                 }
             }
         } catch (error) {
-          this.logger.error(error.message);
+            this.logger.error(error.message);
         }
         return { _id: insertedGroup._id };
     }

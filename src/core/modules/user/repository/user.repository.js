@@ -1,14 +1,10 @@
-import { RepositoryBase } from '../../../infrastructure/repositoryBase';
+import { BaseRepository } from 'core/infrastructure/repository';
 import { UserModel } from '../model/userModel';
 
-class Repository extends RepositoryBase {
-    constructor() {
-        super(UserModel);
-    }
-
-    findOneByEmail(email, fields = []) {
-        return this.model.findOne({ email }).select(fields);
-    }
+class Repository extends BaseRepository {
+  constructor() {
+    super(UserModel);
+  }
 }
 
 export const UserRepository = new Repository();

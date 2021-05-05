@@ -20,8 +20,12 @@ export class BaseRepository {
     return this.model.estimatedDocumentCount();
   }
 
+  findOne(filter, fields = []) {
+    return this.model.findOne(filter, fields).exec();
+  }
+
   findById(id, fields = []) {
-      return this.model.findById(id).select(fields).exec();
+      return this.model.findById(id, fields).exec();
   }
 
   findByIdAndDelete(id) {

@@ -19,7 +19,15 @@
       }
     ],
     "@babel/syntax-dynamic-import",
-    "@babel/transform-async-to-generator"
+    "@babel/transform-async-to-generator",
+    ["module-resolver", {
+      "root": ["./src"],
+      "alias": {
+        "core": "./src/core",
+        "src": "./src",
+        "packages": "./src/packages"
+      }
+    }]
   ],
   "ignore": [
     "public",

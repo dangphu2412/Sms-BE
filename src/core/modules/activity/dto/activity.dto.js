@@ -1,21 +1,15 @@
 import { SwaggerDocument } from '../../../../packages/swagger';
 import { ApiDocument } from '../../../config/swagger';
 
-ApiDocument.addModel('TimetableSetting', {
+ApiDocument.addModel('Activity', {
   name: SwaggerDocument.ApiProperty({ type: 'string' }),
-  startTime: SwaggerDocument.ApiProperty({ type: 'string' }),
-  endTime: SwaggerDocument.ApiProperty({ type: 'string' }),
   isActive: SwaggerDocument.ApiProperty({ type: 'boolean' }),
 });
 
-export const CreateTimetableSettingDto = ({
+export const CreateActivityDto = ({
   name,
-  startTime,
-  endTime,
   isActive,
 }) => ({
   name,
-  startTime,
-  endTime,
   isActive,
 });

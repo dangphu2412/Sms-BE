@@ -1,5 +1,4 @@
-import { Schema } from 'mongoose';
-import { DatabaseInstance } from '../../../config/database';
+import { Schema, model } from 'mongoose';
 import { Role, UserStatus } from '../../../common/enum';
 
 const schema = new Schema({
@@ -45,5 +44,4 @@ schema.pre('save', function onSave(next) {
     this.updatedAt = Date.now();
     return next();
 });
-export const UserModel = DatabaseInstance
-    .buildModel('user', schema);
+export const UserModel = model('user', schema);

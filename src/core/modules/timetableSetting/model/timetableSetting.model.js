@@ -1,5 +1,5 @@
+import { model } from 'mongoose';
 import { extendBaseModel } from 'core/infrastructure/model';
-import { DatabaseInstance } from 'core/config/database';
 
 const schema = extendBaseModel({
   alias: { type: String, required: [true, 'alias is empty'] },
@@ -8,8 +8,7 @@ const schema = extendBaseModel({
   status: { type: Boolean, default: true },
 });
 
-export const TimetableSettingModel = DatabaseInstance.buildModel(
-  'TimetableSetting',
+export const TimetableSettingModel = model(
+  'timetable_settings',
   schema,
-  'timetable_settings'
 );

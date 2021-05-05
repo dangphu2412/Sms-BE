@@ -1,8 +1,8 @@
 /* eslint-disable  */
 import fs from 'fs';
 import mongoose from 'mongoose';
-
 import path from 'path';
+
 import { getSeedPathWithExtensions } from '../utils';
 import { DATABASE_URL } from '../env';
 
@@ -14,7 +14,7 @@ class DBSeederRunner {
     if (!seedFileNames.length) {
       // Specifies all seeders
       if (fs.existsSync(seedPath)) {
-        fs.readdirSync(seedPath).forEach((file) => {
+        fs.readdirSync(seedPath).forEach(file => {
           const parts = path.parse(file);
           if (EXTENSIONS.includes(parts.ext.toLowerCase())) {
             seedFileNames.push(parts.name);
@@ -63,7 +63,7 @@ export async function seeder(args) {
   }
 }
 
-seeder(process.argv).catch((err) => {
+seeder(process.argv).catch(err => {
   console.error('Cannot seeding database schema', err);
   process.exit(1);
 });

@@ -1,10 +1,10 @@
 import { CreateTimetableSettingDto } from 'core/modules/timetableSetting/dto';
 import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
-import { TimetableSettingService } from '../../../modules/timetableSetting/service';
+import { TimetableSettingUseCaseService } from '../../../modules/timetableSetting/service';
 
 class Controller {
     constructor() {
-        this.service = TimetableSettingService;
+        this.service = TimetableSettingUseCaseService;
     }
 
     createOne = async req => {

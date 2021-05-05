@@ -1,13 +1,13 @@
-import { UserService } from '../../../modules/user/service/user.service';
-import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
 import SearchUserSchema from '../query/searchUser.schema.json';
+import { UserUseCaseService } from '../../../modules/user/service/userUseCase.service';
+import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
-import { CreateUserDto } from '../../../modules/user/dto/createUser.dto';
+import { CreateUserDto } from '../../../modules/user/dto';
 import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
 
 class Controller {
     constructor() {
-        this.service = UserService;
+        this.service = UserUseCaseService;
     }
 
     findAll = async req => {

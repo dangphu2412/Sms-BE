@@ -1,4 +1,9 @@
+import { UnsupportedMethodException } from '../exceptions/unsupportedMethod..exception';
+import { logger } from '../../modules/logger/winston';
+
 export class BaseRepository {
+  static logger = logger;
+
   /**
    * @type {import('mongoose').Model<Document>} model
    */
@@ -7,15 +12,15 @@ export class BaseRepository {
   constructor(model) {
     this.model = model;
     this.collection = model.collection.collectionName;
+    BaseRepository.logger.info(`Building ${this.collection} repository`);
   }
 
+  // UPSERT
   // eslint-disable-next-line no-unused-vars
-  execute(query) {
-    // Do raw execute
+  createOrUpdate(payload) {
     throw new Error('Method not implemented.');
   }
 
-  // READ
   count() {
     return this.model.estimatedDocumentCount();
   }
@@ -28,22 +33,10 @@ export class BaseRepository {
       return this.model.findById(id, fields).exec();
   }
 
-  findByIdAndDelete(id) {
-      return this.model.findByIdAndDelete(id).exec();
-  }
-
-  // CREATE
   create(payload) {
     return this.model.create(payload);
   }
 
-  // UPSERT
-  // eslint-disable-next-line no-unused-vars
-  createOrUpdate(payload) {
-    throw new Error('Method not implemented.');
-  }
-
-  // UPDATE
   updateById(id, payload) {
     return this.model.findByIdAndUpdate(id, payload);
   }
@@ -52,12 +45,15 @@ export class BaseRepository {
     return this.model.updateMany(conditions, payload, options);
   }
 
-  // DELETE
-  deleteById(id) {
-    if (this.model.deletedAt) {
-      return this.updateById(id, { deletedAt: new Date() });
+  findByIdAndDelete(id) {
+    return this.model.findByIdAndDelete(id).exec();
+  }
+
+  softDeleteById(id) {
+    if (!this.model.deletedAt) {
+      throw new UnsupportedMethodException(this.collection, 'soft delete');
     }
-    return this.model.findByIdAndDelete(id);
+    return this.updateById(id, { deletedAt: new Date() });
   }
 
   deleteMany(conditions, options = {}) {

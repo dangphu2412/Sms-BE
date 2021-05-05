@@ -4,6 +4,7 @@ class Service {
   /**
    *
    * @param {Document} user
+   * @returns {UserInformation}
    */
     getUserInfo(user) {
         return pick(user, ['_id', 'profile', 'roles', 'email', 'status']);

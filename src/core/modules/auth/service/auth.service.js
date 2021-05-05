@@ -15,7 +15,8 @@ class Service {
 
   /**
    *
-   * @returns {Promise<{user: *, token: string}>}
+   * @param {LoginDtoDef} loginDto
+   * @returns {Promise<LoginResponseDef>}
    */
     async login(loginDto) {
         const user = await this.userRepository.getAvailableByEmail(loginDto.email);

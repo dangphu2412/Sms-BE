@@ -1,6 +1,5 @@
-import _ from 'lodash';
+import pick from 'lodash/pick';
 import { UserRepository } from '../../user/repository/user.repository';
-import { UserModel } from '../../user/model/userModel';
 import { BcryptService } from './bcrypt.service';
 import { JwtSingleton } from './jwt.service';
 import { JwtPayload } from '../dto/index';
@@ -18,7 +17,7 @@ class Service {
         if (user) {
             if (this.bcrypt.compare(loginDto.password, user.password)) {
                 return {
-                    user: _.pick(user, ['_id', 'profile', 'roles', 'email', 'status']),
+                    user: pick(user, ['_id', 'profile', 'roles', 'email', 'status']),
                     token: this.jwt.sign(JwtPayload(user))
                 };
             }

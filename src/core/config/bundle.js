@@ -3,10 +3,15 @@ import * as express from 'express';
 import methodOverride from 'method-override';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
+import { InvalidResolver, InvalidFilter } from 'core/common/exceptions/system';
 import { logger } from '../modules/logger/winston';
 import { DatabaseInstance } from './database';
 import { CORS_ALLOW } from '../env';
-import { InvalidFilter } from '../common/exceptions/system/InvalidFilter';
+
+/**
+ * @typedef Filter
+ * @property {(req, res, next) => {}} filter
+ */
 
 export class AppBundle {
     #swaggerBuilder;
@@ -18,7 +23,7 @@ export class AppBundle {
     BASE_PATH_SWAGGER = '/docs';
 
     static builder() {
-        AppBundle.logger.info('🌶🌶🌶 App is starting bundling 🌶🌶🌶');
+        AppBundle.logger.info('App is starting bundling');
         return new AppBundle();
     }
 
@@ -30,17 +35,17 @@ export class AppBundle {
         return this;
     }
 
-    /**
-     * @param {import('../../packages/handler/HandlerResolver')} resolver
-     */
     applyResolver(resolver) {
-        this.app.use(this.BASE_PATH, resolver);
+        if (!resolver['resolve']) {
+            throw new InvalidResolver(resolver);
+        }
+        this.app.use(this.BASE_PATH, resolver.resolve());
         return this;
     }
 
     /**
      *
-     * @param {[]} filters
+     * @param {[Filter]} filters
      * @returns {AppBundle}
      */
     applyGlobalFilters(filters) {
@@ -89,7 +94,7 @@ export class AppBundle {
                 return undefined;
             }),
         );
-        AppBundle.logger.info('🌶🌶🌶 Building initial config 🌶🌶🌶');
+        AppBundle.logger.info('Building initial config');
         return this;
     }
 
@@ -97,13 +102,13 @@ export class AppBundle {
     Setup asynchronous config here
      */
     async run() {
-        AppBundle.logger.info('🌶🌶🌶 Building asynchronous config 🌶🌶🌶');
+        AppBundle.logger.info('Building asynchronous config');
         this.app.use(
             this.BASE_PATH_SWAGGER,
             swaggerUi.serve,
             swaggerUi.setup(this.#swaggerBuilder.instance)
         );
-        AppBundle.logger.info('🌶🌶🌶 Building swagger 🌶🌶🌶');
+        AppBundle.logger.info('Building swagger');
         await DatabaseInstance.connect();
     }
 }

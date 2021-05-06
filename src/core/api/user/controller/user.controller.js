@@ -1,8 +1,8 @@
+import SearchUserSchema from '../query/searchUser.schema.json';
 import { UserService } from '../../../modules/user/service/user.service';
 import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
-import SearchUserSchema from '../query/searchUser.schema.json';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
-import { CreateUserDto } from '../../../modules/user/dto/createUser.dto';
+import { CreateUserDto } from '../../../modules/user/dto';
 import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
 
 class Controller {

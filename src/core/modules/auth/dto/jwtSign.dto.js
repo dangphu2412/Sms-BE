@@ -1,5 +1,6 @@
 export const JwtPayload = user => (
     {
-        id: user.id,
+      _id: user._id,
+      roles: user.roles
     }
 );

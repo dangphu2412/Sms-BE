@@ -11,7 +11,7 @@ class Bcrypt {
      */
     constructor(saltRounds) {
         this.saltRounds = saltRounds;
-        logger.info('initiate bcrypt module');
+        logger.info('[BcryptService] is bundling');
     }
 
     /**

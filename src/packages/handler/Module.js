@@ -154,16 +154,10 @@ export class Module {
      } apis
      */
     register(apis) {
-        Module.logger.info(`🌶🌶🌶 [${this.#prefix.module}] is bundling 🌶🌶🌶`);
+        Module.logger.info(`[${this.#prefix.module}] is bundling`);
 
         apis.forEach(api => {
             const {
-                /**
-                 * @author dangphu2412
-                 * Currently i will turn this lint off because we still not dev preauthorize
-                 * @requires remove it whenever we finish
-                 */
-                // eslint-disable-next-line no-unused-vars
                 route, controller, method, preAuthorization, interceptors, guards
             } = api;
             const middlewares = [];
@@ -184,7 +178,7 @@ export class Module {
             }
             this.#router[method](route, ...middlewares, this.#createHandler(controller));
 
-            Module.logger.info(`🌶🌶🌶 [${this.#prefix.module}] ${method} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);
+            Module.logger.info(`[${this.#prefix.module}] ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);
 
             this.#addSwaggerContent(api);
         });

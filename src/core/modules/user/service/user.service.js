@@ -2,6 +2,7 @@ import { DuplicateException, NotFoundException } from '../../../../packages/http
 import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
 import { logger } from '../../logger/winston';
+import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
 
 class Service {
     constructor() {
@@ -69,10 +70,14 @@ class Service {
 
     async createOne(data) {
         let createdUser;
-        const user = await this.userRepository.findOneByEmail(data.email, ['email']);
+        const user = await this.userRepository.getByEmail(data.email);
 
-        if (user) {
+        if (user && user?.deletedAt === null) {
           throw new DuplicateException('Email is used');
+        }
+
+        if (!user?.deletedAt) {
+          throw new BadRequestException('This account is not available at the moment');
         }
 
         data.password = this.bcrypt.hash(data.password);
@@ -87,13 +92,14 @@ class Service {
     }
 
     async findOne({ id }) {
-      const user = await this.userRepository.findById(id);
+      const user = await this.userRepository.getDetailById(id);
       if (!user) {
         throw new NotFoundException('User not found');
       }
       return user;
     }
 
+    // TODO: Update user in the future
     async patchOne({ id }, { email, password, roles }) {
       const user = await this.userRepository.findById(id);
       if (!user) {
@@ -105,6 +111,7 @@ class Service {
       return user.save();
     }
 
+    // TODO: Update delete user in the future
     async deleteOne({ id }) {
         let user;
         try {

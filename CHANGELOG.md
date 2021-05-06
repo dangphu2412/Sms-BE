@@ -39,25 +39,25 @@
                 controller: ExampleController.findOne
             }
         ]);
-    
+
     ```
 - Repository layer:
   - This layer will be responsible for writing query to database
   - We will improve RepositoryBase which will contains several usual method
   - Below is an example of how to implement repository.
     ```javascript
-    class Repository extends RepositoryBase {
+    class Repository extends BaseRepository {
         constructor() {
             super(ExampleModel);
         }
-    
+
         findOneByEmail(email, fields = []) {
             return this.model.findOne({ email }).select(fields);
         }
     }
-    
+
     export const ExampleRepository = new Repository();
-    
+
     ```
 - RequestFormation change name into RequestTransformer
 
@@ -95,22 +95,22 @@ will have some specific case on status and data.
     import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
     import { CreateUserDto } from '../../../modules/user/dto/createUser.dto';
     import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
-    
+
     class Controller {
         constructor() {
             this.service = UserService;
         }
-    
+
         createOne = async req => {
             const data = await this.service.createOne(CreateUserDto(req.body));
             return ValidHttpResponse.toCreatedResponse(data);
         }
-    
+
         findOne = async req => {
             const data = await this.service.findOne(req.params);
             return ValidHttpResponse.toOkResponse(data);
         }
-    
+
         patchOne = async req => {
             await this.service.patchOne(req.params, req.body);
             return ValidHttpResponse.toNoContentResponse();

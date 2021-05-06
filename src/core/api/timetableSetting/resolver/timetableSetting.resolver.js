@@ -15,5 +15,6 @@ export const TimetableSettingResolver = Module.builder()
             interceptors: [new TimetableSettingInterceptor()],
             controller: TimetableSettingController.createOne,
             body: 'CreateTimeTableSettingDto',
+            preAuthorization: true
         }
     ]);

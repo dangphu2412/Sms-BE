@@ -16,21 +16,24 @@ export const UserResolver = Module.builder()
             route: '/',
             method: 'get',
             params: ApiFilterSwagger,
-            controller: UserController.findAll
+            controller: UserController.findAll,
+            preAuthorization: true
         },
         {
             route: '/:id',
             method: 'get',
             params: [ObjectId],
             interceptors: [new IdObjectInterceptor()],
-            controller: UserController.findOne
+            controller: UserController.findOne,
+            preAuthorization: true
         },
         {
             route: '/',
             method: 'post',
             body: 'UpsertUserDto',
             interceptors: [new CreateUserInterceptor()],
-            controller: UserController.createOne
+            controller: UserController.createOne,
+            preAuthorization: true
         },
         {
             route: '/:id',
@@ -41,7 +44,8 @@ export const UserResolver = Module.builder()
                 new IdObjectInterceptor(),
                 new CreateUserInterceptor()
             ],
-            controller: UserController.patchOne
+            controller: UserController.patchOne,
+            preAuthorization: true
         },
         {
             route: '/:id',
@@ -49,5 +53,6 @@ export const UserResolver = Module.builder()
             params: [ObjectId],
             interceptors: [new IdObjectInterceptor()],
             controller: UserController.deleteOne,
+            preAuthorization: true
         }
     ]);

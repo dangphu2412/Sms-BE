@@ -1,4 +1,5 @@
-import { UnsupportedMethodException } from '../exceptions/unsupportedMethod..exception';
+import { upperFirst, camelCase } from 'lodash';
+import { UnsupportedMethodException } from '../exceptions/unsupportedMethod.exception';
 import { logger } from '../../modules/logger/winston';
 
 export class BaseRepository {
@@ -12,7 +13,7 @@ export class BaseRepository {
   constructor(model) {
     this.model = model;
     this.collection = model.collection.collectionName;
-    BaseRepository.logger.info(`Building ${this.collection} repository`);
+    BaseRepository.logger.info(`[${upperFirst(camelCase(this.collection))}Repository] is bundling`);
   }
 
   // UPSERT

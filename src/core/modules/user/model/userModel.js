@@ -44,4 +44,4 @@ schema.pre('save', function onSave(next) {
     this.updatedAt = Date.now();
     return next();
 });
-export const UserModel = model('user', schema);
+export const UserModel = model('users', schema);

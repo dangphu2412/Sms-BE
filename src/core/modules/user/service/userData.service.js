@@ -3,11 +3,11 @@ import pick from 'lodash/pick';
 class Service {
   /**
    *
-   * @param {Document} user
+   * @param {UserModel} user
    * @returns {UserInformation}
    */
     getUserInfo(user) {
-        return pick(user, ['_id', 'profile', 'roles', 'email', 'status']);
+        return pick(user, ['_id', 'email', 'profile', 'roles', 'status']);
     }
 }
 

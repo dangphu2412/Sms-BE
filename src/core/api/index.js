@@ -7,5 +7,4 @@ import { ApiDocument } from '../config/swagger';
 export const ModuleResolver = HandlerResolver
     .builder()
     .addSwaggerBuilder(ApiDocument)
-    .addModule([UserResolver, AuthResolver, TimetableSettingResolver])
-    .resolve();
+    .addModule([UserResolver, AuthResolver, TimetableSettingResolver]);

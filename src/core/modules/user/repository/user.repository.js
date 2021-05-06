@@ -6,6 +6,11 @@ class Repository extends BaseRepository {
     super(UserModel);
   }
 
+  /**
+   *
+   * @param email
+   * @returns {Promise<UserModel | null>}
+   */
   getAvailableByEmail(email) {
     return this.findOne({ email, deletedAt: null });
   }

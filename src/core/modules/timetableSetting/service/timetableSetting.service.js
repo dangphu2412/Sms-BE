@@ -12,4 +12,4 @@ class Service {
   }
 }
 
-export const TimetableSettingUseCaseService = new Service();
+export const TimetableSettingService = new Service();

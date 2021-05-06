@@ -126,4 +126,4 @@ class Service {
     }
 }
 
-export const UserUseCaseService = new Service();
+export const UserService = new Service();

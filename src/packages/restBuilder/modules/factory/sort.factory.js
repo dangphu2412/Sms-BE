@@ -5,7 +5,7 @@ export class SortFactory {
     static logger = logger
 
     constructor() {
-        SortFactory.logger.info(`${SortFactory.name} factory is built`);
+        SortFactory.logger.info(`[${SortFactory.name}] is building`);
     }
 
     produce(req) {

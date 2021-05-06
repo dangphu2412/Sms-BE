@@ -1,1 +1,1 @@
-export * from './timetableSettingUseCase.service';
+export * from './timetableSetting.service';

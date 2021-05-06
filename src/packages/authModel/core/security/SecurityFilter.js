@@ -1,11 +1,17 @@
 import { JwtAuthAdapter } from './JwtAuthAdapter';
+import { InValidHttpResponse } from '../../../handler/response/invalidHttp.response';
 
 export class SecurityFilter {
     filter(req, res, next) {
-        JwtAuthAdapter
+        try {
+          JwtAuthAdapter
             .builder()
             .collectRequest(req)
-            .transfer();
+            .transfer(req);
+        } catch (e) {
+          return new InValidHttpResponse(e.status, e.code, e.message)
+            .toResponse(res);
+        }
         return next();
     }
 }

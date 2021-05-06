@@ -15,7 +15,7 @@ export class PaginationFactory {
     static DEFAULT_SIZE = null;
 
     constructor() {
-        PaginationFactory.logger.info(`${PaginationFactory.name} factory is built`);
+        PaginationFactory.logger.info(`[${PaginationFactory.name}] is building`);
     }
 
     produce(req) {

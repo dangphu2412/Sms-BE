@@ -2,7 +2,7 @@ import { sign, decode } from 'jsonwebtoken';
 import { JWT_SECRET, EXPIRE_DAYS } from '../../../env';
 import { logger } from '../../logger/winston';
 
-class JwtService {
+class Jwt {
     static logger = logger;
 
     secret = JWT_SECRET;
@@ -10,7 +10,7 @@ class JwtService {
     expiresIn = EXPIRE_DAYS;
 
     constructor() {
-        JwtService.logger.info('Building jwt module');
+        Jwt.logger.info('[JwtService] is bundling');
     }
 
     sign(payload) {
@@ -24,4 +24,4 @@ class JwtService {
     }
 }
 
-export const JwtSingleton = new JwtService();
+export const JwtService = new Jwt();

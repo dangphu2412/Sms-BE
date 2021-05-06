@@ -1,5 +1,5 @@
 import SearchUserSchema from '../query/searchUser.schema.json';
-import { UserUseCaseService } from '../../../modules/user/service/userUseCase.service';
+import { UserService } from '../../../modules/user/service/user.service';
 import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
 import { CreateUserDto } from '../../../modules/user/dto';
@@ -7,7 +7,7 @@ import { ValidHttpResponse } from '../../../../packages/handler/response/validHt
 
 class Controller {
     constructor() {
-        this.service = UserUseCaseService;
+        this.service = UserService;
     }
 
     findAll = async req => {

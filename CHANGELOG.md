@@ -89,7 +89,7 @@ passing response from express params here.
 - Every sub method build class based on HttpResponse
 will have some specific case on status and data.
 ```javascript
-    import { UserUseCaseService } from '../../../modules/user/service/user.service';
+    import { UserService } from '../../../modules/user/service/user.service';
     import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
     import SearchUserSchema from '../query/searchUser.schema.json';
     import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
@@ -98,7 +98,7 @@ will have some specific case on status and data.
 
     class Controller {
         constructor() {
-            this.service = UserUseCaseService;
+            this.service = UserService;
         }
 
         createOne = async req => {

@@ -1,4 +1,4 @@
-import '../../user/def/index';
+import '../../user/def';
 
 /**
  * @typedef {object} LoginDtoDef

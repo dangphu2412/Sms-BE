@@ -4,6 +4,7 @@ import { JwtService } from './jwt.service';
 import { JwtPayload } from '../dto/index';
 import { UnAuthorizedException } from '../../../../packages/httpException';
 import { UserDataService } from '../../user/service/userData.service';
+import '../def';
 
 class Service {
     constructor() {

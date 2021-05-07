@@ -1,4 +1,4 @@
-import { JwtAuthAdapter } from './JwtAuthAdapter';
+import { JwtAuthAdapter } from '../../module/authentication/JwtAuthAdapter';
 import { InValidHttpResponse } from '../../../handler/response/invalidHttp.response';
 
 export class SecurityFilter {

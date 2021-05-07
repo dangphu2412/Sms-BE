@@ -6,13 +6,21 @@ import { UserDetail } from '../user/UserDetail';
 export class JwtAuthAdapter {
     static USER_DETAIL_CLASS = UserDetail;
 
+    #token;
+
+    #userDetail;
+
     static builder() {
         return new JwtAuthAdapter();
     }
 
-    #token;
-
-    #userDetail;
+    static applyCustomUserDetail(customUserDetailClass) {
+        if (customUserDetailClass instanceof UserDetail) {
+            JwtAuthAdapter.USER_DETAIL_CLASS = customUserDetailClass;
+        } else {
+            throw new InvalidInstance(customUserDetailClass, JwtAuthAdapter.USER_DETAIL_CLASS);
+        }
+    }
 
     #detachAuthContextToReq = req => {
         if (this.#userDetail) {
@@ -23,14 +31,6 @@ export class JwtAuthAdapter {
     #applyPreAuthorizationToUserDetail = () => {
         this.#userDetail.toRoles();
         this.#userDetail.toPermissions();
-    }
-
-    applyCustomUserDetail(customUserDetailClass) {
-        if (customUserDetailClass instanceof UserDetail) {
-            JwtAuthAdapter.USER_DETAIL_CLASS = customUserDetailClass;
-        } else {
-            throw new InvalidInstance(customUserDetailClass, JwtAuthAdapter.USER_DETAIL_CLASS);
-        }
     }
 
     collectRequest(req) {

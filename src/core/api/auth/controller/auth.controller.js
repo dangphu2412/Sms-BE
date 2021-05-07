@@ -11,6 +11,16 @@ class Controller {
         const data = await this.service.login(LoginDto(req.body));
         return ValidHttpResponse.toOkResponse(data);
     }
+
+    /**
+     * This route is built for testing authorization
+     * TODO: Remove in the future
+     */
+    // eslint-disable-next-line no-unused-vars
+    testAuthorization = async req => {
+        await this.service.testAuthorization();
+        return ValidHttpResponse.toNoContentResponse();
+    }
 }
 
 export const AuthController = new Controller();

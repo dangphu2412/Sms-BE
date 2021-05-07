@@ -118,3 +118,10 @@ will have some specific case on status and data.
     }
 ```
 
+#CHANGELOG-14/5/2021
+
+## [Structure] ☕ Authentication and authorization
+
+- [Authentication](./src/packages/authModel/module/authentication/README.md)
+
+- [Authorization](./src/packages/authModel/module/authorization/README.md)

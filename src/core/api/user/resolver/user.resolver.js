@@ -1,7 +1,9 @@
 import { Module } from '../../../../packages/handler/Module';
 import { UserController } from '../controller/user.controller';
-import { UserValidator } from '../../../modules/user/validator/user.validator';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
+import { IdObjectInterceptor } from '../../../modules/interceptor/IdObject/idObject.interceptor';
+import { CreateUserInterceptor } from '../../../modules/user/validator/createUser.interceptor';
+import { ObjectId } from '../../../common/swagger/objectId';
 
 export const UserResolver = Module.builder()
     .addPrefix({
@@ -13,35 +15,44 @@ export const UserResolver = Module.builder()
         {
             route: '/',
             method: 'get',
-            middlewares: [UserValidator.validateQuery()],
+            params: ApiFilterSwagger,
             controller: UserController.findAll,
-            params: ApiFilterSwagger
+            preAuthorization: true
         },
         {
             route: '/:id',
             method: 'get',
-            middlewares: [UserValidator.validateParam()],
+            params: [ObjectId],
+            interceptors: [new IdObjectInterceptor()],
             controller: UserController.findOne,
+            preAuthorization: true
         },
         {
             route: '/',
             method: 'post',
-            middlewares: [UserValidator.validatePost()],
-            controller: UserController.createOne
+            body: 'UpsertUserDto',
+            interceptors: [new CreateUserInterceptor()],
+            controller: UserController.createOne,
+            preAuthorization: true
         },
         {
             route: '/:id',
             method: 'patch',
-            middlewares: [
-              UserValidator.validateParam(),
-              UserValidator.validatePatch(),
+            params: [ObjectId],
+            body: 'UpsertUserDto',
+            interceptors: [
+                new IdObjectInterceptor(),
+                new CreateUserInterceptor()
             ],
-            controller: UserController.patchOne
+            controller: UserController.patchOne,
+            preAuthorization: true
         },
         {
             route: '/:id',
             method: 'delete',
-            middlewares: [UserValidator.validateParam()],
+            params: [ObjectId],
+            interceptors: [new IdObjectInterceptor()],
             controller: UserController.deleteOne,
+            preAuthorization: true
         }
     ]);

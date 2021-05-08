@@ -1,7 +1,9 @@
-import { UserService } from '../../../modules/user/service/user.service';
-import { RequestFormation } from '../../../../packages/restBuilder/core/requestFormation';
 import SearchUserSchema from '../query/searchUser.schema.json';
+import { UserService } from '../../../modules/user/service/user.service';
+import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
+import { CreateUserDto } from '../../../modules/user/dto';
+import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
 
 class Controller {
     constructor() {
@@ -9,27 +11,39 @@ class Controller {
     }
 
     findAll = async req => {
-        const reqFormation = new RequestFormation(req.query, SearchUserSchema);
-        const data = await this.service.findAll(reqFormation.translate());
-        const count = await this.service.count();
-        return Pageable.of(data)
+        const reqTransformed = new RequestTransformer(req.query, SearchUserSchema);
+        const data = await this.service.findAll(reqTransformed.translate());
+        const pagedData = Pageable.of(data[0])
             .addMeta(
                 PageableMeta
                     .builder()
-                    .appendRequestFormation(reqFormation)
-                    .appendTotalRecord(count)
+                    .appendRequestFormation(reqTransformed)
+                    .appendTotalRecord(data[1])
                     .build()
             )
             .build();
+        return ValidHttpResponse.toOkResponse(pagedData);
     }
 
-    createOne = req => this.service.createOne(req.body)
+    createOne = async req => {
+        const data = await this.service.createOne(CreateUserDto(req.body));
+        return ValidHttpResponse.toCreatedResponse(data);
+    }
 
-    findOne = req => this.service.findOne(req.params)
+    findOne = async req => {
+        const data = await this.service.findOne(req.params);
+        return ValidHttpResponse.toOkResponse(data);
+    }
 
-    patchOne = req => this.service.patchOne(req.params, req.body)
+    patchOne = async req => {
+        await this.service.patchOne(req.params, req.body);
+        return ValidHttpResponse.toNoContentResponse();
+    }
 
-    deleteOne = req => this.service.deleteOne(req.params)
+    deleteOne = async req => {
+        await this.service.deleteOne(req.params);
+        return ValidHttpResponse.toNoContentResponse();
+    }
 }
 
 export const UserController = new Controller();

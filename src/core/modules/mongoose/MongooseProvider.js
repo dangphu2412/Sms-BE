@@ -51,14 +51,4 @@ export class MongooseProvider {
 
         if (!flag && this.#count) return this.connect();
     }
-
-    /**
-     *
-     * @param {string} name Name of schema
-     * @param {import('mongoose').SchemaOptions} config Schema configuration
-     * @returns {import('mongoose').Model<Document>} Mongoose schema
-     */
-    buildModel(name, config) {
-        return this.#mongooseInstance.model(name, config);
-    }
 }

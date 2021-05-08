@@ -1,11 +1,14 @@
 import express from 'express';
-import { OK, INTERNAL_SERVER_ERROR } from 'http-status';
 import { logger } from '../../core/modules/logger/winston';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
 import { SwaggerContentCreator } from '../swagger/rebuild/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
 import { HttpException } from '../httpException/HttpException';
-import { ERROR_CODE } from '../httpException/error.enum';
+import { AUTH_CONTEXT } from '../authModel/common/enum/authContext';
+import { UnAuthorizedException } from '../httpException';
+import { MethodRequired } from './exceptions/MethodRequired';
+import { HttpResponse } from './response/http.response';
+import { InValidHttpResponse } from './response/invalidHttp.response';
 
 export class Module {
     static logger = logger;
@@ -45,27 +48,55 @@ export class Module {
         return new Module();
     }
 
+    static #producePreAuthorizeMiddleware = (req, res, next) => {
+        if (!req[AUTH_CONTEXT.KEY_AUTH_CONTEXT]) {
+            throw new UnAuthorizedException();
+        }
+        return next();
+    }
+
+    static #produceGuard = guardClass => {
+        if (!guardClass['canActive']) {
+            throw new MethodRequired(guardClass.constructor.name, 'canActive');
+        }
+        return async (req, res, next) => {
+            const canActive = await guardClass.canActive(req);
+
+            if (!canActive) {
+                throw new UnAuthorizedException('Unauthorized');
+            }
+            return next();
+        };
+    }
+
+    static #produceInterceptor = interceptorClass => {
+        if (!interceptorClass['intercept']) {
+            throw new MethodRequired(interceptorClass.constructor.name, 'intercept');
+        }
+        return interceptorClass.intercept;
+    }
+
     #createHandler = controller => async (request, response) => {
         try {
             const data = await controller(request);
-            return response.status(OK).json({
-                status: OK,
-                data,
-            });
+            if (!(data instanceof HttpResponse)) {
+                return InValidHttpResponse
+                    .toInternalResponse(
+                        `${data.constructor.name} is not instance of HttpResponse.`
+                        + 'Should use HttpResponse to build http response'
+                    )
+                    .toResponse(response);
+            }
+            return data.toResponse(response);
         } catch (err) {
             if (err instanceof HttpException) {
-                return response.status(err.status).json({
-                    status: err.status,
-                    error: err.message,
-                    code: err.code
-                });
+                return new InValidHttpResponse(err.status, err.code, err.message)
+                    .toResponse(response);
             }
             Module.logger.error(err.message);
-            return response.status(INTERNAL_SERVER_ERROR).json({
-                status: INTERNAL_SERVER_ERROR,
-                error: err.message,
-                code: ERROR_CODE.INTERNAL
-            });
+            return InValidHttpResponse
+                .toInternalResponse(err.message)
+                .toResponse(response);
         }
     }
 
@@ -113,7 +144,8 @@ export class Module {
             route,
             controller,
             method,
-            middlewares,
+            interceptors,
+            guards,
             preAuthorization,
             description,
             model?:any,
@@ -122,21 +154,31 @@ export class Module {
      } apis
      */
     register(apis) {
-        Module.logger.info(`🌶🌶🌶 [${this.#prefix.module}] is bundling 🌶🌶🌶`);
+        Module.logger.info(`[${this.#prefix.module}] is bundling`);
 
         apis.forEach(api => {
             const {
-                /**
-                 * @author dangphu2412
-                 * Currently i will turn this lint off because we still not dev preauthorize
-                 * @requires remove it whenever we finish
-                 */
-                // eslint-disable-next-line no-unused-vars
-                route, controller, method, middlewares = [], preAuthorization
+                route, controller, method, preAuthorization, interceptors, guards
             } = api;
+            const middlewares = [];
+            if (preAuthorization) {
+                middlewares.push(Module.#producePreAuthorizeMiddleware);
+            }
+
+            if (interceptors?.length > 0) {
+                interceptors.forEach(interceptor => {
+                    middlewares.push(Module.#produceInterceptor(interceptor));
+                });
+            }
+
+            if (guards?.length > 0) {
+                guards.forEach(guard => {
+                    middlewares.push(Module.#produceGuard(guard));
+                });
+            }
             this.#router[method](route, ...middlewares, this.#createHandler(controller));
 
-            Module.logger.info(`🌶🌶🌶 [${this.#prefix.module}] ${method} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);
+            Module.logger.info(`[${this.#prefix.module}] ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);
 
             this.#addSwaggerContent(api);
         });

@@ -10,6 +10,7 @@
     "clean": "rm -rf dist && mkdir dist",
     "build:babel": "babel ./src --out-dir dist --copy-files",
     "build": "yarn run clean && yarn run build:babel",
+    "seed": "babel-node ./src/core/database/seed",
     "heroku-postbuild": "yarn install && yarn migrate:reset && yarn run build"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "http-status": "^1.5.0",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
     "method-override": "^3.0.0",
     "mongoose": "^5.12.3",
     "swagger-ui-express": "^4.1.6",
@@ -56,10 +58,12 @@
     "@babel/register": "^7.10.5",
     "@babel/runtime": "^7.10.4",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "eslint": "^7.3.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
+    "faker": "^5.5.3",
     "husky": "^4.3.8",
     "nodemon": "^2.0.7"
   }

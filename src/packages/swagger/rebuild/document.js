@@ -50,10 +50,10 @@ export class SwaggerDocument {
      * @param {
         {
             type: 'string' | 'int' | 'dateTime' | 'bool' | 'array' | 'enum' | 'model' | {(type: string): any},
-            model: string,
+            model?: string,
             required?: boolean,
             readOnly?:boolean,
-            description: string
+            description?: string
         }
      * } options
      * @returns {*&{description: string, readOnly: boolean, required: boolean}}

@@ -1,25 +1,32 @@
-import { UserModel } from '../../user/model/userModel';
-import { BcryptService } from '../bcrypt';
-import { JwtSingleton } from '../jwt';
+import { UserRepository } from '../../user/repository/user.repository';
+import { BcryptService } from './bcrypt.service';
+import { JwtService } from './jwt.service';
 import { JwtPayload } from '../dto/index';
 import { UnAuthorizedException } from '../../../../packages/httpException';
+import { UserDataService } from '../../user/service/userData.service';
 
 class Service {
     constructor() {
         this.bcrypt = BcryptService;
-        this.jwt = JwtSingleton;
+        this.jwtService = JwtService;
+        this.userRepository = UserRepository;
+        this.userDataService = UserDataService;
     }
 
+  /**
+   *
+   * @param {LoginDtoDef} loginDto
+   * @returns {Promise<LoginResponseDef>}
+   */
     async login(loginDto) {
-        const userData = await UserModel.findOne({ email: loginDto.email });
-        if (!userData) {
-            throw new UnAuthorizedException('Username or password is incorrect');
+        const user = await this.userRepository.getAvailableByEmail(loginDto.email);
+        if (user && this.bcrypt.compare(loginDto.password, user.password)) {
+            return {
+              user: this.userDataService.getUserInfo(user),
+              accessToken: this.jwtService.sign(JwtPayload(user))
+            };
         }
-        const isInvalidPassword = !this.bcrypt.compare(loginDto.password, userData.password);
-        if (isInvalidPassword) {
-            throw new UnAuthorizedException('Username or password is incorrect');
-        }
-        return this.jwt.sign(JwtPayload(userData));
+        throw new UnAuthorizedException('Email or password is incorrect');
     }
 }
 

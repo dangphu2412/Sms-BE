@@ -15,7 +15,7 @@ export class PaginationFactory {
     static DEFAULT_SIZE = null;
 
     constructor() {
-        PaginationFactory.logger.info(`${PaginationFactory.name} factory is built`);
+        PaginationFactory.logger.info(`[${PaginationFactory.name}] is building`);
     }
 
     produce(req) {
@@ -34,7 +34,7 @@ export class PaginationFactory {
 
         if (Number.isNaN(parsedSize)) {
             parsedSize = PaginationFactory.DEFAULT_SIZE;
-        } else if (parsedPage > PaginationFactory.MAX_SIZE) {
+        } else if (parsedSize > PaginationFactory.MAX_SIZE) {
             throw new BadRequestException('Size reach max');
         }
 

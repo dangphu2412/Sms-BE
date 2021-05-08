@@ -34,7 +34,7 @@ export class Pageable {
 
     /**
      *
-     * @param {import('./PageableMeta').PageableMeta} meta
+     * @param {{totalPage: number, currentPage, totalRecord, currentSize}} meta
      * @returns {Pageable}
      */
     addMeta(meta) {

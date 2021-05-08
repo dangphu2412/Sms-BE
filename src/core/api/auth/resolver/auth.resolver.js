@@ -1,6 +1,6 @@
 import { Module } from '../../../../packages/handler/Module';
 import { AuthController } from '../controller/auth.controller';
-import { UserValidator } from '../../../modules/user/validator/user.validator';
+import { LoginInterceptor } from '../../../modules/auth/validator/login.interceptor';
 
 export const AuthResolver = Module.builder()
     .addPrefix({
@@ -12,7 +12,7 @@ export const AuthResolver = Module.builder()
         {
             route: '/',
             method: 'post',
-            middlewares: [UserValidator.validatePost()],
+            interceptors: [new LoginInterceptor()],
             controller: AuthController.login,
             body: 'LoginDto'
         }

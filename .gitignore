@@ -91,3 +91,6 @@ typings/
 .dynamodb/
 
 .idea/
+
+# Ignore data file of mongo built after Docker is up and running
+/docker/data/

@@ -1,4 +1,4 @@
-import { PORT } from '../env';
+import { HOST, PORT } from '../env';
 import { SwaggerBuilder } from '../../packages/swagger';
 
 const options = {
@@ -15,7 +15,7 @@ const options = {
     },
     servers: [
         {
-            url: `http://34.80.254.52:${PORT}/api`,
+            url: `${HOST}/api`,
             description: 'Local server',
             variables: {
                 env: {

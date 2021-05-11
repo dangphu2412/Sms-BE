@@ -3,6 +3,7 @@ import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
 import { logger } from '../../logger/winston';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
+import { UserStatus } from '../../../common/enum/userStatus.enum';
 
 class Service {
     constructor() {
@@ -75,8 +76,7 @@ class Service {
         if (user && user?.deletedAt === null) {
           throw new DuplicateException('Email is used');
         }
-
-        if (!user?.deletedAt) {
+        if (user?.status === UserStatus.SUSPEND) {
           throw new BadRequestException('This account is not available at the moment');
         }
 

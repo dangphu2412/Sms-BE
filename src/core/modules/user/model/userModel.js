@@ -14,7 +14,7 @@ const schema = new Schema({
         type: String,
         trim: true,
         minlength: 6,
-        required: [true, 'User password is empty'],
+        default: '$2a$10$EMMT7d0DBqJVGOu8xu7JSOsCWsEslAolZJfckvOFsaPJA9Vot8sKi'
     },
     fingerPrint: { type: String, default: null },
     status: {

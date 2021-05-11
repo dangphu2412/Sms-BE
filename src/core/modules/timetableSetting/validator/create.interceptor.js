@@ -5,7 +5,7 @@ export class TimetableSettingInterceptor extends BaseValidateInterceptor {
   getSchema = () => Joi.object({
       startTime: Joi.string().regex(/^([0-9]{2}):([0-9]{2})$/).required(),
       endTime: Joi.string().regex(/^([0-9]{2}):([0-9]{2})$/).required(),
-      alias: Joi.string().required(),
-      status: Joi.boolean().optional()
+      name: Joi.string().required(),
+      isActive: Joi.boolean().optional()
     })
 }

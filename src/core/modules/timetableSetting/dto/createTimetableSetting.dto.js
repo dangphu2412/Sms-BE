@@ -2,20 +2,20 @@ import { SwaggerDocument } from '../../../../packages/swagger';
 import { ApiDocument } from '../../../config/swagger';
 
 ApiDocument.addModel('TimetableSetting', {
-  alias: SwaggerDocument.ApiProperty({ type: 'string' }),
+  name: SwaggerDocument.ApiProperty({ type: 'string' }),
   startTime: SwaggerDocument.ApiProperty({ type: 'string' }),
   endTime: SwaggerDocument.ApiProperty({ type: 'string' }),
-  status: SwaggerDocument.ApiProperty({ type: 'boolean' }),
+  isActive: SwaggerDocument.ApiProperty({ type: 'boolean' }),
 });
 
 export const CreateTimetableSettingDto = ({
-  alias,
+  name,
   startTime,
   endTime,
-  status,
+  isActive,
 }) => ({
-  alias,
+  name,
   startTime,
   endTime,
-  status,
+  isActive,
 });

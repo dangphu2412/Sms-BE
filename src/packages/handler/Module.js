@@ -1,10 +1,10 @@
 import express from 'express';
+import { getUserContext } from 'packages/authModel/module/user/UserContext';
 import { logger } from '../../core/modules/logger/winston';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
 import { SwaggerContentCreator } from '../swagger/rebuild/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
 import { HttpException } from '../httpException/HttpException';
-import { AUTH_CONTEXT } from '../authModel/common/enum/authContext';
 import { UnAuthorizedException } from '../httpException';
 import { MethodRequired } from './exceptions/MethodRequired';
 import { HttpResponse } from './response/http.response';
@@ -49,8 +49,8 @@ export class Module {
     }
 
     static #producePreAuthorizeMiddleware = (req, res, next) => {
-        if (!req[AUTH_CONTEXT.KEY_AUTH_CONTEXT]) {
-            throw new UnAuthorizedException();
+        if (!getUserContext(req)) {
+            return next(new UnAuthorizedException());
         }
         return next();
     }
@@ -63,7 +63,7 @@ export class Module {
             const canActive = await guardClass.canActive(req);
 
             if (!canActive) {
-                throw new UnAuthorizedException('Unauthorized');
+                return next(new UnAuthorizedException('Unauthorized'));
             }
             return next();
         };

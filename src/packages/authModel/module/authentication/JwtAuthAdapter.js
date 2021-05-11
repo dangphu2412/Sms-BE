@@ -1,7 +1,7 @@
 import { AUTH_CONTEXT } from '../../common/enum/authContext';
 import { JwtValidator } from './JwtValidator';
-import { UserDetail } from '../user/UserDetail';
 import { InvalidInstance } from '../../exceptions/InvalidInstance';
+import { UserDetail } from '../user/UserDetail';
 
 export class JwtAuthAdapter {
     static USER_DETAIL_CLASS = UserDetail;

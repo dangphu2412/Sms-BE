@@ -26,8 +26,12 @@ export class BaseRepository {
     return this.model.estimatedDocumentCount();
   }
 
-  findOne(filter, fields = []) {
-    return this.model.findOne(filter, fields).exec();
+  find(query = {}, fields = []) {
+    return this.model.find(query).select(fields).exec();
+  }
+
+  findOne(condition, fields = []) {
+    return this.model.findOne(condition, fields).exec();
   }
 
   findById(id, fields = []) {

@@ -1,21 +1,45 @@
-version: '3.7'
+version: '3.8'
 services:
-  db:
-      image: postgres
-      environment: 
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: blog
-      volumes: [/pgdata:/var/lib/postgresql/data]
-      ports: 
-        - '5432:5432'
-  app:
-    container_name: node-psql
-    depends_on: 
-      - db
-    volumes: ['./:/usr/src/app']
-    restart: always
-    build: .
+  nginx:
+    container_name: sms-nginx
+    image: nginx
+    build:
+      context: ./docker/nginx
     ports:
-      - '8080:3000'
+      - "8080:80"
+    networks:
+      - nginx
+      - backend
+  mongo:
+    container_name: sms-mongo
+    image: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes: 
+      - ./docker/data:/data/db
+    networks:
+      - backend
+  backend:
+    container_name: sms-be
+    image: sms/be
+    build: 
+      context: .
+    restart: always
+    ports:
+      - '3000:3000'
     env_file: .env
-  
+    depends_on: 
+      - mongo
+    volumes: 
+      - './:/usr/app'
+    links:
+      - mongo
+    networks:
+      - backend
+
+networks:
+  nginx:
+  backend:
+volumes: 
+  data:

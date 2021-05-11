@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import { InvalidResolver, InvalidFilter } from 'core/common/exceptions/system';
 import { logger } from '../modules/logger/winston';
 import { DatabaseInstance } from './database';
-import { CORS_ALLOW } from '../env';
+import { CORS_ALLOW, NODE_ENV } from '../env';
 
 /**
  * @typedef Filter
@@ -14,8 +14,6 @@ import { CORS_ALLOW } from '../env';
  */
 
 export class AppBundle {
-    #swaggerBuilder;
-
     static logger = logger;
 
     BASE_PATH = '/api';
@@ -60,7 +58,14 @@ export class AppBundle {
     }
 
     applySwagger(swaggerBuilder) {
-        this.#swaggerBuilder = swaggerBuilder;
+        if (NODE_ENV !== 'production') {
+            this.app.use(
+                this.BASE_PATH_SWAGGER,
+                swaggerUi.serve,
+                swaggerUi.setup(swaggerBuilder.instance)
+            );
+            AppBundle.logger.info('Building swagger');
+        }
         return this;
     }
 
@@ -68,6 +73,7 @@ export class AppBundle {
      * Default config
      */
     init() {
+        AppBundle.logger.info(`Application is in mode ${NODE_ENV}`);
         /**
          * Setup basic express
          */
@@ -95,6 +101,7 @@ export class AppBundle {
             }),
         );
         AppBundle.logger.info('Building initial config');
+
         return this;
     }
 
@@ -103,12 +110,6 @@ export class AppBundle {
      */
     async run() {
         AppBundle.logger.info('Building asynchronous config');
-        this.app.use(
-            this.BASE_PATH_SWAGGER,
-            swaggerUi.serve,
-            swaggerUi.setup(this.#swaggerBuilder.instance)
-        );
-        AppBundle.logger.info('Building swagger');
         await DatabaseInstance.connect();
     }
 }

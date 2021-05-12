@@ -6,12 +6,12 @@
   "scripts": {
     "lint": "eslint --fix --ext .js .",
     "dev": "nodemon --exec babel-node src/core/bin/www.js",
-    "start": "npm run build && node ./dist/core/bin/www.js",
+    "start": "node ./dist/core/bin/www.js",
     "clean": "rm -rf dist && mkdir dist",
     "build:babel": "babel ./src --out-dir dist --copy-files",
-    "build": "yarn run clean && yarn run build:babel",
+    "build": "npm run clean && npm run build:babel",
     "seed": "babel-node ./src/core/database/seed",
-    "heroku-postbuild": "yarn install && yarn migrate:reset && yarn run build"
+    "heroku-postbuild": "npm install && npm run build"
   },
   "repository": {
     "type": "git",

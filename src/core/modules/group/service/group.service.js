@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { GroupModel } from '../model/groupModel';
-import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
+import { DuplicateException, NotFoundException, BadRequestException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
 import { logger } from '../../logger/winston';
+import { ResponseTransformer } from './helper/responseTransformer';
 
 class Service {
     constructor() {
@@ -79,7 +79,7 @@ class Service {
             }
         }
         try {
-            insertedGroup = await GroupModel.create(groupDto);
+            insertedGroup = await this.groupRepository.create(groupDto);
             if (insertedGroup.childIds.length > 0) {
                 insertedGroup.childIds.forEach(async childId => {
                     const childGroup = await this.groupRepository.findById(childId, ['parentId']);
@@ -100,8 +100,8 @@ class Service {
         return { _id: insertedGroup._id };
     }
 
-    findAll(reqTransformed) {
-        const queryBuilder = this.groupRepository.model.find();
+    async findAll(reqTransformed) {
+        const queryBuilder = await this.groupRepository.model.find();
         const filterDocument = {};
 
         reqTransformed.filters.forEach(filter => {
@@ -134,10 +134,25 @@ class Service {
             .exec();
     }
 
-    count() {
-        return GroupModel.countDocuments({}).exec();
-    }
+    async findOne({ id }, { type }) {
+        if (type !== 'general' && type !== 'detail') {
+          throw new BadRequestException('Query type is not valid');
+        }
+        const group = await this.groupRepository.findDetailById(id);
+        if (!group) {
+          throw new NotFoundException('Group not found');
+        }
+        if (group.deletedAt) {
+          throw new NotFoundException('This group has been deleted');
+        }
+        const res = new ResponseTransformer(group);
+        if (type === 'detail') {
+          return res.detailCase();
+        }
+        if (type === 'general') {
+          return res.generalCase();
+        }
+      }
 }
 
 export const GroupService = new Service();
-

@@ -21,6 +21,13 @@ export const GroupResolver = Module.builder()
             // preAuthorization: true
         },
         {
+            route: '/',
+            method: 'get',
+            params: ApiFilterSwagger,
+            controller: GroupController.findAll,
+            // preAuthorization: true
+        },
+        {
             route: '/:id',
             method: 'get',
             params: [ObjectId],

@@ -1,5 +1,4 @@
-import { Schema } from 'mongoose';
-import { DatabaseInstance } from '../../../config/database';
+import { Schema, model } from 'mongoose';
 
 const schema = new Schema({
     name: {
@@ -37,5 +36,4 @@ schema.pre('save', function onSave(next) {
     return next();
 });
 
-export const GroupModel = DatabaseInstance
-    .buildModel('groups', schema);
+export const GroupModel = model('groups', schema);

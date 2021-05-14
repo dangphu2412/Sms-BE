@@ -101,14 +101,14 @@ class Service {
 
     // TODO: Update user in the future
     async patchOne({ id }, { email, password, roles }) {
-      const user = await this.userRepository.findById(id);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      user.email = email ?? user.email;
-      user.password = password ?? user.password;
-      user.roles = roles ?? user.roles;
-      return user.save();
+        const user = await this.userRepository.findById(id);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        user.email = email ?? user.email;
+        user.password = password ?? user.password;
+        user.roles = roles ?? user.roles;
+        return user.save();
     }
 
     // TODO: Update delete user in the future
@@ -117,7 +117,7 @@ class Service {
         try {
             user = await this.userRepository.findByIdAndDelete(id);
         } catch (e) {
-          this.logger.error(e.message);
+            this.logger.error(e.message);
         }
         if (!user) {
             throw new NotFoundException('User not found');

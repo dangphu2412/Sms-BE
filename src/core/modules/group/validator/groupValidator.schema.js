@@ -6,6 +6,6 @@ export const createGroupSchema = Joi.object({
     description: SchemaBuilder.getOptionalStringBuilder(),
     childIds: Joi.array().items(SchemaBuilder.getIdObjectBuilder()).unique().optional(),
     parentId: SchemaBuilder.getIdObjectBuilder().optional(),
-    leaderId: SchemaBuilder.getIdObjectBuilder(),
+    leaderId: SchemaBuilder.getIdObjectBuilder().required(),
     userIds: Joi.array().items(SchemaBuilder.getIdObjectBuilder()).unique().optional()
 });

@@ -1,3 +1,4 @@
+import { authorization } from 'core/config/authorization';
 import { UserRepository } from '../../user/repository/user.repository';
 import { BcryptService } from './bcrypt.service';
 import { JwtService } from './jwt.service';
@@ -28,6 +29,26 @@ class Service {
             };
         }
         throw new UnAuthorizedException('Email or password is incorrect');
+    }
+
+    async testAuthorization() {
+        const validator = authorization
+            .buildValidator();
+
+            await validator
+                .addParams({
+                    authContext: 'authContext',
+                    something: 2
+                })
+                .addRules('TEST_AUTHORIZATION')
+                .validate();
+
+        /**
+         * This method can retrieve local variable from
+         * authorization store
+         */
+        // eslint-disable-next-line no-unused-vars
+        const local = validator.getFromStore('local');
     }
 }
 

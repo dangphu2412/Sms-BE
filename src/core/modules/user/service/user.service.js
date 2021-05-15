@@ -124,6 +124,32 @@ class Service {
         }
         return user;
     }
+
+    /**
+     * This function is built for testing
+     * authorization purpose
+     *
+     * You can log here to check data called
+     *
+     * TODO: remove in the future
+     */
+    mustBeAuthor = async () => {
+        const data = await this.userRepository.count();
+        return data;
+    }
+
+    /**
+     * This function is built for testing
+     * authorization purpose
+     *
+     * You can log here for checking parameters
+     *
+     * TODO: remove in the future
+     */
+    // eslint-disable-next-line no-unused-vars
+    isRoleAdmin(authContext, something) {
+        return true;
+    }
 }
 
 export const UserService = new Service();

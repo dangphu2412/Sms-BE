@@ -15,5 +15,14 @@ export const AuthResolver = Module.builder()
             interceptors: [new LoginInterceptor()],
             controller: AuthController.login,
             body: 'LoginDto'
+        },
+        /**
+         * This route is built for testing authorization
+         * TODO: Remove in the future
+         */
+        {
+            route: '/authorization/test',
+            method: 'get',
+            controller: AuthController.testAuthorization
         }
     ]);

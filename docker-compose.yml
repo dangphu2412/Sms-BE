@@ -31,8 +31,6 @@ services:
     env_file: .env
     depends_on: 
       - mongo
-    volumes: 
-      - './:/usr/app'
     links:
       - mongo
     networks:

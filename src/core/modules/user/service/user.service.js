@@ -4,6 +4,7 @@ import { UserRepository } from '../repository/user.repository';
 import { logger } from '../../logger/winston';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
 import { UserStatus } from '../../../common/enum/userStatus.enum';
+import { toDateTime } from '../../../utils/timeConvert';
 
 class Service {
     constructor() {
@@ -79,7 +80,10 @@ class Service {
         if (user?.status === UserStatus.SUSPEND) {
           throw new BadRequestException('This account is not available at the moment');
         }
-
+        const userProfile = data.profile;
+        if (!toDateTime(userProfile?.birthday)) {
+            throw new BadRequestException('Invalid birthday datetime type');
+        }
         data.password = this.bcrypt.hash(data.password);
 
         try {

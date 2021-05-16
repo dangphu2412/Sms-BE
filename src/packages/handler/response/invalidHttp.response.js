@@ -24,7 +24,7 @@ export class InValidHttpResponse extends HttpResponse {
         return new InValidHttpResponse(NOT_FOUND, ERROR_CODE.NOT_FOUND, msg);
     }
 
-    static toBadRequestResponse(msg) {
-        return new InValidHttpResponse(BAD_REQUEST, ERROR_CODE.BAD_REQUEST, msg);
+    static toBadRequestResponse(msg, detail) {
+        return new InValidHttpResponse(BAD_REQUEST, ERROR_CODE.BAD_REQUEST, msg, detail);
     }
 }

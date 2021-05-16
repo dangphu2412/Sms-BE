@@ -1,38 +1,56 @@
+import { logger } from 'core/utils';
 import multer from 'multer';
 import path from 'path';
-import { InternalServerException } from '../../packages/httpException';
+import { BadRequestException } from '../../packages/httpException';
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(`${process.cwd()}/src/core/uploads`));
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+class MulterHandler {
+    #DESTINATION_PATH;
+
+    #uploadConfig;
+
+    constructor() {
+        logger.info(`[${MulterHandler.name}] is building`);
+        this.#DESTINATION_PATH = path.join(`${process.cwd()}/src/core/uploads`);
+        this.init();
     }
-});
 
-const upload = multer({
-    storage,
-    fileFilter: (req, file, cb) => {
-        const allowedExt = ['.xlsx'];
-        if (!allowedExt.includes(path.extname(file.originalname))) return cb(new InternalServerException(400, 'File type not allowed'));
-        return cb(null, true);
-    },
-});
-
-/**
- *
- * @param {*} keyName : Request key name
- * @param {*} isMany : Is it a many upload request ?
- * @param {*} numberOfFile : Maximum file
- * @returns
- */
-export const uploadMulter = (keyName, isMany, numberOfFile) => {
-    let uploadHandler;
-    if (isMany) {
-      uploadHandler = upload.array(keyName, numberOfFile);
-    } else {
-      uploadHandler = upload.single(keyName);
+    init() {
+        const storage = this.getConfigedStorage();
+        this.#uploadConfig = this.getConfigedUpload(storage);
     }
-    return uploadHandler;
-  };
+
+    getConfigedUpload(storage) {
+        return multer({
+            storage,
+            fileFilter: (req, file, cb) => {
+                const ALLOWED_EXT = ['.xlsx'];
+                if (!ALLOWED_EXT.includes(path.extname(file.originalname))) return cb(new BadRequestException(400, 'File type not allowed'));
+                return cb(null, true);
+            },
+        });
+    }
+
+    getConfigedStorage() {
+        return multer.diskStorage({
+            destination: (req, file, cb) => {
+                cb(null, this.#DESTINATION_PATH);
+            },
+            filename: (req, file, cb) => {
+                cb(null, this.getFileName(file));
+            }
+        });
+    }
+
+    getFileName(file) {
+        return `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`;
+    }
+
+    getHandler(keyName, numberOfFile = 1) {
+        if (numberOfFile > 1) {
+            return this.#uploadConfig.array(keyName, numberOfFile);
+          }
+              return this.#uploadConfig.single(keyName);
+    }
+}
+
+export const multerHandler = new MulterHandler();

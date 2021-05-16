@@ -25,11 +25,7 @@ class Repository extends BaseRepository {
       { timestamps: true });
   }
 
-  createMany(payload) {
-    return this.model.insertMany(payload);
-  }
-
-  getExistedEmail(emails) {
+  getAvailableByEmails(emails) {
     return this.model.find({ email: { $in: emails } }, 'email');
   }
 }

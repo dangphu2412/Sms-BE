@@ -10,7 +10,7 @@ export const ExcelResolver = Module.builder()
     })
     .register([
         {
-            route: '/',
+            route: '/users',
             method: 'post',
             interceptors: [new MulterInterceptor()],
             controller: ExcelController.uploadOne,

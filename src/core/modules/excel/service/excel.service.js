@@ -1,10 +1,11 @@
 import xlsx from 'xlsx';
-import { DuplicateException, InternalServerException } from 'packages/httpException';
+import { InternalServerException } from 'packages/httpException';
 import { logger } from '../../logger/winston';
 import { UserRepository } from '../../user/repository/user.repository';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
 import { deleteFile } from '../../../utils/systemFile';
 import { toTimestamp } from '../../../utils/timeConvert';
+import { InValidHttpResponse } from '../../../../packages/handler/response/invalidHttp.response';
 
 class Service {
   constructor() {
@@ -24,10 +25,20 @@ class Service {
 
     const parsedUser = [];
     const emailList = [];
+    const errorDetail = {};
 
     // convert to Database name
     if (rawData.length > 1) {
       rawData.forEach(user => {
+        // validate dateTime type
+        const birthday = toTimestamp(user['Ngày sinh']);
+        if (Number.isNaN(birthday) || null) {
+          if (!errorDetail['datetime']) {
+            errorDetail['datetime'] = [];
+          }
+          errorDetail['datetime'].push(user['Email']);
+        }
+
         emailList.push(user['Email']);
         parsedUser.push({
           email: user['Email'],
@@ -45,7 +56,7 @@ class Service {
     let existedEmails;
     try {
       const chunkSize = 100;
-      existedEmails = await this.userRepository.getExistedEmail(emailList);
+      existedEmails = await this.userRepository.getAvailableByEmails(emailList);
       existedEmails = existedEmails.map(element => element.email);
       let payload = [];
       for (let i = 0; i < parsedUser.length; i += 1) {
@@ -66,7 +77,11 @@ class Service {
     }
 
     if (existedEmails.length > 0) {
-      throw new DuplicateException(`These emails are existed:  ${existedEmails}`);
+      errorDetail['email'] = existedEmails;
+    }
+
+    if (errorDetail.email || errorDetail.datetime) {
+      return InValidHttpResponse.toBadRequestResponse('These users have invalid birthday or unavailable email', errorDetail);
     }
   }
 }

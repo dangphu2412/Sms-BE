@@ -1,7 +1,6 @@
 import { logger } from 'core/modules/logger/winston';
 import { InternalServerException } from 'packages/httpException';
-
-const fs = require('fs');
+import fs from 'fs';
 
 export const deleteFile = filePath => {
     fs.unlink(filePath, err => {
@@ -11,8 +10,3 @@ export const deleteFile = filePath => {
         }
     });
 };
-
-export const toTimestamp = strDate => {
-    const datum = Date.parse(strDate);
-    return datum / 1000;
-   };

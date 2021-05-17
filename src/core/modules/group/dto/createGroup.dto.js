@@ -5,19 +5,17 @@ ApiDocument.addModel('CreateGroupDto',
         {
                 name: SwaggerDocument.ApiProperty({ type: 'string' }),
                 description: SwaggerDocument.ApiProperty({ type: 'string' }),
-                childIds: SwaggerDocument.ApiProperty({ type: 'array' }),
                 parentId: SwaggerDocument.ApiProperty({ type: 'string' }),
                 leaderId: SwaggerDocument.ApiProperty({ type: 'string' }),
-                userIds: SwaggerDocument.ApiProperty({ type: 'array' })
+                memberIds: SwaggerDocument.ApiProperty({ type: 'array' })
         });
 
 export const CreateGroupDto = body => (
         {
                 name: body.name,
                 leaderId: body.leaderId,
-                description: body?.description,
-                childIds: body?.childIds ?? [],
-                parentId: body?.parentId ?? null,
-                userIds: body?.userIds ?? [],
+                description: body.description ?? '',
+                parentId: body.parentId,
+                memberIds: body.memberIds ?? [],
         }
 );

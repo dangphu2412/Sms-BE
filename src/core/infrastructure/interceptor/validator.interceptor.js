@@ -1,6 +1,4 @@
-import { BAD_REQUEST } from 'http-status';
-import { ERROR_CODE } from 'packages/httpException/error.enum';
-import { InValidHttpResponse } from 'packages/handler/response/invalidHttp.response';
+import { responseJoiError } from 'core/utils';
 
 export class BaseValidateInterceptor {
   /**
@@ -36,15 +34,7 @@ export class BaseValidateInterceptor {
       await this.validation();
       return next();
     } catch (error) {
-      return new InValidHttpResponse(
-        BAD_REQUEST,
-        ERROR_CODE.BAD_REQUEST,
-        'Bad request',
-        error.details?.map(detail => ({
-          type: detail.type,
-          message: detail.message,
-        }))
-      ).toResponse(res);
+      return responseJoiError(error);
     }
   };
 

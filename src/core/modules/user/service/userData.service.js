@@ -8,7 +8,7 @@ class Service {
    * @returns {UserInformation}
    */
     getUserInfo(user) {
-        return pick(user, ['_id', 'email', 'profile', 'roles', 'status']);
+        return pick(user, ['_id', 'email', 'profile', 'roles', 'avatar', 'status']);
     }
 }
 

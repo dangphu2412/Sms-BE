@@ -10,25 +10,28 @@ class Controller {
         this.service = GroupService;
     }
 
-    createOne = req => this.service.createOne(CreateGroupDto(req.body))
+    createOne = async req => {
+        const data = await this.service.createOne(CreateGroupDto(req.body));
+        return ValidHttpResponse.toCreatedResponse(data);
+    }
 
     findAll = async req => {
-        const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
-        const data = await this.service.findAll(reqTransformed.translate());
-        const count = await this.service.count();
-        return Pageable.of(data)
-            .addMeta(
-                PageableMeta
-                    .builder()
-                    .appendRequestFormation(reqTransformed)
-                    .appendTotalRecord(count)
-                    .build()
-            )
-            .build();
+      const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
+      const data = await this.service.findAll(reqTransformed.translate());
+      const pagedData = Pageable.of(data[0])
+        .addMeta(
+          PageableMeta
+            .builder()
+            .appendRequestFormation(reqTransformed)
+            .appendTotalRecord(data[1])
+            .build()
+        )
+        .build();
+      return ValidHttpResponse.toOkResponse(pagedData);
     }
 
     findOne = async req => {
-        const data = await this.service.findOne(req.params, req.query);
+        const data = await this.service.findOne(req.params.id, req.query.type);
         return ValidHttpResponse.toOkResponse(data);
     }
 }

@@ -1,45 +1,50 @@
 import { BaseRepository } from '../../../infrastructure/repository';
 import { GroupModel } from '../model/groupModel';
-import { UserModel } from '../../user/model/userModel';
 
 class Repository extends BaseRepository {
     constructor() {
         super(GroupModel);
     }
 
-    findGroupByName(name) {
-        return this.model.find({ name }).select('_id deletedAt');
+    findByName(name, fields = '') {
+        return this.model.findOne({ name }).select(fields);
     }
 
-    findGroupById(reqGroupIds) {
-        return this.model.find({ _id: { $in: reqGroupIds } }).select('_id deletedAt');
+    getGeneralById(id) {
+        return this.model.findById(id, '_id name')
+            .populate({
+                path: 'childs',
+                match: { deletedAt: { $eq: null } },
+                select: '_id name'
+            })
+            .populate({
+                path: 'members',
+                match: { deletedAt: { $eq: null } },
+                select: '_id profile.firstName profile.lastName avatar'
+            })
+            .populate({
+                path: 'leader',
+                match: { deletedAt: { $eq: null } },
+                select: '_id profile.firstName profile.lastName avatar'
+            });
     }
 
-    findUserById(reqUserIds) {
-        return UserModel.find({ _id: { $in: reqUserIds } }).select('_id deletedAt');
-    }
-
-    findDetailById(id) {
+    getDetailById(id) {
         return this.model.findById(id)
             .populate({
-                path: 'childIds',
+                path: 'childs',
                 match: { deletedAt: { $eq: null } },
-                select: '_id name userIds',
+                select: '_id name members',
                 populate: {
-                    path: 'userIds',
+                    path: 'members',
                     match: { deletedAt: { $eq: null } },
-                    select: '_id profile.firstName profile.lastName profile.phone'
+                    select: '_id profile.firstName profile.lastName profile.phone avatar'
                 }
             })
             .populate({
-                path: 'userIds',
+                path: 'leader',
                 match: { deletedAt: { $eq: null } },
-                select: '_id profile.firstName profile.lastName'
-            })
-            .populate({
-                path: 'leaderId',
-                match: { deletedAt: { $eq: null } },
-                select: '_id profile.firstName profile.lastName'
+                select: '_id profile.firstName profile.lastName avatar'
             });
     }
 }

@@ -1,89 +1,34 @@
-/* eslint-disable max-len */
-import { DuplicateException, NotFoundException, BadRequestException } from '../../../../packages/httpException';
+import { GroupFetchCase } from 'core/common/enum/groupFetchCase';
+import { DuplicateException, BadRequestException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
 import { logger } from '../../logger/winston';
-import { ResponseTransformer } from './helper/responseTransformer';
+import { Optional } from '../../../utils/optional';
+import { CreateGroupValidator } from '../validator/createGroup.validator';
+import { GroupDataService } from './groupData.service';
 
 class Service {
     constructor() {
         this.logger = logger;
+        this.groupDataService = GroupDataService;
         this.groupRepository = GroupRepository;
     }
 
     async createOne(groupDto) {
         let createdGroup;
-        const existedGroup = await this.groupRepository.findGroupByName(groupDto.name);
-        if (existedGroup.length > 0 && existedGroup[0].deletedAt == null) {
-            throw new DuplicateException(`Group ${groupDto.name} is already existed`);
-        }
 
-        if (groupDto.childIds.length > 0) {
-            const groupChilds = await this.groupRepository.findGroupById(groupDto.childIds);
-            const checkGroupId = groupDto.childIds.map(groupId => groupChilds.some(group => `${group._id}` === groupId));
-            /* checkGroupId return a mapping array of groupDto.childIds
-            to show if groupId in groupDto.childIds is existed in groupChild.
-            Ex: [false, true, false, false, false, true] */
+        Optional
+            .of(await this.groupRepository.findByName(groupDto.name, '_id deletedAt'))
+            .throwIfPresent(new DuplicateException(`Group ${groupDto.name} is already existed`));
 
-            checkGroupId.forEach((isIdAvailable, index) => {
-                if (!isIdAvailable) {
-                    throw new NotFoundException(`group with ID: ${groupDto.childIds[index]} not found for childs`);
-                }
-            });
-            groupChilds.forEach(group => {
-                if (group.deletedAt) {
-                    throw new NotFoundException(`group with ID: ${group._id} has been deleted`);
-                }
-            });
-        }
-
-        if (groupDto.parentId) {
-            const groupParent = await this.groupRepository.findGroupById(groupDto.parentId);
-            if (groupParent.length <= 0) {
-                throw new NotFoundException(`group with ID: ${groupDto.parentId} not found for parent`);
-            } else if (groupParent[0].deletedAt) {
-                throw new NotFoundException(`group with ID: ${groupDto.parentId} has been deleted`);
-            }
-        }
-
-        if (groupDto.userIds.length > 0) {
-            const users = await this.groupRepository.findUserById(groupDto.userIds);
-            const checkUserId = groupDto.userIds.map(userId => users.some(user => `${user._id}` === userId));
-            checkUserId.forEach((isIdAvailable, index) => {
-                if (!isIdAvailable) {
-                    throw new NotFoundException(`user with ID: ${groupDto.userIds[index]} not found for users`);
-                }
-            });
-            users.forEach(user => {
-                if (user.deletedAt) {
-                    throw new NotFoundException(`user with ID: ${user._id} has been deleted`);
-                }
-            });
-        }
-
-        if (groupDto.leaderId) {
-            const leader = await this.groupRepository.findUserById(groupDto.leaderId);
-            if (leader.length <= 0) {
-                throw new NotFoundException(`user with ID: ${groupDto.leaderId} not found for leader`);
-            } else if (leader[0].deletedAt) {
-                throw new NotFoundException(`user with ID: ${leader[0]._id} has been deleted`);
-            }
-        }
+        await new CreateGroupValidator(groupDto).validate();
 
         try {
-            createdGroup = await this.groupRepository.create(groupDto);
-            if (createdGroup.childIds.length > 0) {
-                createdGroup.childIds.forEach(async childId => {
-                    const childGroup = await this.groupRepository.findById(childId, ['parentId']);
-                    childGroup.parentId = createdGroup._id ?? null;
-                    childGroup.save();
-                });
-            }
-            if (createdGroup.parentId) {
-                const parentGroup = await this.groupRepository.findById(createdGroup.parentId, ['childIds']);
-                if (!parentGroup.childIds.includes(createdGroup._id)) {
-                    parentGroup.childIds.push(createdGroup._id);
-                    parentGroup.save();
-                }
+            createdGroup = await this.groupRepository.create(
+              this.groupDataService.mapCreateDtoToModel(groupDto)
+            );
+
+            if (groupDto.parentId) {
+                await this.#updateChildInParent(createdGroup._id, groupDto.parentId);
             }
         } catch (error) {
             this.logger.error(error.message);
@@ -92,15 +37,21 @@ class Service {
     }
 
     async findAll(reqTransformed) {
-        const queryBuilder = await this.groupRepository.model.find();
+        const findBuilder = this.groupRepository.model.find();
+        const countBuilder = this.groupRepository.model.find();
         const filterDocument = {};
+        const sortDocument = {};
 
         reqTransformed.filters.forEach(filter => {
             if (!filterDocument[filter.column]) {
-                filterDocument[filter.column] = {};
+              filterDocument[filter.column] = {};
             }
 
             filterDocument[filter.column][filter.sign] = filter.value;
+        });
+
+        reqTransformed.sorts.forEach(sortItem => {
+            sortDocument[sortItem.sort] = sortItem.order;
         });
 
         if (reqTransformed.search) {
@@ -116,34 +67,44 @@ class Service {
                 obj[searchField] = searchRegex;
                 searchObj['$or'].push(obj);
             });
-            queryBuilder.find(searchObj);
+            findBuilder.find(searchObj);
+            countBuilder.find(searchObj);
         }
-        queryBuilder.find(filterDocument);
-        return queryBuilder
-            .limit(reqTransformed.pagination.size)
-            .skip(reqTransformed.pagination.offset)
-            .exec();
+
+        findBuilder.find(filterDocument);
+        findBuilder.sort(sortDocument);
+
+        countBuilder.find(filterDocument);
+        countBuilder.sort(sortDocument);
+        const groups = findBuilder
+          .limit(reqTransformed.pagination.size)
+          .skip(reqTransformed.pagination.offset);
+
+        const count = countBuilder.countDocuments();
+        return Promise.all([
+          groups,
+          count
+        ]);
     }
 
-    async findOne({ id }, { type }) {
-        if (type !== 'general' && type !== 'detail') {
-          throw new BadRequestException('Query type is not valid');
+    async findOne(id, type) {
+        switch (type) {
+          case GroupFetchCase.GENERAL:
+            return this.groupRepository.getGeneralById(id);
+          case GroupFetchCase.DETAIL:
+            return this.groupRepository.getDetailById(id);
+          default:
+            throw new BadRequestException('Unsupported type');
         }
-        const group = await this.groupRepository.findDetailById(id);
-        if (!group) {
-          throw new NotFoundException('Group not found');
-        }
-        if (group.deletedAt) {
-          throw new NotFoundException('This group has been deleted');
-        }
-        const res = new ResponseTransformer(group);
-        if (type === 'detail') {
-          return res.detailCase();
-        }
-        if (type === 'general') {
-          return res.generalCase();
-        }
-      }
+    }
+
+    #updateChildInParent = async (groupId, parentId) => {
+        const parentGroup = await this.groupRepository.findById(parentId, '_id childs');
+
+        parentGroup.childs.push(groupId);
+
+        return parentGroup.save();
+    }
 }
 
 export const GroupService = new Service();

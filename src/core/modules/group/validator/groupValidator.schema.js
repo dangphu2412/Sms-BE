@@ -1,11 +1,10 @@
+import { SchemaValidatorBuilder } from 'core/utils/schema.builder';
 import Joi from 'joi';
-import { SchemaBuilder } from '../../interceptor/schemaBuilder/schema.builder';
 
 export const createGroupSchema = Joi.object({
     name: Joi.string().min(0).required(),
-    description: SchemaBuilder.getOptionalStringBuilder(),
-    childIds: Joi.array().items(SchemaBuilder.getIdObjectBuilder()).unique().optional(),
-    parentId: SchemaBuilder.getIdObjectBuilder().optional(),
-    leaderId: SchemaBuilder.getIdObjectBuilder().required(),
-    userIds: Joi.array().items(SchemaBuilder.getIdObjectBuilder()).unique().optional()
+    description: SchemaValidatorBuilder.getOptionalStringBuilder(),
+    parentId: SchemaValidatorBuilder.getIdObjectBuilder().optional(),
+    leaderId: SchemaValidatorBuilder.getIdObjectBuilder().required(),
+    memberIds: Joi.array().items(SchemaValidatorBuilder.getIdObjectBuilder()).unique().optional()
 });

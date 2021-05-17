@@ -14,6 +14,7 @@ export const TimetableResolver = Module.builder()
             method: 'post',
             interceptors: [new CreateTimetableInterceptor()],
             controller: TimetableController.createTimetable,
+            body: 'CreateTimetableDtos',
             preAuthorization: true
         }
     ]);

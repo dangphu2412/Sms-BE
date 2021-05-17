@@ -123,10 +123,20 @@ export class SwaggerBuilder {
         };
     }
 
-    addModel(name, properties) {
-        this.instance.components.schemas[name] = {
-            type: 'object',
-            properties,
-        };
+    addModel(name, properties, isArray) {
+        if (isArray) {
+            this.instance.components.schemas[name] = {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties,
+                }
+            };
+        } else {
+            this.instance.components.schemas[name] = {
+                type: 'object',
+                properties,
+            };
+        }
     }
 }

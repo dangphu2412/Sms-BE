@@ -6,12 +6,13 @@ export default class UserSeeder {
 	}
 
 	async run() {
+		const defaultPwd = BcryptService.hash('123456');
 		const userCollection = this.db.collection('users');
 		const sampleUserData = [];
 		for (let i = 1; i <= 20; i += 1) {
 			sampleUserData.push({
 				email: `user${i}@gmail.com`,
-				password: BcryptService.hash('123456'),
+				password: defaultPwd,
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				deletedAt: null,

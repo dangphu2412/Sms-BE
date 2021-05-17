@@ -1,3 +1,4 @@
+import { parallel } from 'packages/taskExecution';
 import { activityDump } from '../data/init';
 
 export default class UserSeeder {
@@ -7,8 +8,12 @@ export default class UserSeeder {
 
 	async run() {
 		const collection = this.db.collection('activities');
-    await activityDump.map(async item => {
-      await collection.update({ _id: item._id }, item, { upsert: true });
-    });
+
+		await parallel(
+			activityDump,
+			item => collection.findOneAndUpdate(
+				{ _id: item._id }, { $set: item }, { new: true, upsert: true }
+			)
+		);
 	}
 }

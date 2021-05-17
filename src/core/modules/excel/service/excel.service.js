@@ -60,7 +60,8 @@ class Service {
       existedEmails = existedEmails.map(element => element.email);
       let payload = [];
       for (let i = 0; i < parsedUser.length; i += 1) {
-        if (!existedEmails.includes(parsedUser[i].email)) {
+        if (!existedEmails.includes(parsedUser[i].email)
+         && !errorDetail['datetime']?.includes(parsedUser[i].email)) {
           payload.push(parsedUser[i]);
         }
         if ((i % chunkSize === 0 && i !== 0) || (i === parsedUser.length - 1)) {

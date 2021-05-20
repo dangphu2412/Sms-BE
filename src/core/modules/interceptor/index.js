@@ -1,1 +1,1 @@
-export * from './idObject';
+export * from './IdObject';

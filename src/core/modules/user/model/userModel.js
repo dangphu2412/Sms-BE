@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose';
 import { Role, UserStatus } from '../../../common/enum';
 
+const DEFAULT_AVATAR = 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg';
+
 const schema = new Schema({
     email: {
         type: String,
@@ -34,6 +36,10 @@ const schema = new Schema({
         gender: { type: Boolean, default: null },
         facebook: { type: String, trim: true, default: null },
         universityId: { type: Schema.Types.ObjectId, ref: 'University', default: null },
+    },
+    avatar: {
+        type: String,
+        default: DEFAULT_AVATAR
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

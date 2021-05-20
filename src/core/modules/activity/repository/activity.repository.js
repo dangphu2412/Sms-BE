@@ -5,6 +5,15 @@ class Repository extends BaseRepository {
   constructor() {
     super(ActivityModel);
   }
+
+  findWithActiveByIds(ids, fields = '') {
+    return this.model.find({
+      _id: {
+        $in: ids
+      },
+      isActive: true
+    }, fields);
+  }
 }
 
 export const ActivityRepository = new Repository();

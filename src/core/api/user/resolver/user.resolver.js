@@ -1,7 +1,7 @@
 import { Module } from '../../../../packages/handler/Module';
 import { UserController } from '../controller/user.controller';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
-import { IdObjectInterceptor } from '../../../modules/interceptor/IdObject/idObject.interceptor';
+import { IdObjectInterceptor } from '../../../modules/interceptor';
 import { CreateUserInterceptor } from '../../../modules/user/validator/createUser.interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';
 

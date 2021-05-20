@@ -1,8 +1,9 @@
+import { GroupType } from 'core/common/swagger/groupType';
 import { Module } from '../../../../packages/handler/Module';
 import { GroupController } from '../controller/group.controller';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
 import { CreateGroupInterceptor } from '../../../modules/group/validator/createGroup.interceptor';
-import { IdObjectInterceptor } from '../../../modules/interceptor/IdObject/idObject.interceptor';
+import { IdObjectInterceptor } from '../../../modules/interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';
 
 export const GroupResolver = Module.builder()
@@ -16,23 +17,23 @@ export const GroupResolver = Module.builder()
             route: '/',
             method: 'post',
             interceptors: [new CreateGroupInterceptor()],
-            body: 'createGroupDto',
+            body: 'CreateGroupDto',
             controller: GroupController.createOne,
-            // preAuthorization: true
+            preAuthorization: true
         },
         {
             route: '/',
             method: 'get',
             params: ApiFilterSwagger,
             controller: GroupController.findAll,
-            // preAuthorization: true
+            preAuthorization: true
         },
         {
             route: '/:id',
             method: 'get',
-            params: [ObjectId],
+            params: [ObjectId, GroupType],
             controller: GroupController.findOne,
             interceptors: [new IdObjectInterceptor()],
-            // preAuthorization: true
+            preAuthorization: true
         }
     ]);

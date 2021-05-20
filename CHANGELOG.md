@@ -125,3 +125,28 @@ will have some specific case on status and data.
 - [Authentication](./src/packages/authModel/module/authentication/README.md)
 
 - [Authorization](./src/packages/authModel/module/authorization/README.md)
+
+#CHANGELOG-17/5/2021
+## [Structure] Introduce Optional class
+```javascript
+Optional
+    .of(getSomeData())
+    .throwIfPresent(new DuplicateException('Something is not existed'));
+```
+- Below is an example of Optional class. Optional support that we can create a reference to variable and then validate them with built-in function of class
+- There are some usefull function that we re now supporting:
+```javascript
+Optional
+    // First we need to take a reference to that data by calling of
+    .of(getSomeData())
+    // This function will now validate both not null and has not been deleted yet
+    .throwIfPresent(new Error())
+    // This function will now validate null or has been deleted yet
+    .throwIfNotPresent(new Error())
+    // Throw error if record is not null
+    .throwIfNullable(new Error())
+    // Throw error if record is null
+    .throwIfExist(new Error())
+    // We can get that data which we pass in from beginning
+    .get();
+```

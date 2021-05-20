@@ -27,8 +27,6 @@ export class AuthorizationValidator {
 
     static baseRule;
 
-    rules;
-
     executionContexts = [];
 
     localStorage = {};

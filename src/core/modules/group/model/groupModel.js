@@ -10,19 +10,21 @@ const schema = new Schema({
         type: String,
         trim: true,
     },
-    childIds: [{
+    childs: [{
         type: Schema.Types.ObjectId,
         ref: 'groups'
     }],
-    parentId: {
+    parent: {
         type: Schema.Types.ObjectId,
-        ref: 'groups'
+        ref: 'groups',
+        default: null
     },
-    leaderId: {
+    leader: {
         type: Schema.Types.ObjectId,
-        ref: 'users'
+        ref: 'users',
+        default: null
     },
-    userIds: [{
+    members: [{
         type: Schema.Types.ObjectId,
         ref: 'users'
     }],

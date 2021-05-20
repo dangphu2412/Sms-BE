@@ -30,6 +30,10 @@ export class BaseRepository {
     return this.model.find(query).select(fields).exec();
   }
 
+  findByIds(ids, fields = []) {
+    return this.model.find({ _id: { $in: ids } }).select(fields).exec();
+  }
+
   findOne(condition, fields = []) {
     return this.model.findOne(condition, fields).exec();
   }
@@ -40,6 +44,10 @@ export class BaseRepository {
 
   create(payload) {
     return this.model.create(payload);
+  }
+
+  createMany(payload) {
+    return this.model.insertMany(payload);
   }
 
   updateById(id, payload) {

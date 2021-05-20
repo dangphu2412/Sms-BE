@@ -2,25 +2,25 @@ import { SwaggerDocument } from '../../../../packages/swagger';
 import { ApiDocument } from '../../../config/swagger';
 
 ApiDocument.addModel('Profile',
-{
-    firstName: SwaggerDocument.ApiProperty({ type: 'string' }),
-    lastName: SwaggerDocument.ApiProperty({ type: 'string' }),
-    birthday: SwaggerDocument.ApiProperty({ type: 'string' }),
-    phone: SwaggerDocument.ApiProperty({ type: 'string' }),
-    hometown: SwaggerDocument.ApiProperty({ type: 'string' }),
-    gender: SwaggerDocument.ApiProperty({ type: 'bool' }),
-    facebook: SwaggerDocument.ApiProperty({ type: 'string' }),
-    universityId: SwaggerDocument.ApiProperty({ type: 'string' })
-});
+    {
+        firstName: SwaggerDocument.ApiProperty({ type: 'string' }),
+        lastName: SwaggerDocument.ApiProperty({ type: 'string' }),
+        birthday: SwaggerDocument.ApiProperty({ type: 'string' }),
+        phone: SwaggerDocument.ApiProperty({ type: 'string' }),
+        hometown: SwaggerDocument.ApiProperty({ type: 'string' }),
+        gender: SwaggerDocument.ApiProperty({ type: 'bool' }),
+        facebook: SwaggerDocument.ApiProperty({ type: 'string' }),
+        universityId: SwaggerDocument.ApiProperty({ type: 'string' })
+    });
 
 ApiDocument.addModel('UpsertUserDto',
-{
-    email: SwaggerDocument.ApiProperty({ type: 'string' }),
-    password: SwaggerDocument.ApiProperty({ type: 'string' }),
-    fingerprint: SwaggerDocument.ApiProperty({ type: 'string' }),
-    status: SwaggerDocument.ApiProperty({ type: 'string' }),
-    profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
-});
+    {
+        email: SwaggerDocument.ApiProperty({ type: 'string' }),
+        password: SwaggerDocument.ApiProperty({ type: 'string' }),
+        fingerprint: SwaggerDocument.ApiProperty({ type: 'string' }),
+        status: SwaggerDocument.ApiProperty({ type: 'string' }),
+        profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
+    });
 
 export const CreateUserDto = body => ({
     email: body.email,

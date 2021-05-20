@@ -1,2 +1,2 @@
-export * from './rebuild/core';
-export * from './rebuild/document';
+export * from './core/core';
+export * from './core/document';

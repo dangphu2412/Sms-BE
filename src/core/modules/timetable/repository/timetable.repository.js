@@ -2,9 +2,9 @@ import { BaseRepository } from 'core/infrastructure/repository';
 import { TimetableModel } from '../model/timetable.model';
 
 class Repository extends BaseRepository {
-  constructor() {
-    super(TimetableModel);
-  }
+    constructor() {
+        super(TimetableModel);
+    }
 
     /**
      * Get current timetable of users according to setting
@@ -18,14 +18,14 @@ class Repository extends BaseRepository {
      * @returns
      */
     getManyByUserAndRegisterTime(conditions) {
-      conditions = conditions.map(item => ({
-        userId: item.userId,
-        'registerTime._id': item.registerTimeId
-      }));
-      return this.find({
-        $or: conditions,
-        isActive: true
-      });
+        conditions = conditions.map(item => ({
+            userId: item.userId,
+            'registerTime._id': item.registerTimeId
+        }));
+        return this.find({
+            $or: conditions,
+            isActive: true
+        });
     }
 }
 

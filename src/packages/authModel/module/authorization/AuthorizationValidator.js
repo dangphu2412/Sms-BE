@@ -20,7 +20,7 @@ import { AuthorizationLookup } from './AuthorizationLookup';
  */
 
 export class AuthorizationValidator {
-  /**
+    /**
    * @type {AuthorizationLookup}
    */
     static appStorage;
@@ -50,7 +50,7 @@ export class AuthorizationValidator {
     }
 
     #executeRule = (rule, params) => AuthorizationValidator.appStorage
-            .getMethodOfClass(rule.service, rule.methodName)(...params)
+        .getMethodOfClass(rule.service, rule.methodName)(...params)
 
     getFromStore(key) {
         return this.localStorage[key];

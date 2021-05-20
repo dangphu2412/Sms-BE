@@ -42,16 +42,16 @@ export class SchemaValidatorBuilder {
     static getSocialBuilder(kind, custom = false) {
         let builder;
         switch (kind) {
-            case SocialKind.FACEBOOK:
-                builder = custom
-                    ? Joi.string().regex(SchemaValidatorBuilder.VALIDATE_FACEBOOK_PATTERN)
-                    : Joi.string().regex(SchemaValidatorBuilder.VALIDATE_FACEBOOK_PATTERN)
-                        .message('Invalid facebook format');
-                break;
-            case SocialKind.GOOGLE:
-            case SocialKind.TWITTER:
-            default:
-                throw new Error('Unsupported kind of social to validate');
+        case SocialKind.FACEBOOK:
+            builder = custom
+                ? Joi.string().regex(SchemaValidatorBuilder.VALIDATE_FACEBOOK_PATTERN)
+                : Joi.string().regex(SchemaValidatorBuilder.VALIDATE_FACEBOOK_PATTERN)
+                    .message('Invalid facebook format');
+            break;
+        case SocialKind.GOOGLE:
+        case SocialKind.TWITTER:
+        default:
+            throw new Error('Unsupported kind of social to validate');
         }
         return builder;
     }

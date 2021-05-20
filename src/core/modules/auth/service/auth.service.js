@@ -14,7 +14,7 @@ class Service {
         this.userDataService = UserDataService;
     }
 
-  /**
+    /**
    *
    * @param {LoginDtoDef} loginDto
    * @returns {Promise<LoginResponseDef>}
@@ -23,8 +23,8 @@ class Service {
         const user = await this.userRepository.getAvailableByEmail(loginDto.email);
         if (user && this.bcrypt.compare(loginDto.password, user.password)) {
             return {
-              user: this.userDataService.getUserInfo(user),
-              accessToken: this.jwtService.sign(JwtPayload(user))
+                user: this.userDataService.getUserInfo(user),
+                accessToken: this.jwtService.sign(JwtPayload(user))
             };
         }
         throw new UnAuthorizedException('Email or password is incorrect');
@@ -34,13 +34,13 @@ class Service {
         const validator = authorization
             .buildValidator();
 
-            await validator
-                .addParams({
-                    authContext: 'authContext',
-                    something: 2
-                })
-                .addRules('TEST_AUTHORIZATION')
-                .validate();
+        await validator
+            .addParams({
+                authContext: 'authContext',
+                something: 2
+            })
+            .addRules('TEST_AUTHORIZATION')
+            .validate();
 
         /**
          * This method can retrieve local variable from

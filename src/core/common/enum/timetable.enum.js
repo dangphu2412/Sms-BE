@@ -1,4 +1,4 @@
 export const TIMETABLE_TYPE = {
-  PERMANENT: 'PERMANENT',
-  TEMP: 'TEMP'
+    PERMANENT: 'PERMANENT',
+    TEMP: 'TEMP'
 };

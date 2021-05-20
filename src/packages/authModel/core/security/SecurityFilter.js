@@ -4,13 +4,13 @@ import { InValidHttpResponse } from '../../../handler/response/invalidHttp.respo
 export class SecurityFilter {
     filter(req, res, next) {
         try {
-          JwtAuthAdapter
-            .builder()
-            .collectRequest(req)
-            .transfer(req);
+            JwtAuthAdapter
+                .builder()
+                .collectRequest(req)
+                .transfer(req);
         } catch (e) {
-          return new InValidHttpResponse(e.status, e.code, e.message)
-            .toResponse(res);
+            return new InValidHttpResponse(e.status, e.code, e.message)
+                .toResponse(res);
         }
         return next();
     }

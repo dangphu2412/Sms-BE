@@ -6,22 +6,22 @@ export class LeaderGroupValidator {
     leaderId;
 
     constructor(dto) {
-      this.leaderId = dto.leaderId;
-      this.userRepository = UserRepository;
+        this.leaderId = dto.leaderId;
+        this.userRepository = UserRepository;
     }
 
     async validate() {
-      if (this.leaderId) {
-        const optionalParentGroup = Optional
-          .of(await this.userRepository.findById(this.leaderId, '_id deletedAt'));
+        if (this.leaderId) {
+            const optionalParentGroup = Optional
+                .of(await this.userRepository.findById(this.leaderId, '_id deletedAt'));
 
-        optionalParentGroup.throwIfNullable(
-          new NotFoundException(`Leader with ${this.leaderId} is not exist`)
-        );
+            optionalParentGroup.throwIfNullable(
+                new NotFoundException(`Leader with ${this.leaderId} is not exist`)
+            );
 
-        optionalParentGroup.throwIfNotPresent(
-          new NotFoundException(`Leader with ${this.leaderId} has been deleted`)
-        );
-      }
+            optionalParentGroup.throwIfNotPresent(
+                new NotFoundException(`Leader with ${this.leaderId} has been deleted`)
+            );
+        }
     }
 }

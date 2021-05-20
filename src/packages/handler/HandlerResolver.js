@@ -4,7 +4,7 @@ export class HandlerResolver {
     #globalRouter = express.Router();
 
     /**
-     * @type {import('../swagger/rebuild/core')} swagger instance
+     * @type {import('../swagger/core/core')} swagger instance
      */
     #swagger;
 

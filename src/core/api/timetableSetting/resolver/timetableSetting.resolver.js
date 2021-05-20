@@ -5,27 +5,27 @@ import { Module } from 'packages/handler/Module';
 import { TimetableSettingController } from '../controller/timetableSetting.controller';
 
 export const TimetableSettingResolver = Module.builder()
-  .addPrefix({
-    prefixPath: '/timetable-settings',
-    tag: 'timetable-settings',
-    module: 'TimetableSettingModule',
-  })
-  .register([
-    {
-      route: '/',
-      method: 'post',
-      interceptors: [new CreateTimetableSettingInterceptor()],
-      controller: TimetableSettingController.createOne,
-      body: 'CreateTimeTableSettingDto',
-      preAuthorization: true,
-    },
-    {
-      route: '/:id',
-      method: 'put',
-      interceptors: [new UpdateTimetableSettingInterceptor()],
-      controller: TimetableSettingController.updateOne,
-      params: [ObjectId],
-      body: 'UpdateTimetableSettingDto',
-      preAuthorization: true,
-    }
-  ]);
+    .addPrefix({
+        prefixPath: '/timetable-settings',
+        tag: 'timetable-settings',
+        module: 'TimetableSettingModule',
+    })
+    .register([
+        {
+            route: '/',
+            method: 'post',
+            interceptors: [new CreateTimetableSettingInterceptor()],
+            controller: TimetableSettingController.createOne,
+            body: 'CreateTimeTableSettingDto',
+            preAuthorization: true,
+        },
+        {
+            route: '/:id',
+            method: 'put',
+            interceptors: [new UpdateTimetableSettingInterceptor()],
+            controller: TimetableSettingController.updateOne,
+            params: [ObjectId],
+            body: 'UpdateTimetableSettingDto',
+            preAuthorization: true,
+        }
+    ]);

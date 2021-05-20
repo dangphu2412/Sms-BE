@@ -1,6 +1,6 @@
+import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
 import { AuthService } from '../../../modules/auth/service/auth.service';
 import { LoginDto } from '../../../modules/auth/dto';
-import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
 
 class Controller {
     constructor() {

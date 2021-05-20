@@ -3,13 +3,13 @@ import { TimetableService } from 'core/modules/timetable/service';
 import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
 
 class Controller {
-  constructor() {
-    this.service = TimetableService;
-  }
+    constructor() {
+        this.service = TimetableService;
+    }
 
   createTimetable = async req => {
-    const data = await this.service.createOrUpdateMany(CreateTimetableDtos(req.body));
-    return ValidHttpResponse.toCreatedResponse(data);
+      const data = await this.service.createOrUpdateMany(CreateTimetableDtos(req.body));
+      return ValidHttpResponse.toCreatedResponse(data);
   };
 }
 

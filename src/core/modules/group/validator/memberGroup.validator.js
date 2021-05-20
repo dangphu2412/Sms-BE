@@ -25,7 +25,7 @@ export class MemberGroupValidator {
 
                 members.forEach(member => {
                     if (member.deletedAt || member.status === UserStatus.SUSPEND) {
-                      deletedMemberIds.push(member.id);
+                        deletedMemberIds.push(member.id);
                     }
                 });
 

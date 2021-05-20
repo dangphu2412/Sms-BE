@@ -16,18 +16,18 @@ class Controller {
     }
 
     findAll = async req => {
-      const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
-      const data = await this.service.findAll(reqTransformed.translate());
-      const pagedData = Pageable.of(data[0])
-        .addMeta(
-          PageableMeta
-            .builder()
-            .appendRequestFormation(reqTransformed)
-            .appendTotalRecord(data[1])
-            .build()
-        )
-        .build();
-      return ValidHttpResponse.toOkResponse(pagedData);
+        const reqTransformed = new RequestTransformer(req.query, SearchGroupSchema);
+        const data = await this.service.findAll(reqTransformed.translate());
+        const pagedData = Pageable.of(data[0])
+            .addMeta(
+                PageableMeta
+                    .builder()
+                    .appendRequestFormation(reqTransformed)
+                    .appendTotalRecord(data[1])
+                    .build()
+            )
+            .build();
+        return ValidHttpResponse.toOkResponse(pagedData);
     }
 
     findOne = async req => {

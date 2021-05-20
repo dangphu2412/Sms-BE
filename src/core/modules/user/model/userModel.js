@@ -19,15 +19,15 @@ const schema = extendBaseModel({
     },
     fingerPrint: { type: String, default: null },
     status: {
-            type: Number,
-            default: UserStatus.AVAILABLE,
-            enum: [UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND]
+        type: Number,
+        default: UserStatus.AVAILABLE,
+        enum: [UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND]
     },
     roles: {
-            type: Array,
-            default: [Role.MEMBER],
-            schema: { type: String, enum: [Role.LEADER, Role.ADMIN, Role.MEMBER] }
-        },
+        type: Array,
+        default: [Role.MEMBER],
+        schema: { type: String, enum: [Role.LEADER, Role.ADMIN, Role.MEMBER] }
+    },
     profile: {
         firstName: { type: String, trim: true, default: null },
         lastName: { type: String, trim: true, default: null },

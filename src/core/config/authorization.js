@@ -2,4 +2,4 @@ import { AuthorizationService } from 'packages/authModel/module/authorization/Au
 import { Rules } from '../rules';
 
 export const authorization = AuthorizationService
-                                .builder(Rules);
+    .builder(Rules);

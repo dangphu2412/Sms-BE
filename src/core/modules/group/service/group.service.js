@@ -24,7 +24,7 @@ class Service {
 
         try {
             createdGroup = await this.groupRepository.create(
-              this.groupDataService.mapCreateDtoToModel(groupDto)
+                this.groupDataService.mapCreateDtoToModel(groupDto)
             );
 
             if (groupDto.parentId) {
@@ -44,7 +44,7 @@ class Service {
 
         reqTransformed.filters.forEach(filter => {
             if (!filterDocument[filter.column]) {
-              filterDocument[filter.column] = {};
+                filterDocument[filter.column] = {};
             }
 
             filterDocument[filter.column][filter.sign] = filter.value;
@@ -77,23 +77,23 @@ class Service {
         countBuilder.find(filterDocument);
         countBuilder.sort(sortDocument);
         const groups = findBuilder
-          .limit(reqTransformed.pagination.size)
-          .skip(reqTransformed.pagination.offset);
+            .limit(reqTransformed.pagination.size)
+            .skip(reqTransformed.pagination.offset);
 
         const count = countBuilder.countDocuments();
         return Promise.all([
-          groups,
-          count
+            groups,
+            count
         ]);
     }
 
     async findOne(id, type) {
         switch (type) {
-          case GroupFetchCase.GENERAL:
+        case GroupFetchCase.GENERAL:
             return this.groupRepository.getGeneralById(id);
-          case GroupFetchCase.DETAIL:
+        case GroupFetchCase.DETAIL:
             return this.groupRepository.getDetailById(id);
-          default:
+        default:
             throw new BadRequestException('Unsupported type');
         }
     }

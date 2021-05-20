@@ -13,7 +13,7 @@ export class ParentGroupValidator {
     async validate() {
         if (this.parentId) {
             const optionalParentGroup = Optional
-                  .of(await this.groupRepository.findById(this.parentId, '_id deletedAt'));
+                .of(await this.groupRepository.findById(this.parentId, '_id deletedAt'));
 
             optionalParentGroup.throwIfNullable(
                 new NotFoundException(`Parent group with ${this.parentId} is not exist`)

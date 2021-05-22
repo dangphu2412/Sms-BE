@@ -51,7 +51,7 @@ export class BaseRepository {
   }
 
   updateById(id, payload) {
-    return this.model.findByIdAndUpdate(id, payload);
+    return this.model.findByIdAndUpdate(id, payload, { new: true });
   }
 
   updateMany(conditions, payload, options = {}) {

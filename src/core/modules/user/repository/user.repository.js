@@ -24,6 +24,10 @@ class Repository extends BaseRepository {
       ['_id', 'email', 'profile', 'status'],
       { timestamps: true });
   }
+
+  getAvailableByEmails(emails) {
+    return this.model.find({ email: { $in: emails } }, 'email');
+  }
 }
 
 export const UserRepository = new Repository();

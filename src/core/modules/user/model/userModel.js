@@ -47,6 +47,10 @@ const schema = new Schema({
 });
 
 schema.pre('save', function onSave(next) {
+    if (!this.createdAt) {
+        this.createdAt = Date.now();
+    }
+
     this.updatedAt = Date.now();
     return next();
 });

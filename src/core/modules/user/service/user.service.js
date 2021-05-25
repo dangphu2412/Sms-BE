@@ -81,7 +81,7 @@ class Service {
           throw new BadRequestException('This account is not available at the moment');
         }
         const userProfile = data.profile;
-        if (!toDateTime(userProfile?.birthday)) {
+        if (userProfile?.birthday && !toDateTime(userProfile?.birthday)) {
             throw new BadRequestException('Invalid birthday datetime type');
         }
         data.password = this.bcrypt.hash(data.password);

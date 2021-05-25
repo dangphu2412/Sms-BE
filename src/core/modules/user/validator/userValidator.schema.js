@@ -6,7 +6,7 @@ import { UserStatus } from '../../../common/enum';
 const profileSchema = Joi.object().keys({
     firstName: SchemaValidatorBuilder.getOptionalStringBuilder().min(0),
     lastName: SchemaValidatorBuilder.getOptionalStringBuilder().min(0),
-    birthday: Joi.date().timestamp().optional(),
+    // birthday: Joi.date().timestamp().optional(),
     phone: SchemaValidatorBuilder.getPhoneNumberBuilder().optional(),
     hometown: Joi.string().optional(),
     gender: Joi.boolean().optional(),

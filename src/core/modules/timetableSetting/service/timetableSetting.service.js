@@ -10,6 +10,10 @@ class Service {
   createOne(payload) {
     return this.timetableSettingRepository.create(payload);
   }
+
+  updateOne(id, payload) {
+    return this.timetableSettingRepository.updateById(id, payload);
+  }
 }
 
 export const TimetableSettingService = new Service();

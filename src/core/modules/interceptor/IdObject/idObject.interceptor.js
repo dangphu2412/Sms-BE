@@ -6,12 +6,10 @@ export class IdObjectInterceptor {
         const schema = Joi.object({
             id: SchemaValidatorBuilder
                 .getIdObjectBuilder()
-                .message('Url params contain unexpected id format! It should be ObjectId of mongoose')
         });
         const result = schema.validate(req['params']);
-
         if (result.error) {
-            return responseJoiError(res, result);
+            return responseJoiError(res, result.error);
         }
 
         return next();

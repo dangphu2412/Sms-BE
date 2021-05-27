@@ -1,9 +1,10 @@
+import { extendBaseModel } from 'core/infrastructure/model';
 import { Schema, model } from 'mongoose';
 import { Role, UserStatus } from '../../../common/enum';
 
 const DEFAULT_AVATAR = 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg';
 
-const schema = new Schema({
+const schema = extendBaseModel({
     email: {
         type: String,
         unique: true,
@@ -41,13 +42,9 @@ const schema = new Schema({
         type: String,
         default: DEFAULT_AVATAR
     },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now },
+    createdAt: { type: Date },
+    updatedAt: { type: Date },
     deletedAt: { type: Date, default: null },
 });
 
-schema.pre('save', function onSave(next) {
-    this.updatedAt = Date.now();
-    return next();
-});
 export const UserModel = model('users', schema);

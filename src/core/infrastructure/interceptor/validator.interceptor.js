@@ -34,7 +34,7 @@ export class BaseValidateInterceptor {
       await this.validation();
       return next();
     } catch (error) {
-      return responseJoiError(error);
+      return responseJoiError(res, error);
     }
   };
 

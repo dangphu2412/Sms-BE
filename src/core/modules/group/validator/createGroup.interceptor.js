@@ -6,7 +6,7 @@ export class CreateGroupInterceptor {
         const result = createGroupSchema.validate(req['body']);
 
         if (result.error) {
-            return responseJoiError(res, result);
+            return responseJoiError(res, result.error);
         }
 
         return next();

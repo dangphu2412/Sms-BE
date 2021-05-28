@@ -2,7 +2,7 @@ import SearchUserSchema from '../query/searchUser.schema.json';
 import { UserService } from '../../../modules/user/service/user.service';
 import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
 import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
-import { CreateUserDto } from '../../../modules/user/dto';
+import { CreateUserDto, UpdateProfileDto } from '../../../modules/user/dto';
 import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
 
 class Controller {
@@ -36,8 +36,8 @@ class Controller {
     }
 
     patchOne = async req => {
-        await this.service.patchOne(req.params, req.body);
-        return ValidHttpResponse.toNoContentResponse();
+        await this.service.patchOne(req.params, UpdateProfileDto(req.body));
+        return ValidHttpResponse.toOkResponse('Update Sucess');
     }
 
     deleteOne = async req => {

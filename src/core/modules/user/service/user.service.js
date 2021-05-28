@@ -104,14 +104,18 @@ class Service {
     }
 
     // TODO: Update user in the future
-    async patchOne({ id }, { email, password, roles }) {
+    async patchOne({ id }, data) {
         const user = await this.userRepository.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        user.email = email ?? user.email;
-        user.password = password ?? user.password;
-        user.roles = roles ?? user.roles;
+        user.profile.firstName = data.firstName ?? user.profile.firstName;
+        user.profile.lastName = data.lastName ?? user.profile.lastName;
+        user.profile.gender = data.gender ?? user.profile.gender;
+        // user.profile.specializedGroupId = data.specializedGroupId ?? user.specializedGroupId;
+        user.profile.universityId = data.universityId ?? user.profile.universityId;
+        user.profile.birthday = data.birthday ?? user.profile.birthday;
+        user.profile.phone = data.phone ?? user.phone;
         return user.save();
     }
 

@@ -33,7 +33,7 @@ export const UserResolver = Module.builder()
             body: 'UpsertUserDto',
             interceptors: [new CreateUserInterceptor()],
             controller: UserController.createOne,
-            preAuthorization: true
+            preAuthorization: false
         },
         {
             route: '/:id',

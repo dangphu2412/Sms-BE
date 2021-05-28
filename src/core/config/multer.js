@@ -48,8 +48,8 @@ class MulterHandler {
     getHandler(keyName, numberOfFile = 1) {
         if (numberOfFile > 1) {
             return this.#uploadConfig.array(keyName, numberOfFile);
-          }
-              return this.#uploadConfig.single(keyName);
+        }
+        return this.#uploadConfig.single(keyName);
     }
 }
 

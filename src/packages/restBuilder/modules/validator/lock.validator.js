@@ -31,8 +31,8 @@ export class LockValidator {
                 throw new BadRequestException('Invalid sort field');
             }
         } else {
-            // TODO: develop in the future
-            // - Support for ban fields and allows fields
+        // TODO: develop in the future
+        // - Support for ban fields and allows fields
         }
         if (Array.isArray(filters) && this.filters.length > 0) {
             const isNotInvalidField = !this.filters.some(item => filters.includes(item.column));
@@ -41,8 +41,8 @@ export class LockValidator {
                 throw new BadRequestException('Invalid filter field');
             }
         } else {
-            // TODO: develop in the future
-            // - Support for ban fields and allows fields
+        // TODO: develop in the future
+        // - Support for ban fields and allows fields
         }
     }
 }

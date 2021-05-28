@@ -7,32 +7,34 @@ export class SwaggerBuilder {
         return new SwaggerBuilder();
     }
 
-    #initAuth = isAuthRequired => {
-        if (isAuthRequired) {
-            this.instance.components['securitySchemes'] = {
-                bearerAuth: BEARER_AUTH_CONFIG,
-            };
-        }
-    }
-
     #toResponseSuccess = model => ({
-            200: {
-                description: 'successful operation',
-                content: {
-                    'application/json': {
-                        schema: {
-                            type: 'array',
-                            items: {
-                                $ref: `#/components/schemas/${model}`,
-                            },
+        200: {
+            description: 'successful operation',
+            content: model ? {
+                'application/json': {
+                    schema: {
+                        type: 'array',
+                        items: {
+                            $ref: `#/components/schemas/${model}`,
                         },
                     },
                 },
-            },
-        })
+            } : '',
+        },
+    })
 
-    #toErrors = () => {
+    #toErrors = errors => {
+        const responses = {};
 
+        errors.forEach(error => {
+            if (!error.status || !error.description) {
+                throw new Error('Error in swagger must contain status and description');
+            }
+            responses[error.status] = {
+                description: error.description
+            };
+        });
+        return responses;
     }
 
     addConfig(options) {
@@ -53,7 +55,11 @@ export class SwaggerBuilder {
         };
         this.instance.tags = [];
         this.instance.paths = {};
-        this.#initAuth(auth);
+        if (auth) {
+            this.instance.components['securitySchemes'] = {
+                bearerAuth: BEARER_AUTH_CONFIG,
+            };
+        }
         return this;
     }
 
@@ -86,6 +92,7 @@ export class SwaggerBuilder {
             body,
             params = [],
             consumes = [],
+            errors = []
         } = options;
         const responses = {};
 
@@ -119,6 +126,7 @@ export class SwaggerBuilder {
             responses: {
                 ...responses,
                 ...this.#toResponseSuccess(model),
+                ...this.#toErrors(errors)
             },
         };
     }

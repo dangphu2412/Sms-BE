@@ -7,8 +7,8 @@ class Controller {
     }
 
     uploadOne = async req => {
-      const data = await this.service.uploadOne(req.file);
-      return ValidHttpResponse.toOkResponse(data);
+        const data = await this.service.uploadOne(req.file);
+        return ValidHttpResponse.toOkResponse(data);
     }
 }
 

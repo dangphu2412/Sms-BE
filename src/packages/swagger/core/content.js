@@ -40,7 +40,14 @@ export class SwaggerContentCreator {
     }
 
     addPrefix(prefix) {
-        this.#prefixRoute = prefix;
+        if (!prefix.prefixPath || !prefix.tag || !prefix.module) {
+            throw new Error(`Prefix of ${SwaggerContentCreator.name} should contains fields: prefixPath, tag, module`);
+        }
+        this.#prefixRoute = {
+            prefixPath: prefix.prefixPath,
+            tag: prefix.tag,
+            module: prefix.module
+        };
         return this;
     }
 

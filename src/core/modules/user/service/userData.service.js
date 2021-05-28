@@ -2,7 +2,7 @@ import pick from 'lodash/pick';
 import '../def';
 
 class Service {
-  /**
+    /**
    *
    * @param {UserModel} user
    * @returns {UserInformation}

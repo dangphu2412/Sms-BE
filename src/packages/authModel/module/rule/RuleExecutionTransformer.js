@@ -36,35 +36,35 @@ export class RuleExecutionTransformer {
             .split(RuleExecutionTransformer.PATTERN_SPLIT_RULE)
             .filter(val => val !== '');
         switch (ruleExecutionCollection.length) {
-            case RuleSplitCase.NO_PARAMS:
-                return RuleExecutionTransformer.toRuleExecution(ruleExecutionCollection[0]);
+        case RuleSplitCase.NO_PARAMS:
+            return RuleExecutionTransformer.toRuleExecution(ruleExecutionCollection[0]);
 
-            /** @notes:
+        /** @notes:
             Example for this case:
             - localVariable=service.isAdmin() -> first argument will be used as storeKey
             - service.exec(param1,param2) -> first argument will be used as methodExecution
             */
-            case RuleSplitCase.STORE_OR_EXEC: {
-                return ruleExecutionCollection[0]
-                    .includes(
-                        RuleExecutionTransformer.PATTERN_SPLIT_SERVICE_AND_METHOD
-                    )
-                    ? RuleExecutionTransformer.toRuleExecution(
-                        ruleExecutionCollection[0],
-                        ruleExecutionCollection[1]
-                    )
-                    : RuleExecutionTransformer.toRuleExecution(
-                        ruleExecutionCollection[1],
-                        '',
-                        ruleExecutionCollection[0]
-                    );
-            }
-            case RuleSplitCase.STORE: {
-                const [storeKey, executionMethod, params] = ruleExecutionCollection;
-                return RuleExecutionTransformer.toRuleExecution(executionMethod, params, storeKey);
-            }
-            default:
-                throw new InvalidRuleDefinition(ruleExecutionCollection);
+        case RuleSplitCase.STORE_OR_EXEC: {
+            return ruleExecutionCollection[0]
+                .includes(
+                    RuleExecutionTransformer.PATTERN_SPLIT_SERVICE_AND_METHOD
+                )
+                ? RuleExecutionTransformer.toRuleExecution(
+                    ruleExecutionCollection[0],
+                    ruleExecutionCollection[1]
+                )
+                : RuleExecutionTransformer.toRuleExecution(
+                    ruleExecutionCollection[1],
+                    '',
+                    ruleExecutionCollection[0]
+                );
+        }
+        case RuleSplitCase.STORE: {
+            const [storeKey, executionMethod, params] = ruleExecutionCollection;
+            return RuleExecutionTransformer.toRuleExecution(executionMethod, params, storeKey);
+        }
+        default:
+            throw new InvalidRuleDefinition(ruleExecutionCollection);
         }
     }
 }

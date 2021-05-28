@@ -7,5 +7,6 @@ export const SwaggerContentDto = rawContent => ({
     model: rawContent.model,
     body: rawContent.body,
     params: rawContent.params,
-    consumes: rawContent.consumes
+    consumes: rawContent.consumes,
+    errors: rawContent.errors
 });

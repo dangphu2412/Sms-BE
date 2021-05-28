@@ -1,6 +1,13 @@
-/* eslint-disable max-len */
 // @ts-check
+/**
+ * @typedef {keyof SwaggerDocument.type} DocumentType
+ */
+
 export class SwaggerDocument {
+    static DEFAULT_GENERATOR = 'string';
+
+    static PRIMITIVE_TYPES = ['string', 'int', 'dateTime', 'bool'];
+
     static type = {
         string: {
             type: 'string',
@@ -20,81 +27,68 @@ export class SwaggerDocument {
         file: {
             type: 'file',
         },
-        array: item => {
-            if (item) {
+        array: (item, params = {}) => {
+            if (SwaggerDocument.PRIMITIVE_TYPES.includes(item)) {
                 return {
                     type: 'array',
                     items: {
-                        $ref: `#/components/schemas/${item}`,
+                        ...SwaggerDocument.type[item],
+                        ...params
                     }
                 };
             }
             return {
                 type: 'array',
                 items: {
-                    type: 'string'
+                    $ref: `#/components/schemas/${item}`,
                 }
             };
         },
-        enum: enumModel => ({
+        enum: (enumModel, params = {}) => ({
             type: 'string',
             enum: Object.values(enumModel),
+            ...params
         }),
-        model: dtoModel => ({
+        model: (dtoModel, params = {}) => ({
             $ref: `#/components/schemas/${dtoModel}`,
+            ...params
         }),
     }
 
     /**
-     *
-     * @param {
-        {
-            type: 'string' | 'int' | 'dateTime' | 'bool' | 'array' | 'enum' | 'model' | {(type: string): any},
-            model?: string,
-            required?: boolean,
-            readOnly?:boolean,
-            description?: string
-        }
-     * } options
-     * @returns {*&{description: string, readOnly: boolean, required: boolean}}
-     * @constructor
+     * 
+     * @param {{type: DocumentType, model: string, required: boolean, readOnly: boolean, example: string}} options 
+     * @returns 
      */
     static ApiProperty(options) {
         const {
             type,
-            model,
+            model = SwaggerDocument.DEFAULT_GENERATOR,
             required = true,
             readOnly = false,
-            description = 'Example',
+            example,
         } = options;
-        let swaggerType = SwaggerDocument.type[type];
+        let swaggerType;
         if (type === 'enum'
             || type === 'model'
             || type === 'array') {
-            swaggerType = swaggerType(model);
+            swaggerType = SwaggerDocument.type[type](model, { example });
+        } else {
+            swaggerType = SwaggerDocument.type[type];
         }
 
         return {
             required,
-            description,
+            example,
             readOnly,
             ...swaggerType,
         };
     }
 
     /**
-     * @param {
-        {
-            name: string,
-            type: 'string' | 'int' | 'dateTime' | 'bool' | 'array' | 'enum' | 'model' | {(type: string): any},
-            model?:any,
-            paramsIn?: 'query' | 'path',
-            required?: any,
-            description?: any
-        }
-     * } options
-     * @returns {{schema, in: string, name, description: string, required: boolean}}
-     * @constructor
+     * 
+     * @param {{type: DocumentType, model: string, required: boolean, readOnly: boolean, example: string, name: string, paramsIn: string, description: string}} options 
+     * @returns 
      */
     static ApiParams(options) {
         const {
@@ -103,21 +97,25 @@ export class SwaggerDocument {
             model,
             paramsIn = 'query',
             required = true,
-            description = 'Example',
+            example,
         } = options;
 
-        let swaggerType = SwaggerDocument.type[type];
+        let swaggerType;
+
         if (type === 'enum'
             || type === 'model'
             || type === 'array') {
-            swaggerType = swaggerType(model);
+            swaggerType = SwaggerDocument.type[type](model, { example });
+        } else {
+            swaggerType = SwaggerDocument.type[type];
         }
+
         return {
             name,
             in: paramsIn,
             schema: swaggerType,
             required,
-            description,
+            example,
         };
     }
 

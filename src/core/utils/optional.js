@@ -6,36 +6,36 @@ export class Optional {
     }
 
     static of(instance) {
-      return new Optional(instance);
+        return new Optional(instance);
     }
 
     throwIfPresent(exception) {
-      if (this.#instance && !this.#instance.deletedAt) {
-        throw exception;
-      }
-      return this;
-  }
+        if (this.#instance && !this.#instance.deletedAt) {
+            throw exception;
+        }
+        return this;
+    }
 
     throwIfNotPresent(exception) {
         if (!this.#instance || this.#instance.deletedAt !== null) {
-          throw exception;
+            throw exception;
         }
         return this;
     }
 
     throwIfNullable(exception) {
         if (this.#instance === null) {
-          throw exception;
+            throw exception;
         }
         return this;
     }
 
     throwIfExist(exception) {
-      if (this.#instance) {
-        throw exception;
-      }
-      return this;
-  }
+        if (this.#instance) {
+            throw exception;
+        }
+        return this;
+    }
 
     get() {
         if (!this.#instance) throw new Error('Should call throwIfNullable first');

@@ -7,5 +7,5 @@ export class CreateTimetableSettingInterceptor extends BaseValidateInterceptor {
       endTime: Joi.string().regex(/^([0-9]{2}):([0-9]{2})$/).required(),
       name: Joi.string().required(),
       isActive: Joi.boolean().optional()
-    })
+  })
 }

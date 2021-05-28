@@ -75,10 +75,10 @@ class Service {
         const user = await this.userRepository.getByEmail(data.email);
 
         if (user && user?.deletedAt === null) {
-          throw new DuplicateException('Email is used');
+            throw new DuplicateException('Email is used');
         }
         if (user?.status === UserStatus.SUSPEND) {
-          throw new BadRequestException('This account is not available at the moment');
+            throw new BadRequestException('This account is not available at the moment');
         }
         const userProfile = data.profile;
         if (userProfile?.birthday && !toDateTime(userProfile?.birthday)) {
@@ -96,11 +96,11 @@ class Service {
     }
 
     async findOne({ id }) {
-      const user = await this.userRepository.getDetailById(id);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      return user;
+        const user = await this.userRepository.getDetailById(id);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        return user;
     }
 
     // TODO: Update user in the future

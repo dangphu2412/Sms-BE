@@ -2,7 +2,7 @@ import express from 'express';
 import { getUserContext } from 'packages/authModel/module/user/UserContext';
 import { logger } from '../../core/modules/logger/winston';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
-import { SwaggerContentCreator } from '../swagger/rebuild/content';
+import { SwaggerContentCreator } from '../swagger/core/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
 import { HttpException } from '../httpException/HttpException';
 import { UnAuthorizedException } from '../httpException';
@@ -191,7 +191,7 @@ export class Module {
 
     /**
      * @notes this function will be triggered whenever handler resolver is registered
-     * @param {import('../swagger/rebuild/core').SwaggerBuilder} swaggerInstance
+     * @param {import('../swagger/core/core').SwaggerBuilder} swaggerInstance
      */
     buildSwagger(swaggerInstance) {
         swaggerInstance.addTag(this.#prefix.tag);

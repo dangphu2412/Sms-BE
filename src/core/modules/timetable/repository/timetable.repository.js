@@ -27,6 +27,16 @@ class Repository extends BaseRepository {
             isActive: true
         });
     }
+
+    getByUserId(userId) {
+        const selectFields = ['_id', 'name', 'registerTime._id', 'registerTime.name', 'registerTime.isActive', 'registerTime.startTime', 'registerTime.endTime', 'type', 'dayOfWeek', 'startDate', 'endDate', 'isActive', 'isApproved'];
+        return this.model.find({ userId }, selectFields)
+            .populate({
+                path: 'activities',
+                match: { deletedAt: { $eq: null } },
+                select: 'name isActive'
+            });
+    }
 }
 
 export const TimetableRepository = new Repository();

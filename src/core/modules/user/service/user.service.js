@@ -1,3 +1,4 @@
+import { Optional } from 'core/utils/optional';
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
@@ -5,11 +6,15 @@ import { logger } from '../../logger/winston';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
 import { UserStatus } from '../../../common/enum/userStatus.enum';
 import { toDateTime } from '../../../utils/timeConvert';
+import { GroupRepository } from '../../group/repository/group.repository';
+import { TimetableRepository } from '../../timetable/repository';
 
 class Service {
     constructor() {
         this.bcrypt = BcryptService;
         this.userRepository = UserRepository;
+        this.groupRepository = GroupRepository;
+        this.timetableRepository = TimetableRepository;
         this.logger = logger;
     }
 
@@ -93,6 +98,18 @@ class Service {
             return null;
         }
         return { _id: createdUser._id };
+    }
+
+    async findTimetables(userId) {
+        Optional.of(await this.userRepository.findById(userId))
+            .throwIfNotPresent(new NotFoundException('User Id is invalid'));
+
+        const groups = await this.groupRepository.getByUserId(userId);
+        const timetables = await this.timetableRepository.getByUserId(userId);
+        return {
+            groups,
+            timetables,
+        };
     }
 
     async findOne({ id }) {

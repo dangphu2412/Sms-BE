@@ -3,7 +3,7 @@ import { SchemaValidatorBuilder } from 'core/utils';
 import Joi from 'joi';
 import { UserStatus } from '../../../common/enum';
 
-const profileSchema = Joi.object().keys({
+export const profileSchema = Joi.object().keys({
     firstName: SchemaValidatorBuilder.getOptionalStringBuilder().min(0),
     lastName: SchemaValidatorBuilder.getOptionalStringBuilder().min(0),
     birthday: Joi.date().timestamp().optional(),

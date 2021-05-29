@@ -58,14 +58,14 @@ export class AppBundle {
     }
 
     applySwagger(swaggerBuilder) {
-        if (NODE_ENV !== 'production') {
-            this.app.use(
-                this.BASE_PATH_SWAGGER,
-                swaggerUi.serve,
-                swaggerUi.setup(swaggerBuilder.instance)
-            );
-            AppBundle.logger.info('Building swagger');
-        }
+        // if (NODE_ENV !== 'production') {
+        this.app.use(
+            this.BASE_PATH_SWAGGER,
+            swaggerUi.serve,
+            swaggerUi.setup(swaggerBuilder.instance)
+        );
+        AppBundle.logger.info('Building swagger');
+        // }
         return this;
     }
 

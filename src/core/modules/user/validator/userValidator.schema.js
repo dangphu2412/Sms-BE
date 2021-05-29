@@ -15,8 +15,8 @@ const profileSchema = Joi.object().keys({
 });
 
 export const upsertUserSchema = Joi.object({
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-    password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).optional(),
+    email: SchemaValidatorBuilder.getEmailBuilder().required(),
+    password: SchemaValidatorBuilder.getPwdBuilder().optional(),
     fingerprint: Joi.string().optional(),
     status: Joi.number()
         .valid(UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND)

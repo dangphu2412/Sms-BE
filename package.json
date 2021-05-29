@@ -10,8 +10,9 @@
     "clean": "rm -rf dist && mkdir dist",
     "build:babel": "babel ./src --out-dir dist --copy-files",
     "build": "npm run clean && npm run build:babel",
-    "seed": "babel-node ./src/core/database/seed",
-    "heroku-postbuild": "npm install && npm run build"
+    "heroku-postbuild": "npm install && npm run build",
+    "seed": "babel-node ./src/packages/mogp/core/seeding",
+    "migrate": "babel-node ./src/packages/mogp/core/migration"
   },
   "repository": {
     "type": "git",

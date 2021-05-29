@@ -53,7 +53,7 @@ export class PageableMeta {
         return {
             currentPage: this.currentPage,
             currentSize: this.currentSize,
-            totalPage: Math.floor(this.totalRecord / this.currentSize) + 1,
+            totalPage: Math.floor(this.totalRecord / this.currentSize),
             totalRecord: this.totalRecord
         };
     }

@@ -10,10 +10,11 @@ ApiDocument.addModel('UpdateProfile',
         universityId: SwaggerDocument.ApiProperty({ type: 'string' }),
         birthday: SwaggerDocument.ApiProperty({ type: 'string' }),
         phone: SwaggerDocument.ApiProperty({ type: 'string' }),
+        hometown: SwaggerDocument.ApiProperty({ type: 'string' }),
+        facebook: SwaggerDocument.ApiProperty({ type: 'string' }),
     });
 
 export const UpdateProfileDto = body => ({
-
     firstName: body?.firstName,
     lastName: body?.lastName,
     gender: body?.gender,
@@ -21,5 +22,6 @@ export const UpdateProfileDto = body => ({
     universityId: body?.universityId,
     birthday: body?.birthday,
     phone: body?.phone,
-
+    hometown: body?.hometown,
+    facebook: body?.facebook,
 });

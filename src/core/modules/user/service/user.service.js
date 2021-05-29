@@ -115,7 +115,9 @@ class Service {
         // user.profile.specializedGroupId = data.specializedGroupId ?? user.specializedGroupId;
         user.profile.universityId = data.universityId ?? user.profile.universityId;
         user.profile.birthday = data.birthday ?? user.profile.birthday;
-        user.profile.phone = data.phone ?? user.phone;
+        user.profile.phone = data.phone ?? user.profile.phone;
+        user.profile.hometown = data.birthday ?? user.profile.hometown;
+        user.profile.facebook = data.phone ?? user.profile.facebook;
         return user.save();
     }
 

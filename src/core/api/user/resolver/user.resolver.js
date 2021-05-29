@@ -3,6 +3,7 @@ import { UserController } from '../controller/user.controller';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
 import { IdObjectInterceptor } from '../../../modules/interceptor';
 import { CreateUserInterceptor } from '../../../modules/user/validator/createUser.interceptor';
+import { UpdateProfileInterceptor } from '../../../modules/user/validator/updateProfile.interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';
 
 export const UserResolver = Module.builder()
@@ -42,7 +43,7 @@ export const UserResolver = Module.builder()
             body: 'UpsertUserDto',
             interceptors: [
                 new IdObjectInterceptor(),
-                new CreateUserInterceptor()
+                new UpdateProfileInterceptor()
             ],
             controller: UserController.patchOne,
             preAuthorization: true

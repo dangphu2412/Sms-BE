@@ -10,7 +10,9 @@ export class SchemaValidatorBuilder {
 
     static VALIDATE_FACEBOOK_PATTERN = /(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i;
 
-    static VALIDATE_PWD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    static VALIDATE_PWD_PATTERN_V1 = /^[a-zA-Z0-9\d@$!%*?&]{6,30}$/
+
+    static VALIDATE_PWD_PATTERN_V2 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     static getIdObjectBuilder(custom = false) {
         return custom
@@ -60,8 +62,8 @@ export class SchemaValidatorBuilder {
 
     static getPwdBuilder(custom = false) {
         return custom
-            ? Joi.string().regex(SchemaValidatorBuilder.VALIDATE_PWD_PATTERN)
-            : Joi.string().regex(SchemaValidatorBuilder.VALIDATE_PWD_PATTERN)
-                .message('Invalid password format. Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character');
+            ? Joi.string().regex(SchemaValidatorBuilder.VALIDATE_PWD_PATTERN_V1)
+            : Joi.string().regex(SchemaValidatorBuilder.VALIDATE_PWD_PATTERN_V1)
+                .message('Invalid password format. Minimum 6 characters');
     }
 }

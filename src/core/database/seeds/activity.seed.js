@@ -7,7 +7,7 @@ export class ActivitySeeder {
         return parallel(
             activityDump,
             item => ActivityModel.findOneAndUpdate(
-                { _id: item._id }, { $set: item }, { upsert: true }
+                { _id: item._id }, { $set: item }, { new: true, useFindAndModify: true, upsert: true }
             )
         );
     }

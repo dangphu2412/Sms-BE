@@ -12,17 +12,17 @@ export class UserSeeder {
             facebook: 'https://www.facebook.com/',
         };
 
-        const defaultPwd = BcryptService.hash('Abc123!@#');
+        const defaultPwd = BcryptService.hash('Abc123@@');
         const sampleUserData = [];
         for (let i = 1; i <= 20; i += 1) {
-            sampleUserData.push(new UserModel({
+            sampleUserData.push({
                 email: `user${i}@gmail.com`,
                 password: defaultPwd,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 deletedAt: null,
                 profile
-            }));
+            });
         }
         await UserModel.deleteMany();
         await UserModel.insertMany(sampleUserData);

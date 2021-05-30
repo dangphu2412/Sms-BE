@@ -7,7 +7,7 @@ export class TimetableSettingSeeder {
         return parallel(
             timetableDump,
             item => TimetableSettingModel.findOneAndUpdate(
-                { _id: item._id }, { $set: item }, { upsert: true }
+                { _id: item._id }, { $set: item }, { new: true, useFindAndModify: true, upsert: true }
             )
         );
     }

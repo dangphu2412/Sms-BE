@@ -6,7 +6,7 @@ import { BaseContainer } from 'packages/container/core/container';
 import { parallel, serial } from 'packages/taskExecution';
 
 export class BaseProcessor {
-    #collector;
+    collector;
 
     #tasks = [];
 
@@ -18,7 +18,7 @@ export class BaseProcessor {
         if (!(collector instanceof BaseContainer)) {
             throw new Error('collector is not instance of BaseContainer');
         }
-        this.#collector = collector;
+        this.collector = collector;
     }
 
     setTasks(tasks) {
@@ -56,11 +56,11 @@ export class BaseProcessor {
     async process() {
         console.log('\x1B[92mCollecting instances');
 
-        await this.#collector.collect();
+        await this.collector.collect();
 
-        this.#tasks = await parallel(Object.keys(this.#collector.store), key => {
+        this.#tasks = await parallel(Object.keys(this.collector.store), key => {
             console.log(`Collecting: ${key}`);
-            return this.#collector.store[key];
+            return this.collector.store[key];
         });
 
         console.log('\x1B[92mConnecting to database');
@@ -80,13 +80,14 @@ export class BaseProcessor {
         await serial(this.#tasks, async task => {
             if (await this.preRun(task)) {
                 console.log(`\x1B[92m🐧 ========== Running task: ${task.name} ===========🐧`);
-                await task.run();
+                const data = await task.run();
+                console.log(data);
                 console.log(`🐧 ========== Finish task: ${task.name} ===========🐧`);
                 await this.afterRun(task);
             }
         });
 
-        await this.afterProcess(this.tasks);
+        await this.afterProcess(this.#tasks);
         console.log('\x1B[31mFinish process');
     }
 }

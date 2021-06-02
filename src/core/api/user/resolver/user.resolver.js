@@ -20,6 +20,14 @@ export const UserResolver = Module.builder()
             preAuthorization: true
         },
         {
+            route: '/:id/timetables',
+            method: 'get',
+            params: [ObjectId],
+            interceptors: [new IdObjectInterceptor()],
+            controller: UserController.findTimetables,
+            preAuthorization: true
+        },
+        {
             route: '/:id',
             method: 'get',
             params: [ObjectId],

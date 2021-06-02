@@ -25,6 +25,11 @@ class Controller {
         return ValidHttpResponse.toOkResponse(pagedData);
     }
 
+    findTimetables = async req => {
+        const data = await this.service.findTimetables(req.params.id);
+        return ValidHttpResponse.toOkResponse(data);
+    }
+
     createOne = async req => {
         const data = await this.service.createOne(CreateUserDto(req.body));
         return ValidHttpResponse.toCreatedResponse(data);

@@ -47,6 +47,16 @@ class Repository extends BaseRepository {
                 select: '_id profile.firstName profile.lastName avatar'
             });
     }
+
+    getByUserId(id) {
+        return this.model.find({ members: id })
+            .select('_id name description')
+            .populate({
+                path: 'leader',
+                match: { deletedAt: { $eq: null } },
+                select: '_id profile.firstName profile.lastName avatar',
+            });
+    }
 }
 
 export const GroupRepository = new Repository();

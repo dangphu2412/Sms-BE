@@ -9,3 +9,4 @@ export const JWT_SECRET = process.env.JWT_SECRET || 'Phudeptrai';
 export const EXPIRE_DAYS = process.env.EXPIRE_DAYS || '1d';
 export const { DATABASE_URL } = process.env;
 export const CORS_ALLOW = process.env.CORS_ALLOW ? process.env.CORS_ALLOW : '*';
+export const ROOT_DIR = process.env === 'production' ? `${process.cwd()}/dist` : `${process.cwd()}/src`;

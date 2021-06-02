@@ -1,3 +1,4 @@
+import { ROOT_DIR } from 'core/env';
 import { logger } from 'core/utils';
 import multer from 'multer';
 import path from 'path';
@@ -10,7 +11,7 @@ class MulterHandler {
 
     constructor() {
         logger.info(`[${MulterHandler.name}] is building`);
-        this.#DESTINATION_PATH = path.join(`${process.cwd()}/src/core/uploads`);
+        this.#DESTINATION_PATH = `${ROOT_DIR}/core/uploads`;
         this.init();
     }
 

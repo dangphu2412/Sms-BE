@@ -17,6 +17,6 @@ export const ExcelResolver = Module.builder()
             consumes: ['multipart/form-data'],
             interceptors: [new MulterInterceptor()],
             controller: ExcelController.uploadOne,
-            preAuthorization: true
+            preAuthorization: false
         }
     ]);

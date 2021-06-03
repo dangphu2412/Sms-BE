@@ -45,7 +45,7 @@ class Service {
                     profile: {
                         firstName: user['Tên'],
                         lastName: user['Họ và tên đệm'],
-                        birthday: toTimestamp(user['Ngày sinh']) || null,
+                        birthday: birthday || null,
                         phone: user['SĐT']
                     }
                 });

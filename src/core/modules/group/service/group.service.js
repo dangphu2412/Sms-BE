@@ -1,5 +1,5 @@
 import { GroupFetchCase } from 'core/common/enum/groupFetchCase';
-import { DuplicateException, BadRequestException } from '../../../../packages/httpException';
+import { DuplicateException, BadRequestException, NotFoundException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
 import { logger } from '../../logger/winston';
 import { Optional } from '../../../utils/optional';
@@ -96,6 +96,13 @@ class Service {
         default:
             throw new BadRequestException('Unsupported type');
         }
+    }
+
+    async deleteMember(id, deleteMembers) {
+        Optional
+            .of(await this.groupRepository.getGeneralById(id))
+            .throwIfNullable(new NotFoundException('Group not found!'));
+        return this.groupRepository.deleteMember(id, deleteMembers);
     }
 
     #updateChildInParent = async (groupId, parentId) => {

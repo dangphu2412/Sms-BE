@@ -34,5 +34,10 @@ class Controller {
         const data = await this.service.findOne(req.params.id, req.query.type);
         return ValidHttpResponse.toOkResponse(data);
     }
+
+    deleteMember = async req => {
+        await this.service.deleteMember(req.params.id, req.body.deleteIds);
+        return ValidHttpResponse.toNoContentResponse();
+    }
 }
 export const GroupController = new Controller();

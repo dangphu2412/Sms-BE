@@ -26,7 +26,7 @@ class Controller {
     }
 
     findTimetables = async req => {
-        const data = await this.service.findTimetables(req.params.id);
+        const data = await this.service.findTimetables(req.params.id, req.query);
         return ValidHttpResponse.toOkResponse(data);
     }
 

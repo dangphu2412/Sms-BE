@@ -1,17 +1,15 @@
 import { extendBaseModel } from 'core/infrastructure/model';
 import { Types, model } from 'mongoose';
 import { ActivityModel } from 'core/modules/activity/model/activity.model';
+import { UserModel } from 'core/modules/user/model/userModel';
+import { GroupModel } from 'core/modules/group/model/groupModel';
 import { TimetableSettingModel } from '../../timetableSetting/model/timetableSetting.model';
 
 const schema = extendBaseModel({
-    userId: { type: String, required: true },
-    dayOfWeek: {
-    // Day in week registered Sun-0, Mon-1, Tue-2
-        type: Number,
-        required: true,
-    },
+    userId: { type: Types.ObjectId, default: null, ref: UserModel },
+    groupId: { type: Types.ObjectId, default: null, ref: GroupModel },
     type: {
-    // Type of timetable // permanent / temptation
+        // Type of timetable // permanent , temporary
         type: String,
         required: true,
     },
@@ -35,7 +33,4 @@ const schema = extendBaseModel({
     },
 });
 
-export const TimetableModel = model(
-    'timetables',
-    schema,
-);
+export const TimetableModel = model('timetables', schema);

@@ -18,13 +18,14 @@ class Repository extends BaseRepository {
      * @returns
      */
     getManyByUserAndRegisterTime(conditions) {
-        conditions = conditions.map(item => ({
+        conditions = conditions?.map(item => ({
             userId: item.userId,
             'registerTime._id': item.registerTimeId
         }));
         return this.find({
             $or: conditions,
-            isActive: true
+            isActive: true,
+            isApproved: true,
         });
     }
 
@@ -36,6 +37,89 @@ class Repository extends BaseRepository {
                 match: { deletedAt: { $eq: null } },
                 select: 'name isActive'
             });
+    }
+
+    /**
+     * Get current timetable of group according to setting
+     * @param {Array} conditions
+     * [
+     *  {
+     *    groupId: ObjectId,
+     *    registerTimeId: ObjectId
+     *  }
+     * ]
+     * @returns
+     */
+    getManyByGroupAndRegisterTime(conditions) {
+        conditions = conditions?.map(item => ({
+            groupId: item.groupId,
+            'registerTime._id': item.registerTimeId
+        }));
+        return this.find({
+            $or: conditions,
+            isActive: true,
+            isApproved: true,
+        });
+    }
+
+    /**
+     * Get current timetable of group
+     * @param {Array} conditions
+     * [
+     *  {
+     *    groupId: ObjectId,
+     *    startDate: Date,
+     *    endDate: Date
+     *  }
+     * ]
+     * @returns
+     */
+    getManyByGroupsAndDateRange(conditions) {
+        conditions = conditions?.map(item => ({
+            groupId: item.groupId,
+            startDate: {
+                $gt: item.startDate
+            },
+            $or: [
+                { endDate: { $lte: item.endDate } },
+                { endDate: null }
+            ]
+        }));
+        if (!conditions.length) return [];
+        return this.find({
+            $or: conditions,
+            isApproved: true,
+        });
+    }
+
+    /**
+     * Get current timetable of group
+     * @param {Array} conditions
+     * [
+     *  {
+     *    userId: ObjectId,
+     *    startDate: Date,
+     *    endDate: Date
+     *  }
+     * ]
+     * @returns
+     */
+    getManyByUsersAndDateRange(conditions) {
+        conditions = conditions?.map(item => ({
+            groupId: item.userId,
+            startDate: {
+                $gt: item.startDate
+            },
+            $or: [
+                { endDate: { $lte: item.endDate } },
+                { endDate: null }
+            ]
+        }));
+        if (!conditions.length) return [];
+        return this.find({
+            $or: conditions,
+            isApproved: true,
+        });
     }
 }
 

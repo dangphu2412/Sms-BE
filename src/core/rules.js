@@ -6,14 +6,17 @@ export const Rules = {
     }
 };
 
-export const ROLE = {
+export const Role = {
+    ADMIN: {
+        name: 'ADMIN',
+        permissions: ['TEST_AUTHORIZATION']
+    },
     LEADER: {
+        name: 'LEADER',
         permissions: ['TEST_AUTHORIZATION']
     },
-    STAFF: {
-        permissions: ['TEST_AUTHORIZATION']
-    },
-    SUPPORTER: {
+    MEMBER: {
+        name: 'MEMBER',
         permissions: ['TEST_AUTHORIZATION']
     }
 };

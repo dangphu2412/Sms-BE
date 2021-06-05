@@ -1,5 +1,6 @@
 import express from 'express';
 import { getUserContext } from 'packages/authModel/module/user/UserContext';
+import { ForbiddenException } from 'packages/httpException/ForbiddenException';
 import { logger } from '../../core/modules/logger/winston';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
 import { SwaggerContentCreator } from '../swagger/core/content';
@@ -63,7 +64,7 @@ export class Module {
             const canActive = await guardClass.canActive(req);
 
             if (!canActive) {
-                return next(new UnAuthorizedException('Unauthorized'));
+                return next(new ForbiddenException('You do not have permission to do this action! Please contact admin about this'));
             }
             return next();
         };

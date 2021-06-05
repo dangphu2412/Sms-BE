@@ -5,7 +5,10 @@ export class AuthorizationLookup extends BaseContainer {
         ? `${process.cwd()}/dist/**/*.service.js`
         : `${process.cwd()}/src/**/*.service.js`;
 
-    static builder() {
-        return new AuthorizationLookup();
+    constructor(pattern) {
+        super();
+        if (pattern) {
+            this.pattern = pattern;
+        }
     }
 }

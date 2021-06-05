@@ -150,3 +150,14 @@ Optional
     // We can get that data which we pass in from beginning
     .get();
 ```
+
+#CHANGELOG-28/5/2021
+## [Structure] ☕ Apply mogp for migrating, seeding, rollback data into project
+- Add file mogp.config.json into our project with config as example file
+- Have scripts for running migration, seeding, rollback in package.json.
+
+#CHANGELOG-10/6/2021
+
+## [Structure] ☕ Apply simple role authorization to api
+- With simple class SpecificRoleGuard and UnionRoleGuard which will be applied into guards
+- For reuse purpose so we do have RoleDomain that will provide method to validate role

@@ -1,3 +1,4 @@
+import { hasAdminRole } from 'core/modules/auth/guard/roleDomain';
 import { Module } from '../../../../packages/handler/Module';
 import { ExcelController } from '../controller/excel.controller';
 import { MulterInterceptor } from '../../../modules/excel/validator';
@@ -16,6 +17,7 @@ export const ExcelResolver = Module.builder()
             params: [uploadFileSwagger],
             consumes: ['multipart/form-data'],
             interceptors: [new MulterInterceptor()],
+            guards: [hasAdminRole],
             controller: ExcelController.uploadOne,
             preAuthorization: true
         }

@@ -1,3 +1,4 @@
+import { hasAdminRole, hasLeaderRole } from 'core/modules/auth/guard/roleDomain';
 import { Module } from '../../../../packages/handler/Module';
 import { UserController } from '../controller/user.controller';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
@@ -17,6 +18,7 @@ export const UserResolver = Module.builder()
             route: '/',
             method: 'get',
             params: ApiFilterSwagger,
+            guards: [hasAdminRole],
             controller: UserController.findAll,
             preAuthorization: true
         },
@@ -25,6 +27,7 @@ export const UserResolver = Module.builder()
             method: 'get',
             params: [ObjectId],
             interceptors: [new IdObjectInterceptor()],
+            guards: [hasLeaderRole],
             controller: UserController.findTimetables,
             preAuthorization: true
         },
@@ -33,6 +36,7 @@ export const UserResolver = Module.builder()
             method: 'get',
             params: [ObjectId],
             interceptors: [new IdObjectInterceptor()],
+            guards: [hasAdminRole],
             controller: UserController.findOne,
             preAuthorization: true
         },
@@ -41,6 +45,7 @@ export const UserResolver = Module.builder()
             method: 'post',
             body: 'UpsertUserDto',
             interceptors: [new CreateUserInterceptor()],
+            guards: [hasAdminRole],
             controller: UserController.createOne,
             preAuthorization: true
         },
@@ -53,6 +58,7 @@ export const UserResolver = Module.builder()
                 new IdObjectInterceptor(),
                 new UpdateProfileInterceptor()
             ],
+            guards: [hasAdminRole],
             controller: UserController.patchOne,
             preAuthorization: true
         },
@@ -60,6 +66,7 @@ export const UserResolver = Module.builder()
             route: '/:id',
             method: 'delete',
             params: [ObjectId],
+            guards: [hasAdminRole],
             interceptors: [new IdObjectInterceptor()],
             controller: UserController.deleteOne,
             preAuthorization: true

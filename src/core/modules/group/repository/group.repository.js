@@ -57,6 +57,10 @@ class Repository extends BaseRepository {
                 select: '_id profile.firstName profile.lastName avatar',
             });
     }
+
+    deleteMember(groupId, memberIds) {
+        return this.model.updateMany({ _id: groupId }, { $pullAll: { members: memberIds } });
+    }
 }
 
 export const GroupRepository = new Repository();

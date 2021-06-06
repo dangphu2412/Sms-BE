@@ -3,6 +3,7 @@ import { Module } from '../../../../packages/handler/Module';
 import { GroupController } from '../controller/group.controller';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
 import { CreateGroupInterceptor } from '../../../modules/group/validator/createGroup.interceptor';
+import { DeleteMemberInterceptor } from '../../../modules/group/validator/deleteMember.interceptor';
 import { IdObjectInterceptor } from '../../../modules/interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';
 
@@ -34,6 +35,14 @@ export const GroupResolver = Module.builder()
             params: [ObjectId, GroupType],
             controller: GroupController.findOne,
             interceptors: [new IdObjectInterceptor()],
+            preAuthorization: true
+        },
+        {
+            route: '/:id/members',
+            method: 'patch',
+            params: [ObjectId],
+            controller: GroupController.deleteMember,
+            interceptors: [new IdObjectInterceptor(), new DeleteMemberInterceptor()],
             preAuthorization: true
         }
     ]);

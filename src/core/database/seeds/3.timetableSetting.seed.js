@@ -1,11 +1,11 @@
 import { TimetableSettingModel } from 'core/modules/timetableSetting/model/timetableSetting.model';
 import { parallel } from 'packages/taskExecution';
-import { timetableDump } from '../data/init';
+import { timetableSettingDump } from '../data/init';
 
 export class TimetableSettingSeeder {
     static run() {
         return parallel(
-            timetableDump,
+            timetableSettingDump,
             item => TimetableSettingModel.findOneAndUpdate(
                 { _id: item._id }, { $set: item }, { new: true, useFindAndModify: true, upsert: true }
             )

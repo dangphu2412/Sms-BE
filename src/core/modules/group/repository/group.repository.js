@@ -50,7 +50,7 @@ class Repository extends BaseRepository {
 
     getByUserId(id) {
         return this.model.find({ members: id })
-            .select('_id name description')
+            .select(['_id', 'name', 'description', 'registerTime'])
             .populate({
                 path: 'leader',
                 match: { deletedAt: { $eq: null } },

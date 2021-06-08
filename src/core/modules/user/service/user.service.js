@@ -1,4 +1,7 @@
 import { Optional } from 'core/utils/optional';
+import { keyBy } from 'lodash';
+import moment from 'moment';
+import { toJSON } from 'core/utils';
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
@@ -100,15 +103,32 @@ class Service {
         return { _id: createdUser._id };
     }
 
-    async findTimetables(userId) {
+    async findTimetables(userId, query) {
+        const { startDate = moment().subtract(7, 'days').toISOString(), endDate = moment().add(7, 'days').toISOString() } = query;
         Optional.of(await this.userRepository.findById(userId))
             .throwIfNotPresent(new NotFoundException('User Id is invalid'));
-
         const groups = await this.groupRepository.getByUserId(userId);
-        const timetables = await this.timetableRepository.getByUserId(userId);
+        const groupMapped = keyBy(groups, '_id');
+
+        // Get  timetable of user and timetable of group (of user) in date range
+        const conditionGroupTimetable = groups.map(group => ({ groupId: group.id, startDate, endDate }));
+        const conditionUserTimetable = [{ userId, startDate, endDate }];
+        const groupTimetable = await this.timetableRepository.getManyByGroupsAndDateRange(conditionGroupTimetable);
+        const userTimetable = toJSON(await this.timetableRepository.getManyByGroupsAndDateRange(conditionUserTimetable));
+        const timetableGroupMapped = keyBy(groupTimetable, 'registerTime._id');
+
+        userTimetable.forEach((timetable, index) => {
+            userTimetable[index].groups = [];
+            // If the timetable of user concides with group timetable
+            if (timetableGroupMapped[timetable.registerTime?._id]) {
+                userTimetable[index].groups.push(groupMapped[timetableGroupMapped[timetable.registerTime?._id].groupId]);
+            }
+        });
         return {
-            groups,
-            timetables,
+            contents: userTimetable,
+            meta: {
+                totalRecord: userTimetable.length
+            }
         };
     }
 

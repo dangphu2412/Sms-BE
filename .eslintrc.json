@@ -45,10 +45,10 @@
         ],
         "import/no-unresolved": "off",
         "no-trailing-spaces": [
-            "error", 
+            "error",
             { "ignoreComments": true }
         ],
-        "max-len": ["error", 120, 2, {
+        "max-len": ["error", 150, 2, {
             "ignoreUrls": true,
             "ignoreComments": true,
             "ignoreRegExpLiterals": true,

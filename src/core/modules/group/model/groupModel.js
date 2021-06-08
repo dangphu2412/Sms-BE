@@ -11,24 +11,28 @@ const schema = extendBaseModel({
         type: String,
         trim: true,
     },
-    childs: [{
-        type: Schema.Types.ObjectId,
-        ref: 'groups'
-    }],
+    childs: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'groups',
+        },
+    ],
     parent: {
         type: Schema.Types.ObjectId,
         ref: 'groups',
-        default: null
+        default: null,
     },
     leader: {
         type: Schema.Types.ObjectId,
         ref: 'users',
-        default: null
+        default: null,
     },
-    members: [{
-        type: Schema.Types.ObjectId,
-        ref: 'users'
-    }],
+    members: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'users',
+        },
+    ],
     createdAt: { type: Date },
     updatedAt: { type: Date },
     deletedAt: { type: Date, default: null },

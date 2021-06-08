@@ -140,15 +140,13 @@ class Service {
         return user;
     }
 
-    // TODO: Update user in the future
-    async patchOne({ id }, { email, password, roles }) {
+    async patchOne({ id }, data) {
+        Object.keys(data.profile).forEach(key => (data.profile[key] === undefined ? delete data.profile[key] : {}));
         const user = await this.userRepository.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        user.email = email ?? user.email;
-        user.password = password ?? user.password;
-        user.roles = roles ?? user.roles;
+        user.profile = { ...user.profile, ...data.profile };
         return user.save();
     }
 

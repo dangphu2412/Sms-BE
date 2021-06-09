@@ -5,6 +5,7 @@ const schema = extendBaseModel({
     name: {
         type: String,
         unique: true,
+        trim: true,
         required: [true, 'Group name is empty'],
     },
     description: {

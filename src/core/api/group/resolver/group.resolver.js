@@ -1,4 +1,5 @@
 import { GroupType } from 'core/common/swagger/groupType';
+import { hasAdminOrLeaderRole, hasAdminRole } from 'core/modules/auth/guard/roleDomain';
 import { Module } from '../../../../packages/handler/Module';
 import { GroupController } from '../controller/group.controller';
 import { ApiFilterSwagger } from '../../../common/swagger/filter';
@@ -19,6 +20,7 @@ export const GroupResolver = Module.builder()
             method: 'post',
             interceptors: [new CreateGroupInterceptor()],
             body: 'CreateGroupDto',
+            guards: [hasAdminRole],
             controller: GroupController.createOne,
             preAuthorization: true
         },
@@ -26,6 +28,7 @@ export const GroupResolver = Module.builder()
             route: '/',
             method: 'get',
             params: ApiFilterSwagger,
+            guards: [hasAdminOrLeaderRole],
             controller: GroupController.findAll,
             preAuthorization: true
         },
@@ -33,8 +36,9 @@ export const GroupResolver = Module.builder()
             route: '/:id',
             method: 'get',
             params: [ObjectId, GroupType],
-            controller: GroupController.findOne,
             interceptors: [new IdObjectInterceptor()],
+            guards: [hasAdminOrLeaderRole],
+            controller: GroupController.findOne,
             preAuthorization: true
         },
         {

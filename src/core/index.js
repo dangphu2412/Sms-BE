@@ -22,7 +22,7 @@ const app = express();
         .applyGlobalFilters([new HttpExceptionFilter(), new InvalidUrlFilter()])
         .run();
 
-    const container = await AuthorizationLookup.builder().collect();
+    const container = await new AuthorizationLookup().collect();
     AuthorizationValidator.addAuthorizeStore(container);
 })();
 

@@ -80,11 +80,11 @@ class Service {
 
     async createOne(data) {
         let createdUser;
-        const user = await this.userRepository.getByEmail(data.email);
+        const user = Optional
+            .of(await this.userRepository.getByEmail(data.email))
+            .throwIfPresent(new DuplicateException('Email is used'))
+            .get();
 
-        if (user && user?.deletedAt === null) {
-            throw new DuplicateException('Email is used');
-        }
         if (user?.status === UserStatus.SUSPEND) {
             throw new BadRequestException('This account is not available at the moment');
         }

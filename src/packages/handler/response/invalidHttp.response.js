@@ -7,7 +7,7 @@ export class InValidHttpResponse extends HttpResponse {
 
     message;
 
-    constructor(status, code, message, detail = null) {
+    constructor(status, code, message, detail) {
         super(status, {
             message,
             code,

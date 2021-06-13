@@ -1,21 +1,26 @@
 import { extendBaseModel } from 'core/infrastructure/model';
-import { Types, model } from 'mongoose';
-import { ActivityModel } from 'core/modules/activity/model/activity.model';
-import { UserModel } from 'core/modules/user/model/userModel';
-import { GroupModel } from 'core/modules/group/model/groupModel';
-import { TimetableSettingModel } from '../../timetableSetting/model/timetableSetting.model';
+import { Schema, model } from 'mongoose';
 
 const schema = extendBaseModel({
-    userId: { type: Types.ObjectId, default: null, ref: UserModel },
-    groupId: { type: Types.ObjectId, default: null, ref: GroupModel },
+    userId: {
+        type: Schema.Types.ObjectId,
+        default: null,
+        ref: 'users'
+    },
+    groupId: {
+        type: Schema.Types.ObjectId,
+        default: null,
+        ref: 'groups'
+    },
     type: {
         // Type of timetable // permanent , temporary
         type: String,
         required: true,
     },
     registerTime: {
-        type: TimetableSettingModel.schema,
-        require: true,
+        type: Schema.Types.ObjectId,
+        ref: 'timetable_settings',
+        required: true
     },
     startDate: {
         type: Date,
@@ -25,12 +30,20 @@ const schema = extendBaseModel({
         type: Date,
         default: null,
     },
-    isActive: { type: Boolean, default: true },
-    isApproved: { type: Boolean, default: false },
-    activities: {
-        type: [Types.ObjectId],
-        ref: ActivityModel,
+    isActive: {
+        type: Boolean,
+        default: true
     },
+    isApproved: {
+        type: Boolean,
+        default: false
+    },
+    activities: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'activities',
+        },
+    ]
 });
 
 export const TimetableModel = model('timetables', schema);

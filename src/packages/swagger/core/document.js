@@ -27,6 +27,9 @@ export class SwaggerDocument {
         file: {
             type: 'file',
         },
+        object: {
+            type: 'object',
+        },
         array: (item, params = {}) => {
             if (SwaggerDocument.PRIMITIVE_TYPES.includes(item)) {
                 return {

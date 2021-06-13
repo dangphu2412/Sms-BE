@@ -133,7 +133,7 @@ class Service {
     }
 
     async findOne({ id }) {
-        const user = await this.userRepository.getDetailById(id);
+        const user = await this.userRepository.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }

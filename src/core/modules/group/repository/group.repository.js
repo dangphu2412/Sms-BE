@@ -1,7 +1,7 @@
-import { BaseRepository } from '../../../infrastructure/repository';
+import { DataRepository } from 'packages/restBuilder/core/dataHandler/data.repository';
 import { GroupModel } from '../model/groupModel';
 
-class Repository extends BaseRepository {
+class Repository extends DataRepository {
     constructor() {
         super(GroupModel);
     }

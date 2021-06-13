@@ -18,13 +18,9 @@ export class PaginationFactory {
         PaginationFactory.logger.info(`[${PaginationFactory.name}] is building`);
     }
 
-    produce(req) {
-        return this.transform(req);
-    }
-
-    transform(input) {
-        let parsedPage = Number.parseInt(input.page, PaginationFactory.DEFAULT_RADIX);
-        let parsedSize = Number.parseInt(input.size, PaginationFactory.DEFAULT_RADIX);
+    produce({ page, size }) {
+        let parsedPage = Number.parseInt(page, PaginationFactory.DEFAULT_RADIX);
+        let parsedSize = Number.parseInt(size, PaginationFactory.DEFAULT_RADIX);
 
         if (Number.isNaN(parsedPage)) {
             parsedPage = PaginationFactory.DEFAULT_PAGE;

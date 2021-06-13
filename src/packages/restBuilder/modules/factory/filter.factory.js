@@ -1,3 +1,4 @@
+import { FilterSign } from 'packages/restBuilder/enum';
 import { logger } from '../../../../core/modules/logger/winston';
 import { FilterValidator } from '../validator/filter.validator';
 
@@ -10,36 +11,31 @@ export class FilterFactory {
         FilterFactory.logger.info(`[${FilterFactory.name}] is building`);
     }
 
-    produce(req) {
-        return this.transform(req);
-    }
-
-    transform(input) {
-        const { filter } = input;
+    produce({ filter }) {
         let listFilter = [];
 
         if (!filter || filter.length === 0) return listFilter;
 
         if (typeof filter === 'string') {
-            listFilter.push(this.transformOne(filter));
+            listFilter.push(this.transform(filter));
             return listFilter;
         }
 
         if (typeof filter === 'object') {
-            listFilter = filter.map(item => this.transformOne(item));
+            listFilter = filter.map(item => this.transform(item));
         }
 
         return listFilter;
     }
 
-    transformOne(filter) {
+    transform(filter) {
         const filterItems = filter.split('|');
 
         FilterFactory.filterValidator.validate(filterItems);
 
         return {
             column: filterItems[0],
-            sign: filterItems[1],
+            sign: FilterSign[filterItems[1]],
             value: filterItems[2]
         };
     }

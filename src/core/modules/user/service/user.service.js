@@ -2,6 +2,7 @@ import { Optional } from 'core/utils/optional';
 import { keyBy } from 'lodash';
 import moment from 'moment';
 import { toJSON } from 'core/utils';
+import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
@@ -12,76 +13,19 @@ import { toDateTime } from '../../../utils/timeConvert';
 import { GroupRepository } from '../../group/repository/group.repository';
 import { TimetableRepository } from '../../timetable/repository';
 
-class Service {
+class Service extends DataPersistenceService {
     constructor() {
+        super(UserRepository);
         this.bcrypt = BcryptService;
-        this.userRepository = UserRepository;
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
         this.logger = logger;
     }
 
-    /**
-     * ENHANCEMENT:
-     * - Will move all these logic into restBuilder package
-     * - Package contains: FilterDocument, SortDocument, SearchDocument
-     * @param reqTransformed
-     */
-    async findAll(reqTransformed) {
-        const findBuilder = this.userRepository.model.find();
-        const countBuilder = this.userRepository.model.find();
-        const filterDocument = {};
-        const sortDocument = {};
-
-        reqTransformed.filters.forEach(filter => {
-            if (!filterDocument[filter.column]) {
-                filterDocument[filter.column] = {};
-            }
-
-            filterDocument[filter.column][filter.sign] = filter.value;
-        });
-
-        reqTransformed.sorts.forEach(sortItem => {
-            sortDocument[sortItem.sort] = sortItem.order;
-        });
-
-        if (reqTransformed.search) {
-            const searchObj = {
-                $or: []
-            };
-
-            const searchRegex = {
-                $regex: reqTransformed.search.value, $options: 'i'
-            };
-            reqTransformed.search.criteria.forEach(searchField => {
-                const obj = {};
-                obj[searchField] = searchRegex;
-                searchObj['$or'].push(obj);
-            });
-            findBuilder.find(searchObj);
-            countBuilder.find(searchObj);
-        }
-
-        findBuilder.find(filterDocument);
-        findBuilder.sort(sortDocument);
-
-        countBuilder.find(filterDocument);
-        countBuilder.sort(sortDocument);
-        const users = findBuilder
-            .limit(reqTransformed.pagination.size)
-            .skip(reqTransformed.pagination.offset);
-
-        const countUsers = countBuilder.countDocuments();
-        return Promise.all([
-            users,
-            countUsers
-        ]);
-    }
-
     async createOne(data) {
         let createdUser;
         const user = Optional
-            .of(await this.userRepository.getByEmail(data.email))
+            .of(await this.repository.getByEmail(data.email))
             .throwIfPresent(new DuplicateException('Email is used'))
             .get();
 
@@ -95,7 +39,7 @@ class Service {
         data.password = this.bcrypt.hash(data.password);
 
         try {
-            createdUser = await this.userRepository.create(data);
+            createdUser = await this.repository.model.create(data);
         } catch (e) {
             this.logger.error(e.message);
             return null;
@@ -105,7 +49,7 @@ class Service {
 
     async findTimetables(userId, query) {
         const { startDate = moment().subtract(7, 'days').toISOString(), endDate = moment().add(7, 'days').toISOString() } = query;
-        Optional.of(await this.userRepository.findById(userId))
+        Optional.of(await this.repository.findById(userId))
             .throwIfNotPresent(new NotFoundException('User Id is invalid'));
         const groups = await this.groupRepository.getByUserId(userId);
         const groupMapped = keyBy(groups, '_id');
@@ -133,7 +77,7 @@ class Service {
     }
 
     async findOne({ id }) {
-        const user = await this.userRepository.getDetailById(id);
+        const user = await this.repository.getDetailById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
@@ -142,7 +86,7 @@ class Service {
 
     async patchOne({ id }, data) {
         Object.keys(data.profile).forEach(key => (data.profile[key] === undefined ? delete data.profile[key] : {}));
-        const user = await this.userRepository.findById(id);
+        const user = await this.repository.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
@@ -154,7 +98,7 @@ class Service {
     async deleteOne({ id }) {
         let user;
         try {
-            user = await this.userRepository.findByIdAndDelete(id);
+            user = await this.repository.model.findByIdAndDelete(id);
         } catch (e) {
             this.logger.error(e.message);
         }
@@ -173,7 +117,7 @@ class Service {
      * TODO: remove in the future
      */
     mustBeAuthor = async () => {
-        const data = await this.userRepository.count();
+        const data = await this.repository.count();
         return data;
     }
 

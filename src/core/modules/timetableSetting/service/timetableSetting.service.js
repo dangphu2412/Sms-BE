@@ -8,7 +8,7 @@ class Service {
     }
 
     createOne(payload) {
-        return this.timetableSettingRepository.create(payload);
+        return this.timetableSettingRepository.model.create(payload);
     }
 
     updateOne(id, payload) {

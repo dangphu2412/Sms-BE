@@ -12,7 +12,8 @@
     "build": "npm run clean && npm run build:babel",
     "seed": "babel-node ./src/packages/mogp/core/seeding",
     "migrate": "babel-node ./src/packages/mogp/core/migration",
-    "rollback": "babel-node ./src/packages/mogp/core/rollback"
+    "rollback": "babel-node ./src/packages/mogp/core/rollback",
+    "data:prepare": "npm run build && npm run rollback && npm run seed && npm run migrate"
   },
   "repository": {
     "type": "git",

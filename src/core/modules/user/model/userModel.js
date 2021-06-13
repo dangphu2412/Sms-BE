@@ -1,6 +1,7 @@
 import { extendBaseModel } from 'core/infrastructure/model';
 import { Schema, model } from 'mongoose';
 import { Role, UserStatus } from '../../../common/enum';
+import { saveFullNameHook } from './hooks';
 
 const DEFAULT_AVATAR = 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg';
 
@@ -19,7 +20,7 @@ const schema = extendBaseModel({
     },
     fingerPrint: { type: String, default: null },
     status: {
-        type: Number,
+        type: String,
         default: UserStatus.AVAILABLE,
         enum: [UserStatus.AVAILABLE, UserStatus.PENDING, UserStatus.SUSPEND]
     },
@@ -31,6 +32,9 @@ const schema = extendBaseModel({
     profile: {
         firstName: { type: String, trim: true, default: null },
         lastName: { type: String, trim: true, default: null },
+        fullName: {
+            type: String, trim: true, default: null, index: true
+        },
         birthday: { type: Date, default: null },
         phone: { type: String, trim: true, default: null },
         hometown: { type: String, default: null },
@@ -46,5 +50,7 @@ const schema = extendBaseModel({
     updatedAt: { type: Date },
     deletedAt: { type: Date, default: null },
 });
+
+schema.pre(['save', 'updateOne'], saveFullNameHook);
 
 export const UserModel = model('users', schema);

@@ -85,7 +85,7 @@ class Service {
         const existedTimeTableIds = (dtos.filter(timetable => timetable._id) || []).map(
             timetable => timetable._id
         );
-        await this.timetableRepository.createMany(dtos.filter(timetable => !timetable._id));
+        await this.timetableRepository.model.insertMany(dtos.filter(timetable => !timetable._id));
         if (existedTimeTableIds.length) {
             await Promise.all(dtos.filter(timetable => timetable._id !== null)?.map(async timetable => {
                 await this.timetableRepository.updateById(timetable._id, timetable);
@@ -142,7 +142,7 @@ class Service {
             timetable => timetable._id
         );
 
-        await this.timetableRepository.createMany(dtos.filter(timetable => !timetable._id));
+        await this.timetableRepository.model.insertMany(dtos.filter(timetable => !timetable._id));
         if (existedTimeTableIds.length) {
             await Promise.all(dtos.filter(timetable => timetable._id !== null)?.map(async timetable => {
                 await this.timetableRepository.updateById(timetable._id, timetable);

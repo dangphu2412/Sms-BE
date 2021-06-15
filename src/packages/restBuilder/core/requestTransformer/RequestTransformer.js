@@ -19,6 +19,21 @@ import { SearchFactory } from '../../modules/factory/search.factory';
      }
  */
 export class RequestTransformer {
+    /**
+     * Method to communicate with other classes
+     * @type {{
+        pagination: {
+            page: number,
+            size: number,
+            offset: number
+        },
+        filters: [{column: string,sign: '$eq' | '$gt' | '$like',value: string}],
+        sorts: [{sort, order}],
+        search,
+        main: string[],
+        associates: string[]
+     }}
+     */
     content;
 
     static paginationFactory = new PaginationFactory();
@@ -56,25 +71,6 @@ export class RequestTransformer {
     }
 
     /**
-     * Method to communicate with other classes
-     * @returns {{
-        pagination: {
-            page: number,
-            size: number,
-            offset: number
-        },
-        filters: [{column: string,sign: '$eq' | '$gt' | '$like',value: string}],
-        sorts: [{sort, order}],
-        search,
-        main: string[],
-        associates
-     }}
-     */
-    translate() {
-        return this.content;
-    }
-
-    /**
      * ! All of these classes will provide method to add filter,sort,search !
      *                          via string method
      */
@@ -101,20 +97,32 @@ export class RequestTransformer {
 
     addSort(input) {
         this.content.sorts.push(
-            RequestTransformer.sortFactory.produce(input)[0]
+            SortFactory.transformOne(input)[0]
         );
         return this;
     }
 
     addFilter(input) {
         this.content.filters.push(
-            RequestTransformer.filterFactory.produce(input)[0]
+            FilterFactory.transformOne(input)[0]
         );
         return this;
     }
 
-    addSearch(input) {
-        this.content.search = input;
+    setSearchValue(value) {
+        this.content.search.value = value;
+        return this;
+    }
+
+    addSearchCriteria(field) {
+        this.content.search.criteria.push(field);
+        return this;
+    }
+
+    addPopulate(populate) {
+        this.content.associates.push(
+            populate
+        );
         return this;
     }
 }

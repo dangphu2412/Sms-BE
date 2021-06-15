@@ -1,7 +1,7 @@
-import { BaseRepository } from 'core/infrastructure/repository';
+import { DataRepository } from 'packages/restBuilder/core/dataHandler/data.repository';
 import { TimetableModel } from '../model/timetable.model';
 
-class Repository extends BaseRepository {
+class Repository extends DataRepository {
     constructor() {
         super(TimetableModel);
     }

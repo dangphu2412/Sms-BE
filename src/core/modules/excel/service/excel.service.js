@@ -66,7 +66,7 @@ class Service {
                 }
                 if ((i % chunkSize === 0 && i !== 0) || (i === parsedUser.length - 1)) {
                     // eslint-disable-next-line no-await-in-loop
-                    await this.userRepository.createMany(payload);
+                    await this.userRepository.model.insertMany(payload);
                     payload = [];
                 }
             }

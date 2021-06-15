@@ -38,7 +38,6 @@ export class Optional {
     }
 
     get() {
-        if (!this.#instance) throw new Error('Should call throwIfNullable first');
         return this.#instance;
     }
 }

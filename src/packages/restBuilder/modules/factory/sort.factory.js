@@ -9,27 +9,23 @@ export class SortFactory {
     }
 
     produce(req) {
-        return this.transform(req);
-    }
-
-    transform(input) {
-        const { sort } = input;
+        const { sort } = req;
         let listSortResult = [];
 
         if (!sort || sort.length === 0) return listSortResult;
 
         if (typeof sort === 'string') {
-            listSortResult.push(SortFactory.transformOne(sort));
+            listSortResult.push(SortFactory.transform(sort));
         }
 
         if (typeof sort === 'object' && sort.length > 0) {
-            listSortResult = sort.map(item => SortFactory.transformOne(item));
+            listSortResult = sort.map(item => SortFactory.transform(item));
         }
 
         return listSortResult;
     }
 
-    static transformOne(sort) {
+    static transform(sort) {
         const sortSchema = {
             sort: '',
             order: SortDirection['-']

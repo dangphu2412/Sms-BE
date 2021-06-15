@@ -11,8 +11,9 @@ function extendSchema(schema, definition, options) {
     );
 }
 
-export function extendBaseModel(definition) {
+export function extendBaseModel(definition, options) {
     return extendSchema(BaseModel, definition, {
-        timestamps: true
+        timestamps: true,
+        ...options
     });
 }

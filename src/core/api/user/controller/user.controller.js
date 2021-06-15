@@ -12,7 +12,7 @@ class Controller {
 
     findAll = async req => {
         const reqTransformed = new RequestTransformer(req.query, SearchUserSchema);
-        const data = await this.service.findAll(reqTransformed.translate());
+        const data = await this.service.getAndCount(reqTransformed);
         const pagedData = Pageable.of(data[0])
             .addMeta(
                 PageableMeta

@@ -29,7 +29,7 @@ export class PageableMeta {
      * @returns {PageableMeta}
      */
     appendRequestFormation(query) {
-        const queryContent = query.translate();
+        const queryContent = query.content;
         this.currentPage = queryContent.pagination.page;
         this.currentSize = queryContent.pagination.size;
         return this;

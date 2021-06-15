@@ -21,9 +21,7 @@ class Controller {
         const pagedData = Pageable.of(data[0])
             .addMeta(
                 PageableMeta
-                    .builder()
-                    .appendRequestFormation(reqTransformed)
-                    .appendTotalRecord(data[1])
+                    .builder(reqTransformed, data[1])
                     .build()
             )
             .build();

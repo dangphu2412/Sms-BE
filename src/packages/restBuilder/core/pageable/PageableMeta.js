@@ -19,30 +19,17 @@ export class PageableMeta {
 
     totalRecord;
 
-    static builder() {
-        return new PageableMeta();
-    }
-
     /**
-     * @notes This method will automatically collect page and size from requestFormation
+     * @notes This method will automatically collect page and size from requestTransform
      * @param {import('../requestTransformer').RequestTransformer} query
      * @returns {PageableMeta}
      */
-    appendRequestFormation(query) {
+    static builder(query, total) {
         const queryContent = query.content;
         this.currentPage = queryContent.pagination.page;
         this.currentSize = queryContent.pagination.size;
-        return this;
-    }
-
-    /**
-     * @notes Apply total record which helping to navigate to the final page
-     * @param {number} total
-     * @returns {PageableMeta}
-     */
-    appendTotalRecord(total) {
         this.totalRecord = total;
-        return this;
+        return new PageableMeta();
     }
 
     /**

@@ -2,7 +2,6 @@ import { ROOT_DIR } from 'core/env';
 import { logger } from 'core/utils';
 import multer from 'multer';
 import path from 'path';
-import { BadRequestException } from '../../packages/httpException';
 
 class MulterHandler {
     #DESTINATION_PATH;
@@ -24,8 +23,8 @@ class MulterHandler {
         return multer({
             storage,
             fileFilter: (req, file, cb) => {
-                const ALLOWED_EXT = ['.xlsx'];
-                if (!ALLOWED_EXT.includes(path.extname(file.originalname))) return cb(new BadRequestException(400, 'File type not allowed'));
+                const ALLOWED_EXT = ['.xlsx', '.jpg', '.jpeg', '.png'];
+                if (!ALLOWED_EXT.includes(path.extname(file.originalname))) return cb(new multer.MulterError('File type not allowed'));
                 return cb(null, true);
             },
         });

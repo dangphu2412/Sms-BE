@@ -1,9 +1,9 @@
 import { responseJoiError } from '../../../utils';
-import { deleteFilesSchema } from './deleteFilesValidator.schema';
+import { deleteMediasSchema } from './deleteFilesValidator.schema';
 
-export class DeleteFilesInterceptor {
+export class DeleteMediasInterceptor {
     intercept(req, res, next) {
-        const result = deleteFilesSchema.validate(req['body']);
+        const result = deleteMediasSchema.validate(req['body']);
         if (result.error) {
             return responseJoiError(res, result.error);
         }

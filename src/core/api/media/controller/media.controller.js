@@ -1,19 +1,19 @@
-import { DeleteFileDto } from 'core/modules/media/dto/deleteFile.dto';
 import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
-import { MediaService } from '../../../modules/media/service/media.service';
+import { DeleteFileDto } from '../../../modules/document/dto/deleteFile.dto';
+import { MediaService } from '../../../modules/document/service/media.service';
 
 class Controller {
     constructor() {
         this.service = MediaService;
     }
 
-    upload = async req => {
-        const data = await this.service.uploadMany(req.files);
+    uploadMany = async req => {
+        const data = await this.service.uploadMany(req.files, 'avatar');
         return ValidHttpResponse.toOkResponse(data);
     }
 
-    delete = async req => {
-        const data = await this.service.deleteMany(DeleteFileDto(req.body).fileIds);
+    deleteMany = async req => {
+        const data = await this.service.deleteMany(DeleteFileDto(req.body).ids);
         return ValidHttpResponse.toOkResponse(data);
     }
 }

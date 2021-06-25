@@ -1,29 +1,21 @@
 import multer from 'multer';
-import { multerHandler } from '../../../config/multer';
+import { MulterUploader } from 'core/modules/document/handler/multer.handler';
 import { logger } from '../../logger/winston';
 import { BadRequestException, InternalServerException } from '../../../../packages/httpException';
 
-export class MulterInterceptor {
-    MAX_FILE = 10;
+export class BaseMulterInterceptor {
+    #uploader;
 
-    fileType;
-
-    fileQuantity;
-
-    constructor(fileType = null, fileQuantity = null) {
-        if (!fileType) {
-            throw new Error('FileType is required when constructoring');
+    constructor(uploader) {
+        if (!(uploader instanceof MulterUploader)) {
+            throw new Error(` uploader must be instance of ${MulterUploader.name}`);
         }
 
-        if (!fileQuantity) {
-            this.fileQuantity = this.MAX_FILE;
-        }
-
-        this.fileType = fileType;
+        this.#uploader = uploader;
     }
 
     intercept = (req, res, next) => {
-        const uploadHandler = multerHandler.getHandler(this.fileType, this.fileQuantity);
+        const uploadHandler = this.#uploader.getHandler();
         return uploadHandler(req, res, err => {
             if (err instanceof multer.MulterError) {
                 logger.error(err.code);

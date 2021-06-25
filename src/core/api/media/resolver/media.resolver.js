@@ -1,8 +1,8 @@
 import { Module } from '../../../../packages/handler/Module';
 import { MediaController } from '../controller/media.controller';
-import { MulterInterceptor } from '../../../modules/interceptor/multer/multer.interceptor';
+import { MediaInterceptor } from '../../../modules/document/validator/media.interceptor';
 import { uploadMediaSwagger } from '../../../common/swagger/uploadFile';
-import { DeleteFilesInterceptor } from '../../../modules/media/validator/deleteFiles.interceptor';
+import { DeleteMediasInterceptor } from '../../../modules/document/validator/deleteFiles.interceptor';
 
 export const MediaResolver = Module.builder()
     .addPrefix({
@@ -16,8 +16,8 @@ export const MediaResolver = Module.builder()
             method: 'post',
             params: [uploadMediaSwagger],
             consumes: ['multipart/form-data'],
-            interceptors: [new MulterInterceptor('image')],
-            controller: MediaController.upload,
+            interceptors: [new MediaInterceptor(10)],
+            controller: MediaController.uploadMany,
             preAuthorization: true
         },
         {
@@ -25,9 +25,9 @@ export const MediaResolver = Module.builder()
             method: 'delete',
             params: [uploadMediaSwagger],
             consumes: ['multipart/form-data'],
-            interceptors: [new DeleteFilesInterceptor()],
+            interceptors: [new DeleteMediasInterceptor()],
             body: 'DeleteFileDto',
-            controller: MediaController.delete,
+            controller: MediaController.deleteMany,
             preAuthorization: true
         },
     ]);

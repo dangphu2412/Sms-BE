@@ -1,8 +1,8 @@
 import { hasAdminRole, hasLeaderRole } from 'core/modules/auth/guard/roleDomain';
+import { interceptIdObject } from 'core/modules/mongoose/idObject.interceptor';
 import { Module } from '../../../../packages/handler/Module';
 import { UserController } from '../controller/user.controller';
-import { ApiFilterSwagger } from '../../../common/swagger/filter';
-import { IdObjectInterceptor } from '../../../modules/interceptor';
+import { DefaultQueryCriteriaDocument } from '../../../common/swagger/filter';
 import { CreateUserInterceptor } from '../../../modules/user/validator/createUser.interceptor';
 import { UpdateProfileInterceptor } from '../../../modules/user/validator/updateProfile.interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';
@@ -17,7 +17,7 @@ export const UserResolver = Module.builder()
         {
             route: '/',
             method: 'get',
-            params: ApiFilterSwagger,
+            params: DefaultQueryCriteriaDocument,
             guards: [hasAdminRole],
             controller: UserController.findAll,
             preAuthorization: true
@@ -26,7 +26,7 @@ export const UserResolver = Module.builder()
             route: '/:id/timetables',
             method: 'get',
             params: [ObjectId],
-            interceptors: [new IdObjectInterceptor()],
+            interceptors: [interceptIdObject],
             guards: [hasLeaderRole],
             controller: UserController.findTimetables,
             preAuthorization: true
@@ -35,7 +35,7 @@ export const UserResolver = Module.builder()
             route: '/:id',
             method: 'get',
             params: [ObjectId],
-            interceptors: [new IdObjectInterceptor()],
+            interceptors: [interceptIdObject],
             guards: [hasAdminRole],
             controller: UserController.findOne,
             preAuthorization: true
@@ -55,7 +55,7 @@ export const UserResolver = Module.builder()
             params: [ObjectId],
             body: 'UpdateProfileDto',
             interceptors: [
-                new IdObjectInterceptor(),
+                interceptIdObject,
                 new UpdateProfileInterceptor()
             ],
             guards: [hasAdminRole],
@@ -67,7 +67,7 @@ export const UserResolver = Module.builder()
             method: 'delete',
             params: [ObjectId],
             guards: [hasAdminRole],
-            interceptors: [new IdObjectInterceptor()],
+            interceptors: [interceptIdObject],
             controller: UserController.deleteOne,
             preAuthorization: true
         }

@@ -1,14 +1,14 @@
 /**
  * @notes
- - This class is a builder
- - It help us to return a format of pagination meta data
- {
+- This class is a builder
+- It help us to return a format of pagination meta data
+{
     currentPage,
     currentSize,
     totalPage,
     totalRecord
- }
- - We need to add content when we construct by of() method
+}
+- We need to add content when we construct by of() method
  */
 export class PageableMeta {
     currentPage;
@@ -26,10 +26,11 @@ export class PageableMeta {
      */
     static builder(query, total) {
         const queryContent = query.content;
-        this.currentPage = queryContent.pagination.page;
-        this.currentSize = queryContent.pagination.size;
-        this.totalRecord = total;
-        return new PageableMeta();
+        const meta = new PageableMeta();
+        meta.currentPage = queryContent.pagination.page;
+        meta.currentSize = queryContent.pagination.size;
+        meta.totalRecord = total;
+        return meta;
     }
 
     /**

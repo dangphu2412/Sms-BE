@@ -3,8 +3,6 @@ import { Schema, model } from 'mongoose';
 import { Role, UserStatus } from '../../../common/enum';
 import { saveFullNameHook } from './hooks';
 
-const DEFAULT_AVATAR = 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg';
-
 const schema = extendBaseModel({
     email: {
         type: String,
@@ -16,7 +14,7 @@ const schema = extendBaseModel({
         type: String,
         trim: true,
         minlength: 6,
-        default: '$2a$10$EMMT7d0DBqJVGOu8xu7JSOsCWsEslAolZJfckvOFsaPJA9Vot8sKi'
+        default: '$2b$10$tJvN9XpgtetH7vkscie.YeakA/R2mxaI5bklFp1Khsc8jtL.OGqyK'
     },
     fingerPrint: { type: String, default: null },
     status: {
@@ -44,10 +42,8 @@ const schema = extendBaseModel({
     },
     avatar: {
         type: String,
-        default: DEFAULT_AVATAR
+        default: 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg'
     },
-    createdAt: { type: Date },
-    updatedAt: { type: Date },
     deletedAt: { type: Date, default: null },
 });
 

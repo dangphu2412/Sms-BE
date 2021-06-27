@@ -1,6 +1,6 @@
 import { TimetableSettingModel } from 'core/modules/timetableSetting/model/timetableSetting.model';
 import { parallel } from 'packages/taskExecution';
-import { timetableSettingDump } from '../data/init';
+import { timetableSettingDump } from '../data/seeding/init';
 
 export class TimetableSettingSeeder {
     static run() {

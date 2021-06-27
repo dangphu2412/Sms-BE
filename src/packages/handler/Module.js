@@ -16,7 +16,7 @@ export class Module {
 
     /**
      * @type {
-     [
+    [
         {
             route,
             controller,
@@ -27,8 +27,8 @@ export class Module {
             model?:any,
             params?: any
         }
-     ]
-     } content
+    ]
+    } content
      */
     #swaggerContent = [];
 
@@ -113,7 +113,7 @@ export class Module {
             model?:any,
             params?: any
         }
-     } content
+    } content
      */
     #addSwaggerContent = content => {
         const jsonContent = SwaggerContentDto(content);
@@ -142,17 +142,17 @@ export class Module {
     /**
      * @param {
         [{
-            route,
+            route: string,
             controller,
-            method,
-            interceptors,
-            guards,
-            preAuthorization,
-            description,
+            method: 'get' | 'post' | 'update' | 'patch' | 'delete',
+            interceptors: [],
+            guards: [],
+            preAuthorization?: boolean,
+            description?: string,
             model?:any,
             params?: any
         }]
-     } apis
+    } apis
      */
     register(apis) {
         Module.logger.info(`[${this.#prefix.module}] is bundling`);
@@ -177,6 +177,11 @@ export class Module {
                     middlewares.push(Module.#produceGuard(guard));
                 });
             }
+
+            if (!controller) {
+                throw new Error(`${this.#prefix.module} with ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} can not mapping controller`);
+            }
+
             this.#router[method](route, ...middlewares, this.#createHandler(controller));
 
             Module.logger.info(`[${this.#prefix.module}] ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);

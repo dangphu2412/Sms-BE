@@ -1,0 +1,74 @@
+[
+    {
+        "_id": "60d9df044ff1044250059d4d",
+        "email": "dangphu241299@gmail.com",
+        "profile": {
+            "firstName": "Đặng",
+            "lastName": "Phú",
+            "fullName": "Đặng Phú",
+            "hometown": "Đà Nẵng",
+            "facebook": "https://www.facebook.com/people/%C4%90%E1%BA%B7ng-Ph%C3%BA/100010295231002"
+        },
+        "roles": ["ADMIN", "LEADER"]
+    },
+    {
+        "_id": "60d9df044ff1044250059d4e",
+        "email": "trinhnguyen123@gmail.com",
+        "profile": {
+            "firstName": "Nguyễn Thị Tuyết",
+            "lastName": "Trinh",
+            "fullName": "Nguyễn Thị Tuyết Trinh",
+            "hometown": "Gia Lai",
+            "facebook": "https://www.facebook.com/nttt165"
+        },
+        "roles": ["ADMIN", "MEMBER"]
+    },
+    {
+        "_id": "60d9df044ff1044250059d50",
+        "email": "hoainam@gmail.com",
+        "profile": {
+            "firstName": "Nguyễn",
+            "lastName": "Hoài Nam",
+            "fullName": "Nguyễn Hoài Nam",
+            "hometown": "Hà Nội",
+            "facebook": "https://www.facebook.com/hoaineronam"
+        },
+        "roles": ["LEADER"]
+    },
+    {
+        "_id": "60d9df044ff1044250059d51",
+        "email": "ngapham@gmail.com",
+        "profile": {
+            "firstName": "Phạm",
+            "lastName": "Thúy Nga",
+            "fullName": "Phạm Thúy Nga",
+            "hometown": "Đà Nẵng",
+            "facebook": "https://www.facebook.com/thuyngaduong23"
+        },
+        "roles": ["LEADER"]
+    },
+    {
+        "_id": "60d9df044ff1044250059d52",
+        "email": "minhhoangho@gmail.com",
+        "profile": {
+            "firstName": "Hồ",
+            "lastName": "Minh Hoàng",
+            "fullName": "Hồ Minh Hoàng",
+            "hometown": "Đà Nẵng",
+            "facebook": "https://www.facebook.com/minhhoang.ho.99"
+        },
+        "roles": ["ADMIN", "LEADER"]
+    },
+    {
+        "_id": "60d9df0d875b7c3e388ee41c",
+        "email": "hovanvydut@gmail.com",
+        "profile": {
+            "firstName": "Hồ",
+            "lastName": "Văn Vy",
+            "fullName": "Hồ Văn Vy",
+            "hometown": "Huế",
+            "facebook": "https://www.facebook.com/hovanvydut"
+        },
+        "roles": ["MEMBER"]
+    }
+]

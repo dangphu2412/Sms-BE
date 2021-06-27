@@ -1,0 +1,35 @@
+{
+  "main": "_id name",
+  "associates": [
+    {
+      "path": "groups",
+      "select": "_id name leader members childs",
+      "match": { 
+        "deletedAt": { "$eq": null },
+        "parent": { "$eq": null }
+      },
+      "populate": [
+        {
+          "path": "leader",
+          "select": "_id profile.fullName avatar"
+        },
+        {
+          "path": "members",
+          "select": "_id profile.fullName avatar",
+          "options": {
+            "limit": "5"
+          }
+        },
+        {
+          "path": "childs",
+          "select": "_id name"
+        }
+      ]
+    }
+  ],
+  "locks": {
+    "filters": [],
+    "sorts": []
+  },
+  "searchCriteria": []
+}

@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Thiết kế",
+        "leader": "Nguyễn Hoài Nam",
+        "description": "Đây là Thiết kế",
+        "groupTag": "Chuyên môn"
+    },
+    {
+        "name": "Marketing Online",
+        "leader": "Phạm Thúy Nga",
+        "description": "Đây là marketing group",
+        "groupTag": "Chuyên môn"
+    },
+    {
+        "name": "Lập trình",
+        "leader": "Hồ Minh Hoàng",
+        "description": "Đây là Lập trình",
+        "groupTag": "Chuyên môn"
+    },
+    {
+        "name": "Audio Loop",
+        "leader": "Hồ Văn Vy",
+        "description": "Đây là Audio Loop group",
+        "groupTag": "Dự án"
+    },
+    {
+        "name": "Clubby",
+        "leader": "Nguyễn Thị Tuyết Trinh",
+        "description": "Đây là Clubby group",
+        "groupTag": "Dự án"
+    }
+]

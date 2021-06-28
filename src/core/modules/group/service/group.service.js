@@ -55,6 +55,25 @@ class Service extends DataPersistenceService {
         return this.repository.deleteMember(id, deleteMembers);
     }
 
+    async patchOne(id, data) {
+        Optional
+            .of(await this.repository.findById(id))
+            .throwIfNullable(new NotFoundException('Group Not Found'))
+            .throwIfNotPresent(new NotFoundException('Group Has Been Deleted'));
+
+        if (data.name) {
+            Optional
+                .of(await this.repository.findByName(data.name, '_id deletedAt'))
+                .throwIfPresent(new DuplicateException(`Group ${data.name} is already existed`));
+        }
+        const group = await GroupRepository.getGeneralById(id);
+        const dto = await this.groupDataService.mapUpdatingToModel(group, data);
+
+        if (Object.keys(dto).length <= 0) { return null; }
+
+        return this.repository.updateById(id, dto);
+    }
+
     #updateChildInParent = async (groupId, parentId) => {
         const parentGroup = await this.repository.findById(parentId, '_id childs');
 

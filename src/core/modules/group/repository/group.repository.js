@@ -11,9 +11,14 @@ class Repository extends DataRepository {
     }
 
     getGeneralById(id) {
-        return this.model.findById(id, '_id name')
+        return this.model.findById(id, '_id name description')
             .populate({
                 path: 'childs',
+                match: { deletedAt: { $eq: null } },
+                select: '_id name'
+            })
+            .populate({
+                path: 'parent',
                 match: { deletedAt: { $eq: null } },
                 select: '_id name'
             })

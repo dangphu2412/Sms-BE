@@ -10,3 +10,4 @@ export const EXPIRE_DAYS = process.env.EXPIRE_DAYS || '1d';
 export const { DATABASE_URL } = process.env;
 export const CORS_ALLOW = process.env.CORS_ALLOW ? process.env.CORS_ALLOW : '*';
 export const ROOT_DIR = process.env === 'production' ? `${process.cwd()}/dist` : `${process.cwd()}/src`;
+export const { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = process.env;

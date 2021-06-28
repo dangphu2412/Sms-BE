@@ -1,8 +1,8 @@
 import { hasAdminRole } from 'core/modules/auth/guard/roleDomain';
 import { Module } from '../../../../packages/handler/Module';
 import { ExcelController } from '../controller/excel.controller';
-import { MulterInterceptor } from '../../../modules/excel/validator';
-import { uploadFileSwagger } from '../../../common/swagger/excel';
+import { ExcelInterceptor } from '../../../modules/document/validator/excel.interceptor';
+import { uploadFileSwagger } from '../../../common/swagger/uploadFile';
 
 export const ExcelResolver = Module.builder()
     .addPrefix({
@@ -16,7 +16,7 @@ export const ExcelResolver = Module.builder()
             method: 'post',
             params: [uploadFileSwagger],
             consumes: ['multipart/form-data'],
-            interceptors: [new MulterInterceptor()],
+            interceptors: [new ExcelInterceptor(1)],
             guards: [hasAdminRole],
             controller: ExcelController.uploadOne,
             preAuthorization: true

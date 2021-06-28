@@ -35,6 +35,7 @@
     "@babel/runtime": "^7.10.4",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
+    "cloudinary": "^1.26.0",
     "cors": "^2.8.5",
     "dayjs": "^1.10.5",
     "debug": "^4.2.0",

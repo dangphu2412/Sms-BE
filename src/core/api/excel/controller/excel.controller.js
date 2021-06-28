@@ -1,5 +1,5 @@
 import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
-import { ExcelService } from '../../../modules/excel/service/excel.service';
+import { ExcelService } from '../../../modules/document/service/excel.service';
 
 class Controller {
     constructor() {

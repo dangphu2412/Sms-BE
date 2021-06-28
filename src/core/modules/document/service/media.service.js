@@ -22,11 +22,7 @@ class Service {
     async uploadMany(files, folderUrl = '') {
         const uploadTasks = files.map(file => this.uploadOne(file, folderUrl));
 
-        try {
-            return Promise.all(uploadTasks);
-        } catch (error) {
-            throw new InternalServerException(error.message);
-        }
+        return Promise.all(uploadTasks);
     }
 
     async deleteMany(ids) {

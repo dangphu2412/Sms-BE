@@ -16,6 +16,7 @@ export class BaseValidateInterceptor {
       case 'POST':
       case 'PUT':
       case 'PATCH':
+      case 'DELETE':
           return request.body;
       case 'GET':
       default:

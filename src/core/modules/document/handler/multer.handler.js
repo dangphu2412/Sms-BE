@@ -4,8 +4,6 @@ import path from 'path';
 import fs from 'fs';
 
 export class MulterUploader {
-    static #DEFAULT_DESTINATION_PATH = `${ROOT_DIR}/core/uploads`;
-
     #destinationPath
 
     #allowedExtensions;
@@ -24,7 +22,7 @@ export class MulterUploader {
             }
         }),
         fileFilter: (req, file, cb) => {
-            if (!this.#allowedExtensions.includes(path.extname(file.originalname))) {
+            if (!this.#allowedExtensions.includes(path.extname(file.originalname).toLocaleLowerCase())) {
                 return cb(new multer.MulterError('File type not allowed'));
             }
 
@@ -32,7 +30,7 @@ export class MulterUploader {
         },
     }
 
-    constructor(extensions, keyName, fileQuantity = 1, destinationPath = MulterUploader.#DEFAULT_DESTINATION_PATH) {
+    constructor(extensions, keyName, fileQuantity = 1, destinationPath = `${ROOT_DIR}/core/uploads`) {
         this.validateParams(extensions, destinationPath, keyName, fileQuantity);
 
         this.#allowedExtensions = extensions;

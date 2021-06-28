@@ -8,7 +8,7 @@ class Controller {
     }
 
     uploadMany = async req => {
-        const data = await this.service.uploadMany(req.files, 'avatar');
+        const data = await this.service.uploadMany(req.files);
         return ValidHttpResponse.toOkResponse(data);
     }
 

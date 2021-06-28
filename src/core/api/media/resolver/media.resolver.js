@@ -23,8 +23,6 @@ export const MediaResolver = Module.builder()
         {
             route: '/images',
             method: 'delete',
-            params: [uploadMediaSwagger],
-            consumes: ['multipart/form-data'],
             interceptors: [new DeleteMediasInterceptor()],
             body: 'DeleteFileDto',
             controller: MediaController.deleteMany,

@@ -66,4 +66,9 @@ export class SchemaValidatorBuilder {
             : Joi.string().regex(SchemaValidatorBuilder.VALIDATE_PWD_PATTERN_V1)
                 .message('Invalid password format. Minimum 6 characters');
     }
+
+    static getArrayOptionalStringBuilder() {
+        return Joi.array().items(SchemaValidatorBuilder.getOptionalStringBuilder())
+            .min(1);
+    }
 }

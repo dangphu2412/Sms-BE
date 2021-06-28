@@ -1,13 +1,9 @@
-import { responseJoiError } from '../../../utils';
-import { deleteMediasSchema } from './deleteFilesValidator.schema';
+import Joi from 'joi';
+import { BaseValidateInterceptor } from 'core/infrastructure/interceptor';
+import { SchemaValidatorBuilder } from '../../../utils';
 
-export class DeleteMediasInterceptor {
-    intercept(req, res, next) {
-        const result = deleteMediasSchema.validate(req['body']);
-        if (result.error) {
-            return responseJoiError(res, result.error);
-        }
-
-        return next();
-    }
+export class DeleteMediasInterceptor extends BaseValidateInterceptor {
+  getSchema = () => Joi.object({
+      ids: SchemaValidatorBuilder.getArrayOptionalStringBuilder().required()
+  });
 }

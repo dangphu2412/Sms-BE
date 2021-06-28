@@ -3,7 +3,7 @@ import { ApiDocument } from '../../../config/swagger';
 
 ApiDocument.addModel('DeleteFileDto',
     {
-        fileUrls: SwaggerDocument.ApiProperty({ type: 'array', model: 'string' }),
+        ids: SwaggerDocument.ApiProperty({ type: 'array', model: 'string' }),
     });
 
 export const DeleteFileDto = body => ({

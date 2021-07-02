@@ -1,9 +1,9 @@
 import { sample, sampleSize } from 'lodash';
 import { UserRepository } from '../../modules/user/repository/user.repository';
 import { TimetableRepository } from '../../modules/timetable/repository/timetable.repository';
-import { FormModel } from '../../modules/form/model/formModel';
+import { TimetableRequestModel } from '../../modules/timetable_request/model/timetableRequesModel';
 
-export class FormSeed {
+export class TimetableRequestSeed {
     static async run() {
         const userIds = await UserRepository.find({}, '_id');
         const timetableIds = await TimetableRepository.find({}, '_id');
@@ -19,9 +19,9 @@ export class FormSeed {
             'Chữa trĩ'
         ];
 
-        const sampleFormData = [];
+        const sampleTimetableRequestData = [];
         for (let i = 1; i <= 30; i += 1) {
-            const form = {
+            const timetableRequests = {
                 userId: sample(userIds),
                 type: sample(['nghỉ', 'trễ', 'vắng']),
                 reason: sample(reasons),
@@ -29,9 +29,9 @@ export class FormSeed {
                 attachment: 'ko co',
                 timetables: sampleSize(timetableIds, sample([3, 4, 5]))
             };
-            sampleFormData.push(form);
+            sampleTimetableRequestData.push(timetableRequests);
         }
-        await FormModel.deleteMany();
-        await FormModel.insertMany(sampleFormData);
+        await TimetableRequestModel.deleteMany();
+        await TimetableRequestModel.insertMany(sampleTimetableRequestData);
     }
 }

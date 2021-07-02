@@ -29,10 +29,6 @@ const schema = extendBaseModel({
         type: Boolean,
         default: true
     },
-    isApproved: {
-        type: Boolean,
-        default: false
-    },
     // activities: [
     //     {
     //         type: Schema.Types.ObjectId,

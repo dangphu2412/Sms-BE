@@ -1,6 +1,6 @@
-import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
-import { TimetableRequestService } from '../../../modules/timetable_request/service/timetableRequest.service';
-import { CreateTimetableRequestDto } from '../../../modules/timetable_request/dto';
+import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
+import { TimetableRequestService } from 'core/modules/timetable_request/service/timetableRequest.service';
+import { CreateTimetableRequestDto } from 'core/modules/timetable_request/dto';
 
 class Controller {
     constructor() {

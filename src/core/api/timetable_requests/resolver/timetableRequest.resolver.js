@@ -1,21 +1,24 @@
+import { CreateTimetableRequestInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequest.interceptor';
+import { CreateTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequestQuery.interceptor';
+import { Module } from 'packages/handler/Module';
 import { TimetableRequestController } from '../controller/timetableRequest.controller';
-import { Module } from '../../../../packages/handler/Module';
-import { CreateTimetableRequestInterceptor } from '../../../modules/timetable_request/validator/createTimetableRequest.interceptor';
 
 export const TimetableRequestResolver = Module.builder()
     .addPrefix({
-        prefixPath: '/timetable_request',
-        tag: 'timetable_request',
+        prefixPath: '/timetable-requests',
+        tag: 'timetable-request',
         module: 'TimetableRequestModule'
     })
     .register([
         {
-            route: '/',
+            route: '/add',
             method: 'post',
-            interceptors: [new CreateTimetableRequestInterceptor()],
+            interceptors: [
+                new CreateTimetableRequestQueryInterceptor(),
+                new CreateTimetableRequestInterceptor()
+            ],
             body: 'CreateTimetableRequest',
-            guards: [],
             controller: TimetableRequestController.createOne,
             preAuthorization: true
-        }
+        },
     ]);

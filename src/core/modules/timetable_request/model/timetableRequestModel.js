@@ -7,7 +7,7 @@ const schema = extendBaseModel({
     type: {
         type: String,
         default: TIMETABLE_REQUEST_TYPE.ABSENT_ADD,
-        enum: [TIMETABLE_REQUEST_TYPE.OUT, TIMETABLE_REQUEST_TYPE.ABSENT_ADD, TIMETABLE_REQUEST_TYPE.ABSENT, TIMETABLE_REQUEST_TYPE.LATE, TIMETABLE_REQUEST_TYPE.SOON, TIMETABLE_REQUEST_TYPE.ADD],
+        enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
     userId: {
@@ -19,7 +19,7 @@ const schema = extendBaseModel({
         {
             type: Schema.Types.ObjectId,
             ref: 'temp_timetables',
-        },
+        }
     ],
     attachment: {
         type: String,

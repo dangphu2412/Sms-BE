@@ -1,12 +1,13 @@
 import { sample, sampleSize } from 'lodash';
+import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
+import { TempTimetableModel } from 'core/modules/temp_timetables/model/tempTimetableModel';
 import { UserRepository } from '../../modules/user/repository/user.repository';
-import { TimetableRepository } from '../../modules/timetable/repository/timetable.repository';
-import { TimetableRequestModel } from '../../modules/timetable_request/model/timetableRequesModel';
+import { TimetableRequestModel } from '../../modules/timetable_request/model/timetableRequestModel';
 
 export class TimetableRequestSeed {
     static async run() {
         const userIds = await UserRepository.find({}, '_id');
-        const timetableIds = await TimetableRepository.find({}, '_id');
+        const tempTimetableIds = await TempTimetableModel.find({}, '_id');
 
         const reasons = [
             'Bố Thik thì bố nghỉ',
@@ -23,15 +24,15 @@ export class TimetableRequestSeed {
         for (let i = 1; i <= 30; i += 1) {
             const timetableRequests = {
                 userId: sample(userIds),
-                type: sample(['nghỉ', 'trễ', 'vắng']),
-                reason: sample(reasons),
-                isApproved: sample([false, true]),
+                tempTimetables: sampleSize(tempTimetableIds, sample([3, 4, 5])),
+                type: sample(Object.values(TIMETABLE_REQUEST_TYPE)),
+                description: sample(reasons),
                 attachment: 'ko co',
-                timetables: sampleSize(timetableIds, sample([3, 4, 5]))
+                isApproved: sample([false, true])
             };
             sampleTimetableRequestData.push(timetableRequests);
         }
-        await TimetableRequestModel.deleteMany();
+        // await TimetableRequestModel.deleteMany();
         await TimetableRequestModel.insertMany(sampleTimetableRequestData);
     }
 }

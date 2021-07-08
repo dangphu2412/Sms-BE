@@ -1,5 +1,5 @@
 import { DataRepository } from 'packages/restBuilder/core/dataHandler/data.repository';
-import { TimetableRequestModel } from '../model/timetableRequesModel';
+import { TimetableRequestModel } from '../model/timetableRequestModel';
 
 class Repository extends DataRepository {
     constructor() {

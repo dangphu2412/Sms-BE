@@ -8,7 +8,6 @@ export class CreateGroupInterceptor {
         if (result.error) {
             return responseJoiError(res, result.error);
         }
-
         return next();
     }
 }

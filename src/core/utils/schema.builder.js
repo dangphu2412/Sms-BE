@@ -27,6 +27,12 @@ export class SchemaValidatorBuilder {
             .optional();
     }
 
+    static getRequiredStringBuilder() {
+        return Joi
+            .string()
+            .required();
+    }
+
     static getPhoneNumberBuilder(custom = false) {
         return custom
             ? Joi.string().regex(SchemaValidatorBuilder.VALIDATE_PHONE_NUMBER_PATTERN)

@@ -1,6 +1,8 @@
+import {
+    isEqual, sortBy, pickBy, keysIn
+} from 'lodash';
 import mongoose from 'mongoose';
 import path from 'path';
-import { pickBy, keysIn } from 'lodash';
 
 export function getSeedPathWithExtensions() {
     const EXTENSIONS = ['.js'];
@@ -34,4 +36,14 @@ export function filterDuplicateValueByKey(desObj, refObj) {
         }
     });
     return desObj;
+}
+export function mapObjectToArrByKey(arr, key) {
+    return arr.map(obj => obj[key]);
+}
+export function isEqualArray(arr1, arr2) {
+    return isEqual(sortBy(arr1), sortBy(arr2));
+}
+
+export function mapParsedObjectIdToArr(inputArr, keyId) {
+    return mapObjectToArrByKey(inputArr, keyId).map(strId => parseObjectId(strId));
 }

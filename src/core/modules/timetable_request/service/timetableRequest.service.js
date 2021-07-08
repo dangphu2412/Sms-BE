@@ -1,38 +1,126 @@
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
+import { TimetableSettingRepository } from 'core/modules/timetableSetting/repository';
+import { TempTimetableRepository } from 'core/modules/temp_timetables/repository/temp_timetable.repository';
+import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
+import { isEqualArray, mapParsedObjectIdToArr, mapObjectToArrByKey } from 'core/utils/helper';
+import { TimetableRepository } from 'core/modules/timetable/repository';
+import { BadRequestException, NotFoundException } from 'packages/httpException';
+import { Optional } from 'core/utils/optional';
+import { UserRepository } from 'core/modules/user/repository/user.repository';
+import { GroupRepository } from 'core/modules/group/repository/group.repository';
+import { logger } from 'core/modules/logger/winston';
 import { TimetableRequestRepository } from '../repository/timetableRequest.repository';
-import { UserRepository } from '../../user/repository/user.repository';
-import { GroupRepository } from '../../group/repository/group.repository';
-import { ActivityRepository } from '../../activity/repository/activity.repository';
-import { NotFoundException } from '../../../../packages/httpException';
-import { Optional } from '../../../utils/optional';
 import { TimetableRequestDataService } from './timetableRequestDataService';
-import { logger } from '../../logger/winston';
 
 class Service extends DataPersistenceService {
     constructor() {
         super(TimetableRequestRepository);
         this.userRepository = UserRepository;
         this.groupRepository = GroupRepository;
-        this.activityRepository = ActivityRepository;
+        this.timetableSettingRepository = TimetableSettingRepository;
+        this.tempTimetableRepository = TempTimetableRepository;
+        this.dataService = TimetableRequestDataService;
+        this.timetableRepository = TimetableRepository;
         this.logger = logger;
     }
 
     async createOne(data) {
+        const validatingData = this.dataService.mappingForValidating(data.tempTimetables, data.type);
         let createdTimetableRequest;
-        const validatingData = TimetableRequestDataService.mappingForValidating(data.timetables);
 
         Optional
             .of(await this.userRepository.findById(data.userId))
             .throwIfNotPresent(new NotFoundException('User not found'));
+
         Optional
             .of(await this.userRepository.findByIds(validatingData.userIds))
             .throwIfMissingValues(validatingData.userIds, new NotFoundException('Some users not found or have been deleted'));
-        Optional
-            .of(await this.groupRepository.findByIds(validatingData.groupIds))
-            .throwIfMissingValues(validatingData.groupIds, new NotFoundException('Some groups not found or have been deleted'));
-        Optional
-            .of(await this.activityRepository.findWithActiveByIds(validatingData.activities))
-            .throwIfMissingValues(validatingData.activities, new NotFoundException('Some activities not found or have been deleted'));
+
+        if (validatingData.groupIds.length > 0) {
+            Optional
+                .of(await this.groupRepository.findByIds(validatingData.groupIds))
+                .throwIfMissingValues(validatingData.groupIds, new NotFoundException('Some groups not found or have been deleted'));
+        }
+        if (validatingData.timetableIds.length > 0) {
+            Optional
+                .of(await this.timetableRepository.findByIds(validatingData.timetableIds))
+                .throwIfMissingValues(validatingData.timetableIds, new NotFoundException('Some timetableId not found or have been deleted'));
+        }
+
+        switch (data.type) {
+        case TIMETABLE_REQUEST_TYPE.OUT: {
+            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
+            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+            const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
+
+            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                throw new BadRequestException('Some timetableId is not belong to some userId');
+            }
+
+            Optional
+                .of(await this.timetableSettingRepository.findByIds(validatingData.registerTimeIds))
+                .throwIfMissingValues(validatingData.registerTimeIds, new NotFoundException('Some timetableSettingId not found or have been deleted'));
+
+            registerTimeIdsFromTimetable.forEach(registerTimeId => {
+                if (mapParsedObjectIdToArr(data.tempTimetables, 'registerTime').some(val => val.equals(registerTimeId))) {
+                    throw new BadRequestException('lên bù date must not be as same as main timetable');
+                }
+            });
+
+            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.ABSENT: {
+            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+
+            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                throw new BadRequestException('Some timetableId is not belong to some userId');
+            }
+            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.LATE: {
+            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+
+            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                throw new BadRequestException('Some timetableId is not belong to some userId');
+            }
+            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.SOON: {
+            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+
+            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                throw new BadRequestException('Some timetableId is not belong to some userId');
+            }
+            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.ADD: {
+            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+            const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
+
+            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                throw new BadRequestException('Some timetableId is not belong to some userId');
+            }
+
+            Optional
+                .of(await this.timetableSettingRepository.findByIds(validatingData.registerTimeIds))
+                .throwIfMissingValues(validatingData.registerTimeIds, new NotFoundException('Some timetableSettingId not found or have been deleted'));
+
+            registerTimeIdsFromTimetable.forEach(registerTimeId => {
+                if (mapParsedObjectIdToArr(data.tempTimetables, 'registerTime').some(val => val.equals(registerTimeId))) {
+                    throw new BadRequestException('addition date must not be as same as main timetable');
+                }
+            });
+            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+            break;
+        }
+        }
 
         try {
             createdTimetableRequest = await this.repository.model.create(data);
@@ -40,6 +128,11 @@ class Service extends DataPersistenceService {
             this.logger.error(error.message);
         }
         return { _id: createdTimetableRequest._id };
+    }
+
+    #getTemptableIds = async tempTimetable => {
+        const createdTempTimetable = await this.tempTimetableRepository.model.create(tempTimetable);
+        return mapObjectToArrByKey(createdTempTimetable, '_id');
     }
 }
 

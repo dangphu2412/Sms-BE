@@ -18,15 +18,15 @@ ApiDocument.addModel('CreateTimetableRequestDto', {
     type: SwaggerDocument.ApiProperty({ type: 'enum', model: TIMETABLE_REQUEST_TYPE }),
     description: SwaggerDocument.ApiProperty({ type: 'string' }),
     attachment: SwaggerDocument.ApiProperty({ type: 'string' }),
-    tempTimetables: SwaggerDocument.ApiProperty({ type: 'array', model: 'object' }),
+    tempTimetables: SwaggerDocument.ApiProperty({ type: 'array', model: 'tempTimetables' }),
     isApproved: SwaggerDocument.ApiProperty({ type: 'bool' }),
 });
 
 export const CreateTimetableRequestDto = body => ({
     userId: body.userId,
     type: body.type,
-    description: body.reason,
-    attachment: body.attachment,
-    tempTimetables: [...body.timetables],
+    description: body.description,
+    attachment: body.attachment ?? null,
+    tempTimetables: [...body.tempTimetables],
     isApproved: body.isApproved ?? false,
 });

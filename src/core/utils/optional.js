@@ -38,6 +38,7 @@ export class Optional {
     }
 
     throwIfMissingValues(refFields, exception) {
+        refFields = [...new Set(refFields)];
         if (this.#instance.length !== refFields.length) {
             throw exception;
         } else {
@@ -46,8 +47,6 @@ export class Optional {
             });
         }
     }
-
-    thro
 
     get() {
         return this.#instance;

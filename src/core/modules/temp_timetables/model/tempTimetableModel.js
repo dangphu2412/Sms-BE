@@ -4,16 +4,21 @@ import { Schema, model } from 'mongoose';
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
 
 const schema = extendBaseModel({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        require: [true, 'userId is empty']
+    },
     type: {
         type: String,
         default: TIMETABLE_REQUEST_TYPE.ABSENT_ADD,
-        enum: [TIMETABLE_REQUEST_TYPE.OUT, TIMETABLE_REQUEST_TYPE.ABSENT_ADD, TIMETABLE_REQUEST_TYPE.ABSENT, TIMETABLE_REQUEST_TYPE.LATE, TIMETABLE_REQUEST_TYPE.SOON, TIMETABLE_REQUEST_TYPE.ADD],
+        enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
     timetableId: {
         type: Schema.Types.ObjectId,
         ref: 'timetables',
-        require: [true, 'timetableId is empty']
+        default: null
     },
     appliedDate: {
         type: Date,
@@ -22,13 +27,15 @@ const schema = extendBaseModel({
     registerTime: {
         type: Schema.Types.ObjectId,
         ref: 'timetable_settings',
-        require: [true, 'timetableId is empty']
+        default: null
     },
     customStartTime: {
         type: String,
+        default: null
     },
     customEndTime: {
         type: String,
+        default: null
     }
 });
 

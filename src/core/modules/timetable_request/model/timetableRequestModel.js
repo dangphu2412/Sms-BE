@@ -6,7 +6,6 @@ import { TIMETABLE_REQUEST_STATUS } from 'core/common/enum/timetableRequestStatu
 const schema = extendBaseModel({
     type: {
         type: String,
-        default: TIMETABLE_REQUEST_TYPE.ABSENT_ADD,
         enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
@@ -34,6 +33,11 @@ const schema = extendBaseModel({
         type: String,
         default: TIMETABLE_REQUEST_STATUS.PENDING,
         enum: Object.values(TIMETABLE_REQUEST_STATUS),
+    },
+    approvedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        default: null
     },
 });
 

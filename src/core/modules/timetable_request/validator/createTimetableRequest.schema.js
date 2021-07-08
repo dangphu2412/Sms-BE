@@ -63,6 +63,5 @@ export class CreateTimetableRequestSchema {
         }))
             .unique(this.#type === TIMETABLE_REQUEST_TYPE.OUT ? '' : 'timetableId')
             .required(),
-        isApproved: Joi.boolean().valid(false).optional(),
     })
 }

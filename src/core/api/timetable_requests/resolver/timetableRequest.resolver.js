@@ -1,6 +1,5 @@
 import { getTimetableRequestQuerySwagger } from 'core/modules/timetable_request/dto/getTimetableRequestSwagger';
 import { CreateTimetableRequestInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequest.interceptor';
-import { CreateTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequestQuery.interceptor';
 import { GetTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/getTimetableRequestQuery.interceptor';
 import { Module } from 'packages/handler/Module';
 import { TimetableRequestController } from '../controller/timetableRequest.controller';
@@ -26,7 +25,6 @@ export const TimetableRequestResolver = Module.builder()
             route: '/',
             method: 'post',
             interceptors: [
-                new CreateTimetableRequestQueryInterceptor(),
                 new CreateTimetableRequestInterceptor()
             ],
             body: 'CreateTimetableRequestDto',

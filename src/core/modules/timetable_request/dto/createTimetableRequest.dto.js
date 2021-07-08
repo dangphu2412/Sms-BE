@@ -14,12 +14,11 @@ ApiDocument.addModel('tempTimetables', {
 });
 
 ApiDocument.addModel('CreateTimetableRequestDto', {
-    userId: SwaggerDocument.ApiProperty({ type: 'string' }),
     type: SwaggerDocument.ApiProperty({ type: 'enum', model: TIMETABLE_REQUEST_TYPE }),
+    userId: SwaggerDocument.ApiProperty({ type: 'string' }),
     description: SwaggerDocument.ApiProperty({ type: 'string' }),
     attachment: SwaggerDocument.ApiProperty({ type: 'string' }),
     tempTimetables: SwaggerDocument.ApiProperty({ type: 'array', model: 'tempTimetables' }),
-    isApproved: SwaggerDocument.ApiProperty({ type: 'bool' }),
 });
 
 export const CreateTimetableRequestDto = body => ({

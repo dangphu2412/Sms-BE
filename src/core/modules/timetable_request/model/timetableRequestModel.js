@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
 import { extendBaseModel } from 'core/infrastructure/model';
 import { Schema, model } from 'mongoose';
-import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
+import { TIMETABLE_REQUEST_TYPE, APPROVAL_STATUS } from 'core/common/enum/timetableRequest.enum';
 
 const schema = extendBaseModel({
     type: {
         type: String,
-        default: TIMETABLE_REQUEST_TYPE.ABSENT_ADD,
         enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
@@ -30,9 +29,15 @@ const schema = extendBaseModel({
         trim: true,
         required: [true, 'description is empty'],
     },
-    isApproved: {
-        type: Boolean,
-        default: false
+    approvalStatus: {
+        type: String,
+        enum: Object.values(APPROVAL_STATUS),
+        default: APPROVAL_STATUS.PENDING
+    },
+    approvedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+        default: null
     },
 });
 

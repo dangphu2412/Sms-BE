@@ -6,3 +6,8 @@ export const TIMETABLE_REQUEST_TYPE = {
     SOON: 'SOON',
     ADD: 'ADD'
 };
+export const APPROVAL_STATUS = {
+    PENDING: 'PENDING',
+    APPROVED: 'APPROVED',
+    REJECTED: 'REJECTED'
+};

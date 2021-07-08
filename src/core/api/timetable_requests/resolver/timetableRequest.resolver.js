@@ -1,5 +1,4 @@
 import { CreateTimetableRequestInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequest.interceptor';
-import { CreateTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequestQuery.interceptor';
 import { Module } from 'packages/handler/Module';
 import { TimetableRequestController } from '../controller/timetableRequest.controller';
 
@@ -14,10 +13,9 @@ export const TimetableRequestResolver = Module.builder()
             route: '/add',
             method: 'post',
             interceptors: [
-                new CreateTimetableRequestQueryInterceptor(),
                 new CreateTimetableRequestInterceptor()
             ],
-            body: 'CreateTimetableRequest',
+            body: 'CreateTimetableRequestDto',
             controller: TimetableRequestController.createOne,
             preAuthorization: true
         },

@@ -31,7 +31,6 @@ export class UserSeeder {
                 }
             });
         }
-        await UserModel.deleteMany();
         return UserModel.insertMany(sampleUserData);
     }
 }

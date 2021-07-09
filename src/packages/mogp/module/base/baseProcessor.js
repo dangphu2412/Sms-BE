@@ -78,12 +78,16 @@ export class BaseProcessor {
         console.log('Finish collect instances');
         console.log('\x1B[31mStart process');
         await serial(this.#tasks, async task => {
-            if (await this.preRun(task)) {
-                console.log(`\x1B[92m🐧 ========== Running task: ${task.name} ===========🐧`);
-                const data = await task.run();
-                console.log(data);
-                console.log(`🐧 ========== Finish task: ${task.name} ===========🐧`);
-                await this.afterRun(task);
+            try {
+                if (await this.preRun(task)) {
+                    console.log(`\x1B[92m🐧 ========== Running task: ${task.name} ===========🐧`);
+                    await task.run();
+                    console.log(`🐧 ========== Finish task: ${task.name} ===========🐧`);
+                    await this.afterRun(task);
+                }
+            } catch (error) {
+                console.error(error);
+                process.exit(0);
             }
         });
 

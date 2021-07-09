@@ -34,6 +34,11 @@ const schema = extendBaseModel({
             ref: 'users',
         },
     ],
+    groupTag: {
+        type: Schema.Types.ObjectId,
+        ref: 'groupTags',
+        default: null,
+    },
     createdAt: { type: Date },
     updatedAt: { type: Date },
     deletedAt: { type: Date, default: null },

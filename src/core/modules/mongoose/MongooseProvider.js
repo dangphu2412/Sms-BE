@@ -45,10 +45,11 @@ export class MongooseProvider {
             MongooseProvider.logger.info('MongoDB connection success');
             flag = true;
         } catch (error) {
-            MongooseProvider.logger.error('MongoDB connection error, please check your connection');
+            MongooseProvider.logger.error(error.message);
             this.#count -= 1;
         }
-
-        if (!flag && this.#count) return this.connect();
+        setTimeout(() => {
+            if (!flag && this.#count) return this.connect();
+        }, 3000);
     }
 }

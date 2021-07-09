@@ -1,7 +1,7 @@
 import Joi from 'joi';
-import { responseJoiError, SchemaValidatorBuilder } from '../../../utils';
+import { responseJoiError, SchemaValidatorBuilder } from '../../utils';
 
-export class IdObjectInterceptor {
+class IdObjectInterceptor {
     async intercept(req, res, next) {
         const schema = Joi.object({
             id: SchemaValidatorBuilder
@@ -15,3 +15,5 @@ export class IdObjectInterceptor {
         return next();
     }
 }
+
+export const interceptIdObject = new IdObjectInterceptor();

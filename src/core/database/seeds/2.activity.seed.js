@@ -1,6 +1,6 @@
 import { ActivityModel } from 'core/modules/activity/model/activity.model';
 import { parallel } from 'packages/taskExecution';
-import { activityDump } from '../data/init';
+import { activityDump } from '../data/seeding/init';
 
 export class ActivitySeeder {
     static run() {

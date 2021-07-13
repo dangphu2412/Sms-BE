@@ -49,7 +49,7 @@ export class MulterUploader {
 
         fs.access(destinationPath, error => {
             if (error) {
-                throw new Error(`Directory (${destinationPath}) doesn't exist`);
+                fs.mkdirSync(destinationPath);
             }
         });
 

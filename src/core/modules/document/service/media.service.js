@@ -1,8 +1,13 @@
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { unlink } from 'fs';
 import { InternalServerException } from 'packages/httpException';
-import { deleteFile } from '../../../utils/systemFile';
-import { cloudinaryUploader } from '../../../config/cloudinary';
+import { cloudinaryUploader } from '../../../config/cloudinary.config';
 
 class Service {
+    constructor() {
+        this.logger = LoggerFactory.create('MediaService');
+    }
+
     async uploadOne(file, folderUrl = '') {
         try {
             const response = await cloudinaryUploader.upload(file.path, { folder: folderUrl });
@@ -15,7 +20,12 @@ class Service {
         } catch (error) {
             throw new InternalServerException(error.message);
         } finally {
-            deleteFile(file.path);
+            unlink(file.path, err => {
+                if (err) {
+                    this.logger.error(err.message);
+                    throw new InternalServerException(err.message);
+                }
+            });
         }
     }
 

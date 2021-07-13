@@ -8,7 +8,7 @@ import { BadRequestException, NotFoundException } from 'packages/httpException';
 import { Optional } from 'core/utils/optional';
 import { UserRepository } from 'core/modules/user/repository/user.repository';
 import { GroupRepository } from 'core/modules/group/repository/group.repository';
-import { logger } from 'core/modules/logger/winston';
+import { LoggerFactory } from 'packages/logger';
 import { TimetableRequestRepository } from '../repository/timetableRequest.repository';
 import { TimetableRequestDataService } from './timetableRequestDataService';
 
@@ -21,7 +21,7 @@ class Service extends DataPersistenceService {
         this.tempTimetableRepository = TempTimetableRepository;
         this.dataService = TimetableRequestDataService;
         this.timetableRepository = TimetableRepository;
-        this.logger = logger;
+        this.logger = LoggerFactory.create('TimetableRequestService');
     }
 
     async createOne(data) {

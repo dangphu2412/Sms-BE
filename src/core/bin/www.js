@@ -1,15 +1,13 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
-
 /**
  * Module dependencies.
  */
 
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import debug from 'debug';
 import http from 'http';
+import { ConfigService } from 'packages/config/config.service';
 import app from '../index';
-import { PORT } from '../env';
-import { logger } from '../modules/logger/winston';
 
 const debugHelper = debug('mongoose:server');
 
@@ -37,7 +35,7 @@ function normalizePort(val) {
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(PORT);
+const port = normalizePort(ConfigService.getSingleton().get('PORT'));
 app.set('port', port);
 
 /**
@@ -62,11 +60,11 @@ function onError(error) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
     case 'EACCES':
-        console.error(`${bind} requires elevated privileges`);
+        LoggerFactory.globalLogger.error(`${bind} requires elevated privileges`);
         process.exit(1);
         break;
     case 'EADDRINUSE':
-        console.error(`${bind} is already in use`);
+        LoggerFactory.globalLogger.error(`${bind} is already in use`);
         process.exit(1);
         break;
     default:
@@ -91,7 +89,7 @@ function onListening() {
  */
 
 server.listen(port, () => {
-    logger.info(`Server is listening on ${port}`);
+    LoggerFactory.globalLogger.info(`Server is listening on ${port}`);
 });
 server.on('error', onError);
 server.on('listening', onListening);

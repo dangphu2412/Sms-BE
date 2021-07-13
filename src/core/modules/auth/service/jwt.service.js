@@ -1,16 +1,14 @@
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { sign, decode } from 'jsonwebtoken';
-import { JWT_SECRET, EXPIRE_DAYS } from '../../../env';
-import { logger } from '../../logger/winston';
+import { ConfigService } from 'packages/config/config.service';
 
 class Jwt {
-    static logger = logger;
+    secret = ConfigService.getSingleton().get('JWT_SECRET');
 
-    secret = JWT_SECRET;
-
-    expiresIn = EXPIRE_DAYS;
+    expiresIn = ConfigService.getSingleton().get('EXPIRE_DAYS');
 
     constructor() {
-        Jwt.logger.info('[JwtService] is bundling');
+        LoggerFactory.globalLogger.info('[JwtService] is bundling');
     }
 
     sign(payload) {

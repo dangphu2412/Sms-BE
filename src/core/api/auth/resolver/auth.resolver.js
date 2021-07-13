@@ -1,6 +1,8 @@
+import { forgotPasswordInterceptor } from 'core/modules/auth/validator/forgot-password.interceptor';
+import { refreshPasswordInterceptor } from 'core/modules/auth/validator/refresh-password.interceptor';
 import { Module } from '../../../../packages/handler/Module';
 import { AuthController } from '../controller/auth.controller';
-import { LoginInterceptor } from '../../../modules/auth/validator/login.interceptor';
+import { loginInterceptor } from '../../../modules/auth/validator/login.interceptor';
 
 export const AuthResolver = Module.builder()
     .addPrefix({
@@ -12,17 +14,22 @@ export const AuthResolver = Module.builder()
         {
             route: '/',
             method: 'post',
-            interceptors: [new LoginInterceptor()],
+            interceptors: [loginInterceptor],
             controller: AuthController.login,
             body: 'LoginDto'
         },
-        /**
-         * This route is built for testing authorization
-         * TODO: Remove in the future
-         */
         {
-            route: '/authorization/test',
-            method: 'get',
-            controller: AuthController.testAuthorization
-        }
+            route: '/forgot-password',
+            method: 'post',
+            interceptors: [forgotPasswordInterceptor],
+            controller: AuthController.requestForgotPassword,
+            body: 'ForgotPasswordDto'
+        },
+        {
+            route: '/refresh-password',
+            method: 'post',
+            interceptors: [refreshPasswordInterceptor],
+            controller: AuthController.refreshPassword,
+            body: 'ChangePasswordDto'
+        },
     ]);

@@ -1,9 +1,7 @@
-import { logger } from '../logger/winston';
+import { LoggerFactory } from '../../../packages/logger/factory/logger.factory';
 
 export class MongooseProvider {
     #count = 3;
-
-    static logger = logger;
 
     /**
      * @type {string}
@@ -42,10 +40,10 @@ export class MongooseProvider {
                         useCreateIndex: true
                     }
                 );
-            MongooseProvider.logger.info('MongoDB connection success');
+            LoggerFactory.globalLogger.info('MongoDB connection success');
             flag = true;
         } catch (error) {
-            MongooseProvider.logger.error(error.message);
+            LoggerFactory.globalLogger.error(error.message);
             this.#count -= 1;
         }
         setTimeout(() => {

@@ -1,5 +1,5 @@
 import { UnsupportedMethodException } from 'core/infrastructure/exceptions/unsupportedMethod.exception';
-import { logger } from 'core/utils';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { camelCase, upperFirst } from 'lodash';
 import { parallel } from 'packages/taskExecution';
 import { BUILDER_TYPE } from '../../enum/buildType.enum';
@@ -14,7 +14,7 @@ export class DataRepository {
     constructor(model) {
         this.model = model;
         this.collection = model.collection.collectionName;
-        logger.info(
+        LoggerFactory.globalLogger.info(
             `[${upperFirst(camelCase(model.collection.collectionName))}Repository] is bundling`,
         );
     }
@@ -119,5 +119,11 @@ export class DataRepository {
             return this.model.updateMany(conditions, { deletedAt: new Date() });
         }
         return this.model.deleteMany(conditions, options);
+    }
+
+    hasRecord(field, value) {
+        return this.model.countDocuments({
+            [field]: value
+        });
     }
 }

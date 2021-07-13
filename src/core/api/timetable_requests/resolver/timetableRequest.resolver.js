@@ -19,7 +19,7 @@ export const TimetableRequestResolver = Module.builder()
                 new GetTimetableRequestQueryInterceptor()
             ],
             controller: TimetableRequestController.getByType,
-            // preAuthorization: true
+            preAuthorization: true
         },
         {
             route: '/',

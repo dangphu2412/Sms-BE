@@ -1,4 +1,4 @@
-import { HOST, PORT } from '../env';
+import { ConfigService } from 'packages/config/config.service';
 import { SwaggerBuilder } from '../../packages/swagger';
 
 const options = {
@@ -15,7 +15,7 @@ const options = {
     },
     servers: [
         {
-            url: `${HOST}/api`,
+            url: `${ConfigService.getSingleton().get('HOST')}/api`,
             description: 'Local server',
             variables: {
                 env: {
@@ -28,7 +28,7 @@ const options = {
                         '5000',
                         '443',
                     ],
-                    default: PORT,
+                    default: ConfigService.getSingleton().get('PORT'),
                 },
                 basePath: {
                     default: 'api',

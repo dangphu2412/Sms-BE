@@ -1,6 +1,6 @@
 import { UserStatus } from 'core/common/enum';
 import { SwaggerDocument } from '../../../../packages/swagger';
-import { ApiDocument } from '../../../config/swagger';
+import { ApiDocument } from '../../../config/swagger.config';
 
 ApiDocument.addModel('UpdateProfileDto',
     {

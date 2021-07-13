@@ -44,6 +44,14 @@ const schema = extendBaseModel({
         type: String,
         default: 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg'
     },
+    isPasswordChanged: {
+        type: Boolean,
+        default: false
+    },
+    remainingLoginTimes: {
+        type: Number,
+        default: 3
+    },
     deletedAt: { type: Date, default: null },
 });
 

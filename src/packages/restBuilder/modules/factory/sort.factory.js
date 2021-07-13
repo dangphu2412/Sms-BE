@@ -1,11 +1,9 @@
-import { logger } from '../../../../core/modules/logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { SortDirection } from '../../enum';
 
 export class SortFactory {
-    static logger = logger
-
     constructor() {
-        SortFactory.logger.info(`[${SortFactory.name}] is building`);
+        LoggerFactory.globalLogger.info(`[${SortFactory.name}] is building`);
     }
 
     produce(req) {

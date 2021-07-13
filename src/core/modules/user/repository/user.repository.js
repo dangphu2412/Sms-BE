@@ -1,16 +1,11 @@
 import { DataRepository } from 'packages/restBuilder/core/dataHandler/data.repository';
-import { UserModel } from '../model/userModel';
+import { UserModel } from '../model/user.model';
 
 class Repository extends DataRepository {
     constructor() {
         super(UserModel);
     }
 
-    /**
-   *
-   * @param email
-   * @returns {Promise<UserModel | null>}
-   */
     getAvailableByEmail(email) {
         return this.findOne({ email, deletedAt: null });
     }

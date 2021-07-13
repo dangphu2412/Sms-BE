@@ -1,6 +1,6 @@
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
+import { ApiDocument } from 'core/config/swagger.config';
 import { SwaggerDocument } from '../../../../packages/swagger';
-import { ApiDocument } from '../../../config/swagger';
 
 ApiDocument.addModel('tempTimetables', {
     userId: SwaggerDocument.ApiProperty({ type: 'string' }),

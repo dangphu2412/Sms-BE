@@ -1,4 +1,5 @@
-import { UserModel } from 'core/modules/user/model/userModel';
+import '../../config/config-service.config';
+import { UserModel } from 'core/modules/user/model/user.model';
 import { Role } from 'core/rules';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker/locale/vi';

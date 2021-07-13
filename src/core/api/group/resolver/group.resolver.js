@@ -36,6 +36,7 @@ export const GroupResolver = Module.builder()
             method: 'patch',
             params: [ObjectId],
             guards: [hasAdminOrLeaderRole],
+            body: 'UpdateGroupDto',
             controller: GroupController.patchOne,
             interceptors: [interceptIdObject, new UpdateGroupInterceptor()],
             preAuthorization: true

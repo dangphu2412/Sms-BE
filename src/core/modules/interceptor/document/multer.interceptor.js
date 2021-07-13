@@ -1,10 +1,12 @@
 import multer from 'multer';
 import { MulterUploader } from 'core/modules/document/handler/multer.handler';
-import { logger } from '../../logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { BadRequestException, InternalServerException } from '../../../../packages/httpException';
 
 export class BaseMulterInterceptor {
     #uploader;
+
+    #logger
 
     constructor(uploader) {
         if (!(uploader instanceof MulterUploader)) {
@@ -12,17 +14,18 @@ export class BaseMulterInterceptor {
         }
 
         this.#uploader = uploader;
+        this.#logger = LoggerFactory.create('MulterInterceptor');
     }
 
     intercept = (req, res, next) => {
         const uploadHandler = this.#uploader.getHandler();
         return uploadHandler(req, res, err => {
             if (err instanceof multer.MulterError) {
-                logger.error(err.code);
+                this.#logger.error(err.code);
                 return next(new BadRequestException(err.code));
             }
             if (err) {
-                logger.error(err.message);
+                this.#logger.error(err.message);
                 return next(new InternalServerException(err.message));
             }
             return next();

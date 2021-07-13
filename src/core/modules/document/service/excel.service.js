@@ -1,16 +1,16 @@
 import xlsx from 'xlsx';
 import { InternalServerException } from 'packages/httpException';
-import { logger } from '../../logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { unlink } from 'fs';
 import { UserRepository } from '../../user/repository/user.repository';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
-import { deleteFile } from '../../../utils/systemFile';
 import { toTimestamp } from '../../../utils/timeConvert';
 import { InValidHttpResponse } from '../../../../packages/handler/response/invalidHttp.response';
 
 class Service {
     constructor() {
         this.userRepository = UserRepository;
-        this.logger = logger;
+        this.logger = LoggerFactory.create('ExcelService');
     }
 
     async uploadOne(fileInfor) {
@@ -60,10 +60,10 @@ class Service {
             existedEmails = existedEmails.map(element => element.email);
             let payload = [];
             for (let i = 0; i < parsedUser.length; i += 1) {
-                if (!existedEmails.includes(parsedUser[i].email)
-         && !errorDetail['datetime']?.includes(parsedUser[i].email)) {
+                if (!existedEmails.includes(parsedUser[i].email) && !errorDetail['datetime']?.includes(parsedUser[i].email)) {
                     payload.push(parsedUser[i]);
                 }
+
                 if ((i % chunkSize === 0 && i !== 0) || (i === parsedUser.length - 1)) {
                     // eslint-disable-next-line no-await-in-loop
                     await this.userRepository.model.insertMany(payload);
@@ -71,10 +71,15 @@ class Service {
                 }
             }
         } catch (error) {
-            logger.error(error.message);
+            this.logger.error(error.message);
             throw new InternalServerException(error.message);
         } finally {
-            deleteFile(filePath);
+            unlink(filePath, err => {
+                if (err) {
+                    this.logger.error(err.message);
+                    throw new InternalServerException(err.message);
+                }
+            });
         }
 
         if (existedEmails.length > 0) {

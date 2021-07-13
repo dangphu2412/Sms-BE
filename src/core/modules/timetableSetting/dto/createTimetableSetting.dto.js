@@ -1,6 +1,6 @@
 import { DAY_OF_WEEK } from 'core/common/enum';
 import { SwaggerDocument } from '../../../../packages/swagger';
-import { ApiDocument } from '../../../config/swagger';
+import { ApiDocument } from '../../../config/swagger.config';
 
 ApiDocument.addModel('CreateTimeTableSettingDto', {
     dayOfWeek: SwaggerDocument.ApiProperty({ type: 'enum', model: DAY_OF_WEEK }),

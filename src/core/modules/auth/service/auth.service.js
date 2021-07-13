@@ -1,54 +1,75 @@
-import { authorization } from 'core/config/authorization';
+import { pick } from 'lodash';
+import { MailTemplateAdapter } from 'core/modules/queue/adapter/mail-template.adapter';
+import { MailConsumer } from 'core/modules/queue/consumer/mail.consumer';
+import { ForgotPasswordTemplate } from 'core/modules/mail/template/forgot-password.template';
 import { UserRepository } from '../../user/repository/user.repository';
 import { BcryptService } from './bcrypt.service';
 import { JwtService } from './jwt.service';
 import { JwtPayload } from '../dto/index';
-import { UnAuthorizedException } from '../../../../packages/httpException';
-import { UserDataService } from '../../user/service/userData.service';
+import { NotFoundException, UnAuthorizedException } from '../../../../packages/httpException';
 
 class Service {
     constructor() {
-        this.bcrypt = BcryptService;
+        this.bcryptService = BcryptService;
         this.jwtService = JwtService;
         this.userRepository = UserRepository;
-        this.userDataService = UserDataService;
+        this.mailConsumer = MailConsumer;
     }
 
-    /**
-   *
-   * @param {LoginDtoDef} loginDto
-   * @returns {Promise<LoginResponseDef>}
-   */
     async login(loginDto) {
         const user = await this.userRepository.getAvailableByEmail(loginDto.email);
-        if (user && this.bcrypt.compare(loginDto.password, user.password)) {
+        if (user && this.bcryptService.compare(loginDto.password, user.password)) {
             return {
-                user: this.userDataService.getUserInfo(user),
+                user: this.#getUserInfo(user),
                 accessToken: this.jwtService.sign(JwtPayload(user))
             };
         }
         throw new UnAuthorizedException('Email or password is incorrect');
     }
 
-    async testAuthorization() {
-        const validator = authorization
-            .buildValidator();
-
-        await validator
-            .addParams({
-                authContext: 'authContext',
-                something: 2
-            })
-            .addRules('TEST_AUTHORIZATION')
-            .validate();
-
-        /**
-         * This method can retrieve local variable from
-         * authorization store
-         */
-        // eslint-disable-next-line no-unused-vars
-        const local = validator.getFromStore('local');
+    async verifyAndAllowToChangePassword(email) {
+        if (await this.userRepository.hasRecord('email', email)) {
+            const refreshPasswordToken = this.jwtService.sign({
+                email
+            });
+            await this.mailConsumer.add(
+                MailTemplateAdapter(
+                    new ForgotPasswordTemplate(email, refreshPasswordToken),
+                    email
+                ),
+                {
+                    attempts: 1
+                }
+            );
+        } else {
+            throw new NotFoundException(`This account ${email} is not existed`);
+        }
     }
+
+    async refreshPassword(refreshPasswordDto) {
+        const { email } = this.jwtService.decode(refreshPasswordDto.refreshPasswordToken);
+        const currentUser = await this.userRepository.getAvailableByEmail(email);
+
+        if (currentUser) {
+            if (!this.bcryptService.compare(refreshPasswordDto.oldPassword, currentUser.password)) {
+                throw new UnAuthorizedException('Your current password is incorrect');
+            }
+
+            const updateDoc = {
+                password: this.bcryptService.hash(refreshPasswordDto.newPassword)
+            };
+
+            if (!currentUser.isPasswordChanged) {
+                updateDoc.isPasswordChanged = true;
+            }
+
+            await this.userRepository.model.updateOne({
+                _id: currentUser._id
+            }, updateDoc);
+        }
+    }
+
+    #getUserInfo = user => pick(user, ['_id', 'email', 'profile', 'roles', 'avatar', 'status', 'isPasswordChanged']);
 }
 
 export const AuthService = new Service();

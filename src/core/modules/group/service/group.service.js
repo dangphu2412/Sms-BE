@@ -1,9 +1,9 @@
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
 import { mapByKey } from 'core/utils';
 import { TimetableRepository } from 'core/modules/timetable/repository';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
-import { logger } from '../../logger/winston';
 import { Optional } from '../../../utils/optional';
 import { CreateGroupValidator } from '../validator/createGroup.validator';
 import { GroupDataService } from './groupData.service';
@@ -11,7 +11,7 @@ import { GroupDataService } from './groupData.service';
 class Service extends DataPersistenceService {
     constructor() {
         super(GroupRepository);
-        this.logger = logger;
+        this.logger = LoggerFactory.create('GroupService');
         this.groupDataService = GroupDataService;
         this.timetableRepository = TimetableRepository;
     }

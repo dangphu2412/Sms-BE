@@ -17,11 +17,6 @@ class Controller {
         return ValidHttpResponse.toOkResponse(data);
     }
 
-    deleteMember = async req => {
-        await this.service.deleteMember(req.params.id, req.body.deleteIds);
-        return ValidHttpResponse.toNoContentResponse();
-    }
-
     patchOne = async req => {
         await this.service.patchOne(req.params.id, UpdateGroupDto(req.body));
         return ValidHttpResponse.toNoContentResponse();

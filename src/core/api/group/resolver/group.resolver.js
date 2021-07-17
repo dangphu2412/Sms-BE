@@ -5,7 +5,6 @@ import { Module } from '../../../../packages/handler/Module';
 import { GroupController } from '../controller/group.controller';
 import { CreateGroupInterceptor } from '../../../modules/group/validator/createGroup.interceptor';
 import { UpdateGroupInterceptor } from '../../../modules/group/validator/updateGroup.interceptor';
-import { DeleteMemberInterceptor } from '../../../modules/group/validator/deleteMember.interceptor';
 import { ObjectId } from '../../../common/swagger/objectId';
 
 export const GroupResolver = Module.builder()
@@ -31,15 +30,6 @@ export const GroupResolver = Module.builder()
             interceptors: [interceptIdObject],
             guards: [hasAdminOrLeaderRole],
             controller: GroupController.findOne,
-            preAuthorization: true
-        },
-        {
-            route: '/:id/members',
-            method: 'patch',
-            params: [ObjectId],
-            guards: [hasAdminOrLeaderRole],
-            controller: GroupController.deleteMember,
-            interceptors: [interceptIdObject, new DeleteMemberInterceptor()],
             preAuthorization: true
         },
         {

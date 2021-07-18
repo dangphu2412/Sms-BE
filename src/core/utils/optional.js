@@ -37,6 +37,17 @@ export class Optional {
         return this;
     }
 
+    throwIfMissingValues(refFields, exception) {
+        refFields = [...new Set(refFields)];
+        if (this.#instance.length !== refFields.length) {
+            throw exception;
+        } else {
+            this.#instance.forEach(value => {
+                if (value.deletedAt || value.isActive === false) throw exception;
+            });
+        }
+    }
+
     get() {
         return this.#instance;
     }

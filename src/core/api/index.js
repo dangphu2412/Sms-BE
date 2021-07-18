@@ -8,6 +8,7 @@ import { ApiDocument } from '../config/swagger';
 import { TimetableResolver } from './timetable/resolver/timetable.resolver';
 import { MediaResolver } from './media/resolver/media.resolver';
 import { GroupTagResolver } from './groupTag/resolver/groupTag.resolver';
+import { TimetableRequestResolver } from './timetable_requests/resolver/timetableRequest.resolver';
 
 export const ModuleResolver = HandlerResolver
     .builder()
@@ -20,5 +21,6 @@ export const ModuleResolver = HandlerResolver
         TimetableResolver,
         ExcelResolver,
         MediaResolver,
-        GroupTagResolver
+        GroupTagResolver,
+        TimetableRequestResolver
     ]);

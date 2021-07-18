@@ -14,7 +14,7 @@ export class DataPersistenceService {
 
     constructor(repository) {
         if (!(repository instanceof DataRepository)) {
-            throw new Error('Extended class DataPersistenceService should be constructed with DataRepository instance');
+            throw new Error('Extended class DataPersistenceService should be constructed with a DataRepository instance');
         }
         this.repository = repository;
     }

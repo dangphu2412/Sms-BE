@@ -1,8 +1,3 @@
-export const TIMETABLE_TYPE = {
-    PERMANENT: 'PERMANENT',
-    TEMP: 'TEMP'
-};
-
 export const DAY_OF_WEEK = {
     MONDAY: 1,
     TUESDAY: 2,

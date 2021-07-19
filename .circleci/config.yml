@@ -50,19 +50,25 @@ jobs:
 
   deploy:
     machine:
-      enabled: true
+      image: ubuntu-1604:202004-01
     working_directory: ~/Sms-BE
     steps:
       - checkout
       - run:
-        - name: Deploy via ssh
-        - command: './scripts/deploy.sh'
+          name: Deploy via ssh
+          command: |
+              echo Starting to deploy
+              chmod 777 ./scripts/deploy.sh
+              ./scripts/deploy.sh
 
 workflows:
   version: 2
   build-and-test:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: feature/SMS-47-Setup-CI-CD
       - test_lint:
           requires:
             - build
@@ -70,7 +76,7 @@ workflows:
           requires:
             - build
             - test_lint
-          #filters:
-            #branches:
-              #only: feature/SMS-47-Setup-CI-CD
+          filters:
+            branches:
+              only: feature/SMS-47-Setup-CI-CD
 

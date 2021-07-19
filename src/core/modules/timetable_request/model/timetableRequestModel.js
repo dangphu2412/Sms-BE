@@ -1,7 +1,7 @@
-/* eslint-disable max-len */
 import { extendBaseModel } from 'core/infrastructure/model';
 import { Schema, model } from 'mongoose';
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
+import { TIMETABLE_REQUEST_STATUS } from 'core/common/enum/timetableRequestStatus.enum';
 
 const schema = extendBaseModel({
     type: {
@@ -30,9 +30,10 @@ const schema = extendBaseModel({
         trim: true,
         required: [true, 'description is empty'],
     },
-    isApproved: {
-        type: Boolean,
-        default: false
+    status: {
+        type: String,
+        default: TIMETABLE_REQUEST_STATUS.PENDING,
+        enum: Object.values(TIMETABLE_REQUEST_STATUS),
     },
 });
 

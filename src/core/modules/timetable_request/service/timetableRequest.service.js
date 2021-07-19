@@ -25,7 +25,7 @@ class Service extends DataPersistenceService {
     }
 
     async createOne(data) {
-        const validatingData = this.dataService.mappingForValidating(data.tempTimetables, data.type);
+        const validatingData = this.dataService.mappingForVliadating(data.tempTimetables, data.type);
         let createdTimetableRequest;
 
         Optional
@@ -128,6 +128,54 @@ class Service extends DataPersistenceService {
             this.logger.error(error.message);
         }
         return { _id: createdTimetableRequest._id };
+    }
+
+    getByType = async (type, status) => {
+        const queryFields = {
+            timetableRequest: {
+                select: []
+            },
+            tempTimetable: {
+                path: 'tempTimetables',
+                match: { deletedAt: { $eq: null } },
+            }
+        };
+
+        switch (type) {
+        case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
+        {
+            queryFields.tempTimetable.populate = {
+                path: 'registerTime',
+                match: { deletedAt: { $eq: null } },
+                select: '_id name startTime endTime dayOfWeek'
+            };
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.LATE:
+        {
+            queryFields.timetableRequest.select = ['description'];
+
+            queryFields.tempTimetable.select = 'customStartTime';
+            queryFields.tempTimetable.populate = {
+                path: 'timetableId',
+                match: { deletedAt: { $eq: null } },
+                select: '_id startDate endDate'
+            };
+            break;
+        }
+        case TIMETABLE_REQUEST_TYPE.ABSENT:
+        {
+            queryFields.timetableRequest.select = ['description'];
+            queryFields.tempTimetable.populate = {
+                path: 'timetableId',
+                match: { deletedAt: { $eq: null } },
+                select: '_id startDate endDate'
+            };
+            break;
+        }
+        }
+
+        return TimetableRequestRepository.findByType(queryFields, type, status);
     }
 
     #getTemptableIds = async tempTimetable => {

@@ -1,0 +1,76 @@
+version: 2
+aliases:
+  - &restore-cache
+    restore_cache:
+        key: dependency-cache-{{ checksum "package.json" }}
+  - &install-deps
+    run:
+        name: Install dependencies
+        command: npm ci
+  - &build-packages
+    run:
+        name: Build
+        command: npm run build
+  - &run-lint
+    run:
+        name: Lint
+        command: npm run lint
+
+lint-template: &lint-template
+  working_directory: ~/Sms-BE
+  steps:
+    - checkout
+    - *restore-cache
+    - *install-deps
+    - *build-packages
+    - *run-lint
+
+jobs:
+  build:
+    working_directory: ~/Sms-BE
+    docker:
+      - image: circleci/node:12
+    steps:
+      - checkout
+      - run:
+          name: Update NPM version
+          command: 'sudo npm install -g npm@latest'
+      - *restore-cache
+      - *install-deps
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - *build-packages
+
+  test_lint:
+    <<: *lint-template
+    docker:
+      - image: circleci/node:12
+
+  deploy:
+    machine:
+      enabled: true
+    working_directory: ~/Sms-BE
+    steps:
+      - checkout
+      - run:
+        - name: Deploy via ssh
+        - command: './scripts/deploy.sh'
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - test_lint:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
+            - test_lint
+          #filters:
+            #branches:
+              #only: feature/SMS-47-Setup-CI-CD
+

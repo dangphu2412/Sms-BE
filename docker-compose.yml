@@ -14,8 +14,6 @@ services:
     container_name: sms-mongo
     image: mongo
     restart: always
-    ports:
-      - '27017:27017'
     volumes: 
       - ./docker/data:/data/db
     networks:
@@ -26,8 +24,6 @@ services:
     build: 
       context: .
     restart: always
-    ports:
-      - '3000:3000'
     env_file: .env
     depends_on: 
       - mongo

@@ -1,6 +1,7 @@
 import { sample, sampleSize } from 'lodash';
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
 import { TempTimetableModel } from 'core/modules/temp_timetables/model/tempTimetableModel';
+import { TIMETABLE_REQUEST_STATUS } from 'core/common/enum/timetableRequestStatus.enum';
 import { UserRepository } from '../../modules/user/repository/user.repository';
 import { TimetableRequestModel } from '../../modules/timetable_request/model/timetableRequestModel';
 
@@ -27,8 +28,8 @@ export class TimetableRequestSeed {
                 tempTimetables: sampleSize(tempTimetableIds, sample([3, 4, 5])),
                 type: sample(Object.values(TIMETABLE_REQUEST_TYPE)),
                 description: sample(reasons),
-                attachment: 'ko co',
-                isApproved: sample([false, true])
+                attachment: null,
+                approvalStatus: sample([...Object.values(TIMETABLE_REQUEST_STATUS)])
             };
             sampleTimetableRequestData.push(timetableRequests);
         }

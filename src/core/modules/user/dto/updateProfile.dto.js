@@ -1,7 +1,7 @@
 import { SwaggerDocument } from '../../../../packages/swagger';
 import { ApiDocument } from '../../../config/swagger';
 
-ApiDocument.addModel('UpdateProfile',
+ApiDocument.addModel('UpdateProfileDto',
     {
         profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
     });

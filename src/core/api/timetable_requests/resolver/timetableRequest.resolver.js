@@ -1,5 +1,7 @@
+import { getTimetableRequestQuerySwagger } from 'core/modules/timetable_request/dto/getTimetableRequestSwagger';
 import { CreateTimetableRequestInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequest.interceptor';
 import { CreateTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequestQuery.interceptor';
+import { GetTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/getTimetableRequestQuery.interceptor';
 import { Module } from 'packages/handler/Module';
 import { TimetableRequestController } from '../controller/timetableRequest.controller';
 
@@ -11,13 +13,23 @@ export const TimetableRequestResolver = Module.builder()
     })
     .register([
         {
-            route: '/add',
+            route: '/',
+            method: 'get',
+            params: getTimetableRequestQuerySwagger,
+            interceptors: [
+                new GetTimetableRequestQueryInterceptor()
+            ],
+            controller: TimetableRequestController.getByType,
+            // preAuthorization: true
+        },
+        {
+            route: '/',
             method: 'post',
             interceptors: [
                 new CreateTimetableRequestQueryInterceptor(),
                 new CreateTimetableRequestInterceptor()
             ],
-            body: 'CreateTimetableRequest',
+            body: 'CreateTimetableRequestDto',
             controller: TimetableRequestController.createOne,
             preAuthorization: true
         },

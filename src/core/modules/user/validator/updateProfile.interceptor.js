@@ -2,9 +2,11 @@ import { BaseValidateInterceptor } from 'core/infrastructure/interceptor';
 import { SchemaValidatorBuilder } from 'core/utils';
 import Joi from 'joi';
 import { SocialKind } from 'core/common/enum/social.enum';
+import { UserStatus } from 'core/common/enum';
 
 export class UpdateProfileInterceptor extends BaseValidateInterceptor {
     getSchema = () => Joi.object().keys({
+        status: Joi.string().valid(...Object.values(UserStatus)).optional(),
         profile: Joi.object({
             firstName: SchemaValidatorBuilder.getOptionalStringBuilder().min(0).optional(),
             lastName: SchemaValidatorBuilder.getOptionalStringBuilder().min(0).optional(),

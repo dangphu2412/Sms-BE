@@ -1,9 +1,11 @@
+import { UserStatus } from 'core/common/enum';
 import { SwaggerDocument } from '../../../../packages/swagger';
 import { ApiDocument } from '../../../config/swagger';
 
-ApiDocument.addModel('UpdateProfile',
+ApiDocument.addModel('UpdateProfileDto',
     {
         profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
+        status: SwaggerDocument.ApiProperty({ type: 'enum', model: UserStatus }),
     });
 ApiDocument.addModel('Profile', {
     firstName: SwaggerDocument.ApiProperty({ type: 'string' }),
@@ -18,6 +20,7 @@ ApiDocument.addModel('Profile', {
 });
 
 export const UpdateProfileDto = body => ({
+    status: body.status,
     profile: {
         firstName: body.profile?.firstName,
         lastName: body.profile?.lastName,

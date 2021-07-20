@@ -86,11 +86,13 @@ class Service extends DataPersistenceService {
 
     async patchOne({ id }, data) {
         Object.keys(data.profile).forEach(key => (data.profile[key] === undefined ? delete data.profile[key] : {}));
+
         const user = await this.repository.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
         user.profile = { ...user.profile, ...data.profile };
+        if (data.status) user.status = data.status;
         return user.save();
     }
 

@@ -25,7 +25,7 @@ class Service extends DataPersistenceService {
     }
 
     async createOne(data) {
-        const validatingData = this.dataService.mappingForVliadating(data.tempTimetables, data.type);
+        const validatingData = this.dataService.mappingForValidating(data.tempTimetables, data.type);
         let createdTimetableRequest;
 
         Optional
@@ -130,7 +130,7 @@ class Service extends DataPersistenceService {
         return { _id: createdTimetableRequest._id };
     }
 
-    getByType = async (type, status) => {
+    getByType = async (type, approvalStatus) => {
         const queryFields = {
             timetableRequest: {
                 select: []
@@ -144,6 +144,7 @@ class Service extends DataPersistenceService {
         switch (type) {
         case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
         {
+            queryFields.tempTimetable.select = '_id';
             queryFields.tempTimetable.populate = {
                 path: 'registerTime',
                 match: { deletedAt: { $eq: null } },
@@ -155,7 +156,7 @@ class Service extends DataPersistenceService {
         {
             queryFields.timetableRequest.select = ['description'];
 
-            queryFields.tempTimetable.select = 'customStartTime';
+            queryFields.tempTimetable.select = '_id customStartTime';
             queryFields.tempTimetable.populate = {
                 path: 'timetableId',
                 match: { deletedAt: { $eq: null } },
@@ -166,6 +167,8 @@ class Service extends DataPersistenceService {
         case TIMETABLE_REQUEST_TYPE.ABSENT:
         {
             queryFields.timetableRequest.select = ['description'];
+
+            queryFields.tempTimetable.select = '_id';
             queryFields.tempTimetable.populate = {
                 path: 'timetableId',
                 match: { deletedAt: { $eq: null } },
@@ -173,9 +176,27 @@ class Service extends DataPersistenceService {
             };
             break;
         }
+        default:
+        {
+            queryFields.timetableRequest.select = ['description', 'type'];
+
+            queryFields.tempTimetable.select = '_id customStartTime';
+            queryFields.tempTimetable.populate = [
+                {
+                    path: 'registerTime',
+                    match: { deletedAt: { $eq: null } },
+                    select: '_id name startTime endTime dayOfWeek'
+                },
+                {
+                    path: 'timetableId',
+                    match: { deletedAt: { $eq: null } },
+                    select: '_id startDate endDate'
+                }
+            ];
+        }
         }
 
-        return TimetableRequestRepository.findByType(queryFields, type, status);
+        return TimetableRequestRepository.findByType(queryFields, type, approvalStatus);
     }
 
     #getTemptableIds = async tempTimetable => {

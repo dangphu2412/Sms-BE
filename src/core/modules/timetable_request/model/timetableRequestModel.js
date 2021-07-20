@@ -30,7 +30,7 @@ const schema = extendBaseModel({
         trim: true,
         required: [true, 'description is empty'],
     },
-    status: {
+    approvalStatus: {
         type: String,
         default: TIMETABLE_REQUEST_STATUS.PENDING,
         enum: Object.values(TIMETABLE_REQUEST_STATUS),

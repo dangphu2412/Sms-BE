@@ -28,8 +28,8 @@ export class TimetableRequestSeed {
                 tempTimetables: sampleSize(tempTimetableIds, sample([3, 4, 5])),
                 type: sample(Object.values(TIMETABLE_REQUEST_TYPE)),
                 description: sample(reasons),
-                attachment: 'ko co',
-                status: sample([...Object.values(TIMETABLE_REQUEST_STATUS)])
+                attachment: null,
+                approvalStatus: sample([...Object.values(TIMETABLE_REQUEST_STATUS)])
             };
             sampleTimetableRequestData.push(timetableRequests);
         }

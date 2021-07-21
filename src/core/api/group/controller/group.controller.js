@@ -17,6 +17,11 @@ class Controller {
         return ValidHttpResponse.toOkResponse(data);
     }
 
+    findChildren = async req => {
+        const data = await this.service.findChildren(req.params.id);
+        return ValidHttpResponse.toOkResponse(data);
+    }
+
     patchOne = async req => {
         await this.service.patchOne(req.params.id, UpdateGroupDto(req.body));
         return ValidHttpResponse.toNoContentResponse();

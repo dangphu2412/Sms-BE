@@ -3,7 +3,7 @@
   "associates": [
     {
       "path": "groups",
-      "select": "_id name leader members childs",
+      "select": "_id name leader members children",
       "match": { 
         "deletedAt": { "$eq": null },
         "parent": { "$eq": null }
@@ -21,7 +21,7 @@
           }
         },
         {
-          "path": "childs",
+          "path": "children",
           "select": "_id name"
         }
       ]

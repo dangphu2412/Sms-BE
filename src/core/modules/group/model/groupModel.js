@@ -12,7 +12,7 @@ const schema = extendBaseModel({
         type: String,
         trim: true,
     },
-    childs: [
+    children: [
         {
             type: Schema.Types.ObjectId,
             ref: 'groups',

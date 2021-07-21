@@ -8,7 +8,7 @@ class Service {
             description: dto.description,
             parent: dto.parentId,
             members: dto.memberIds,
-            childs: []
+            children: []
         });
         return filterDuplicateValueByKey(undefinedKeyFiltered, groupData);
     }

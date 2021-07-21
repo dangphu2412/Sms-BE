@@ -13,7 +13,7 @@ class Repository extends DataRepository {
     getGeneralById(id) {
         return this.model.findById(id, '_id name description')
             .populate({
-                path: 'childs',
+                path: 'children',
                 match: { deletedAt: { $eq: null } },
                 select: '_id name'
             })
@@ -37,7 +37,7 @@ class Repository extends DataRepository {
     getDetailById(id) {
         return this.model.findById(id)
             .populate({
-                path: 'childs',
+                path: 'children',
                 match: { deletedAt: { $eq: null } },
                 select: '_id name members',
                 populate: {
@@ -50,6 +50,25 @@ class Repository extends DataRepository {
                 path: 'leader',
                 match: { deletedAt: { $eq: null } },
                 select: '_id profile.firstName profile.lastName avatar'
+            });
+    }
+
+    getChildrendById(id) {
+        return this.model.findById(id).select('children')
+            .populate({
+                path: 'children',
+                match: { deletedAt: { $eq: null } },
+                select: '_id name members leader',
+                populate: [{
+                    path: 'members',
+                    match: { deletedAt: { $eq: null } },
+                    select: '_id profile.fullName profile.phone avatar'
+                },
+                {
+                    path: 'leader',
+                    match: { deletedAt: { $eq: null } },
+                    select: '_id profile.fullName'
+                }]
             });
     }
 

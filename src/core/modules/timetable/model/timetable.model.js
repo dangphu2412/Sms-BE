@@ -1,5 +1,6 @@
 import { extendBaseModel } from 'core/infrastructure/model';
 import { Schema, model } from 'mongoose';
+import { TimetableSettingModel } from 'core/modules/timetableSetting/model/timetableSetting.model';
 
 const schema = extendBaseModel({
     userId: {
@@ -13,8 +14,7 @@ const schema = extendBaseModel({
         ref: 'groups'
     },
     registerTime: {
-        type: Schema.Types.ObjectId,
-        ref: 'timetable_settings',
+        type: TimetableSettingModel.schema,
         required: true
     },
     startDate: {

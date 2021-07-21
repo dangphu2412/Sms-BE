@@ -33,6 +33,24 @@ export const GroupResolver = Module.builder()
             preAuthorization: true
         },
         {
+            route: '/:id/children',
+            method: 'get',
+            params: [ObjectId],
+            interceptors: [interceptIdObject],
+            guards: [hasAdminOrLeaderRole],
+            controller: GroupController.findChildren,
+            preAuthorization: true
+        },
+        {
+            route: '/:id/timetable',
+            method: 'get',
+            params: [ObjectId],
+            interceptors: [interceptIdObject],
+            guards: [hasAdminOrLeaderRole],
+            controller: GroupController.findChildren,
+            preAuthorization: true
+        },
+        {
             route: '/:id',
             method: 'patch',
             params: [ObjectId],

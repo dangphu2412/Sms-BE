@@ -1,5 +1,7 @@
 import { GroupFetchCase } from 'core/common/enum/groupFetchCase';
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
+import { mapObjectToArrByKey } from 'core/utils';
+import { TimetableRepository } from 'core/modules/timetable/repository';
 import { DuplicateException, BadRequestException, NotFoundException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
 import { logger } from '../../logger/winston';
@@ -12,6 +14,7 @@ class Service extends DataPersistenceService {
         super(GroupRepository);
         this.logger = logger;
         this.groupDataService = GroupDataService;
+        this.timetableRepository = TimetableRepository;
     }
 
     async createOne(groupDto) {
@@ -48,6 +51,28 @@ class Service extends DataPersistenceService {
         }
     }
 
+    async findChildren(id) {
+        Optional
+            .of(await this.repository.findById(id))
+            .throwIfNotPresent(new NotFoundException('Group not found'));
+
+        const data = await this.repository.getChildrendById(id).lean();
+        const childrenIds = mapObjectToArrByKey(data.children, '_id');
+        const childTimetables = await TimetableRepository.getManybyGroupsWithSelectedFields(childrenIds, ['groupId', 'registerTime']);
+
+        data.children = data.children.map(child => {
+            child.timetable = [];
+            childTimetables.forEach(childTimetable => {
+                if (child._id.equals(childTimetable.groupId)) {
+                    child.timetable.push({ timetableId: childTimetable._id, registerTime: childTimetable.registerTime });
+                }
+            });
+            return child;
+        });
+
+        return data;
+    }
+
     async deleteMember(id, deleteMembers) {
         Optional
             .of(await this.repository.getGeneralById(id))
@@ -75,9 +100,9 @@ class Service extends DataPersistenceService {
     }
 
     #updateChildInParent = async (groupId, parentId) => {
-        const parentGroup = await this.repository.findById(parentId, '_id childs');
+        const parentGroup = await this.repository.findById(parentId, '_id children');
 
-        parentGroup.childs.push(groupId);
+        parentGroup.children.push(groupId);
 
         return parentGroup.save();
     }

@@ -92,6 +92,12 @@ class Repository extends DataRepository {
         });
     }
 
+    getManybyGroupsWithSelectedFields(groups, fields) {
+        return this.model.find({
+            groupId: { $in: groups }
+        }).select(fields);
+    }
+
     /**
      * Get current timetable of group
      * @param {Array} conditions

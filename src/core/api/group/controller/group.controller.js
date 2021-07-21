@@ -12,8 +12,8 @@ class Controller {
         return ValidHttpResponse.toCreatedResponse(data);
     }
 
-    findOne = async req => {
-        const data = await this.service.findOne(req.params.id, req.query.type);
+    findChildren = async req => {
+        const data = await this.service.findChildren(req.params.id);
         return ValidHttpResponse.toOkResponse(data);
     }
 

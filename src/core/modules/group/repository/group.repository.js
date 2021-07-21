@@ -10,46 +10,22 @@ class Repository extends DataRepository {
         return this.model.findOne({ name }).select(fields);
     }
 
-    getGeneralById(id) {
-        return this.model.findById(id, '_id name description')
+    getChildrendById(id) {
+        return this.model.findById(id).select('children')
             .populate({
-                path: 'childs',
+                path: 'children',
                 match: { deletedAt: { $eq: null } },
-                select: '_id name'
-            })
-            .populate({
-                path: 'parent',
-                match: { deletedAt: { $eq: null } },
-                select: '_id name'
-            })
-            .populate({
-                path: 'members',
-                match: { deletedAt: { $eq: null } },
-                select: '_id profile.firstName profile.lastName avatar'
-            })
-            .populate({
-                path: 'leader',
-                match: { deletedAt: { $eq: null } },
-                select: '_id profile.firstName profile.lastName avatar'
-            });
-    }
-
-    getDetailById(id) {
-        return this.model.findById(id)
-            .populate({
-                path: 'childs',
-                match: { deletedAt: { $eq: null } },
-                select: '_id name members',
-                populate: {
+                select: '_id name members leader',
+                populate: [{
                     path: 'members',
                     match: { deletedAt: { $eq: null } },
-                    select: '_id profile.firstName profile.lastName profile.phone avatar'
-                }
-            })
-            .populate({
-                path: 'leader',
-                match: { deletedAt: { $eq: null } },
-                select: '_id profile.firstName profile.lastName avatar'
+                    select: '_id profile.fullName profile.phone avatar'
+                },
+                {
+                    path: 'leader',
+                    match: { deletedAt: { $eq: null } },
+                    select: '_id profile.fullName'
+                }]
             });
     }
 

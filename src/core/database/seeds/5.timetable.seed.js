@@ -10,7 +10,7 @@ export class TimetableSeed {
     static async run() {
         const userIds = await UserRepository.find({}, '_id');
         const groupIds = await GroupRepository.find({}, '_id');
-        const registerTimeIds = await TimetableSettingRepository.find({}, '_id');
+        const registerTime = await TimetableSettingRepository.find({});
 
         const sampleTimetableData = [];
         for (let i = 1; i <= 100; i += 1) {
@@ -18,7 +18,7 @@ export class TimetableSeed {
                 {
                     userId: sample(userIds),
                     groupId: sample(groupIds),
-                    registerTime: sample(registerTimeIds),
+                    registerTime: sample(registerTime),
                     startDate: faker.date.past(),
                     endDate: faker.date.future(),
                 }

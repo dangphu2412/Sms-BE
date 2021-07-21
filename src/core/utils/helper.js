@@ -37,7 +37,7 @@ export function filterDuplicateValueByKey(desObj, refObj) {
     });
     return desObj;
 }
-export function mapObjectToArrByKey(arr, key) {
+export function mapByKey(arr, key) {
     return arr.map(obj => obj[key]);
 }
 export function isEqualArray(arr1, arr2) {
@@ -45,5 +45,5 @@ export function isEqualArray(arr1, arr2) {
 }
 
 export function mapParsedObjectIdToArr(inputArr, keyId) {
-    return mapObjectToArrByKey(inputArr, keyId).map(strId => parseObjectId(strId));
+    return mapByKey(inputArr, keyId).map(strId => parseObjectId(strId));
 }

@@ -65,10 +65,7 @@ workflows:
   version: 2
   build-and-test:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: feature/SMS-47-Setup-CI-CD
+      - build
       - test_lint:
           requires:
             - build
@@ -78,5 +75,5 @@ workflows:
             - test_lint
           filters:
             branches:
-              only: feature/SMS-47-Setup-CI-CD
+              only: dev
 

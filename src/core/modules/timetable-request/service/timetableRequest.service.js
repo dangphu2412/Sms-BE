@@ -1,8 +1,10 @@
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
 import { TimetableSettingRepository } from 'core/modules/timetable-setting';
 import { TempTimetableRepository } from 'core/modules/temp-timetables';
-import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetable-request.enum';
-import { isEqualArray, mapParsedObjectIdToArr, mapByKey } from 'core/utils/helper.util';
+import { TIMETABLE_REQUEST_TYPE, APPROVAL_STATUS } from 'core/common/enum/timetable-request.enum';
+import {
+    isEqualArray, mapParsedObjectIdToArr, mapByKey, removeByKey
+} from 'core/utils/helper.util';
 import { TimetableRepository } from 'core/modules/timetable';
 import { BadRequestException, NotFoundException } from 'packages/httpException';
 import { Optional } from 'core/utils/optional.util';
@@ -123,7 +125,7 @@ class Service extends DataPersistenceService {
         return { _id: createdTimetableRequest._id };
     }
 
-    getByType = async (type, approvalStatus) => {
+    async getByType(type, approvalStatus) {
         const queryFields = {
             timetableRequest: {
                 select: []
@@ -189,7 +191,51 @@ class Service extends DataPersistenceService {
             }
         }
 
-        return TimetableRequestRepository.findByType(queryFields, type, approvalStatus);
+        return this.repository.findByType(queryFields, type, approvalStatus);
+    }
+
+    async approveOne(id, userId) {
+        const timetableRequest = await this.repository.model.findById(id).lean();
+        Optional
+            .of(timetableRequest)
+            .throwIfNotPresent(new NotFoundException('timetable request not found'));
+
+        if (timetableRequest.approvalStatus !== APPROVAL_STATUS.PENDING) {
+            throw new BadRequestException('Can not action on this timetable request');
+        }
+
+        switch (timetableRequest.type) {
+            case TIMETABLE_REQUEST_TYPE.OUT: {
+                /** 
+                     * IMPLEMENT IN THE FUTURE
+                     */
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
+            case TIMETABLE_REQUEST_TYPE.ABSENT:
+            case TIMETABLE_REQUEST_TYPE.LATE:
+            case TIMETABLE_REQUEST_TYPE.SOON:
+            case TIMETABLE_REQUEST_TYPE.ADD:
+                await this.tempTimetableRepository.model.insertMany(removeByKey(timetableRequest.tempTimetables, ['deletedAt', 'createdAt', 'updatedAt']));
+                return this.repository.updateById(id, { approvalStatus: APPROVAL_STATUS.APPROVED, actionBy: userId });
+        }
+    }
+
+    async rejectOne(id, userId) {
+        const timetableRequest = await this.repository.model.findById(id).lean();
+        Optional
+            .of(timetableRequest)
+            .throwIfNotPresent(new NotFoundException('timetable request not found'));
+
+        if (timetableRequest.approvalStatus !== APPROVAL_STATUS.PENDING && timetableRequest.approvalStatus !== APPROVAL_STATUS.APPROVED) {
+            throw new BadRequestException('Can not action on this timetable request');
+        }
+        if (timetableRequest.approvalStatus === APPROVAL_STATUS.APPROVED) {
+            const tempTimetableIds = mapByKey(timetableRequest.tempTimetables, '_id');
+            // await this.tempTimetableRepository.model.updateMany({ _id: { $in: tempTimetableIds } }, { deletedAt: new Date() });
+            await this.tempTimetableRepository.model.deleteMany({ _id: { $in: tempTimetableIds } });
+        }
+        return this.repository.updateById(id, { approvalStatus: APPROVAL_STATUS.REJECTED, actionBy: userId });
     }
 
     #getTemptableIds = async tempTimetable => {

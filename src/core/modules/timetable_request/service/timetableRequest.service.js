@@ -1,7 +1,7 @@
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
 import { TimetableSettingRepository } from 'core/modules/timetableSetting/repository';
 import { TempTimetableRepository } from 'core/modules/temp_timetables/repository/temp_timetable.repository';
-import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
+import { TIMETABLE_REQUEST_TYPE, APPROVAL_STATUS } from 'core/common/enum/timetableRequest.enum';
 import { isEqualArray, mapParsedObjectIdToArr, mapByKey } from 'core/utils/helper';
 import { TimetableRepository } from 'core/modules/timetable/repository';
 import { BadRequestException, NotFoundException } from 'packages/httpException';
@@ -123,7 +123,7 @@ class Service extends DataPersistenceService {
         return { _id: createdTimetableRequest._id };
     }
 
-    getByType = async (type, approvalStatus) => {
+    async getByType(type, approvalStatus) {
         const queryFields = {
             timetableRequest: {
                 select: []
@@ -189,7 +189,25 @@ class Service extends DataPersistenceService {
             }
         }
 
-        return TimetableRequestRepository.findByType(queryFields, type, approvalStatus);
+        return this.repository.findByType(queryFields, type, approvalStatus);
+    }
+
+    async actionOne(id, actionType) {
+        const timetable = await this.repository.findById(id);
+        Optional
+            .of(timetable)
+            .throwIfNotPresent(new NotFoundException('timetableId not found'));
+
+        if (timetable.approvalStatus === APPROVAL_STATUS.REJECTED) {
+        }
+        switch (actionType) {
+            case APPROVAL_STATUS.PENDING:
+
+                break;
+
+            default:
+                break;
+        }
     }
 
     #getTemptableIds = async tempTimetable => {

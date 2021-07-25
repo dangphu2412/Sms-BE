@@ -124,7 +124,15 @@ class Service extends DataPersistenceService {
     }
 
     async changePassword(user, changePasswordDto) {
-        const currentUser = await this.repository.model.findById(user.payload._id, '_id password remainingLoginTimes isPasswordChanged');
+        const currentUser = await this.repository.model.findById(
+            user.payload._id,
+            '_id password remainingLoginTimes isPasswordChanged',
+            {
+                deletedAt: {
+                    $eq: null
+                }
+            }
+        );
 
         if (!this.bcryptService.compare(changePasswordDto.oldPassword, currentUser.password)) {
             throw new UnAuthorizedException('Your current password is incorrect');

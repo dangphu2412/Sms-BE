@@ -6,10 +6,7 @@ services:
     build:
       context: ./docker/nginx
     ports:
-      - "3001:80"
-    networks:
-      - nginx
-      - backend
+      - "80:80"
 
   mongo:
     container_name: sms-mongo
@@ -17,8 +14,6 @@ services:
     restart: always
     volumes: 
       - ./docker/data:/data/db
-    networks:
-      - backend
 
   backend:
     container_name: sms-be
@@ -31,17 +26,11 @@ services:
       - sms-mongo
     links:
       - sms-mongo
-    networks:
-      - backend
+      - sms-redis
 
   redis:
     container_name: sms-redis
     image: redis:alpine
-    networks:
-      - backend
 
-networks:
-  nginx:
-  backend:
 volumes: 
   data:

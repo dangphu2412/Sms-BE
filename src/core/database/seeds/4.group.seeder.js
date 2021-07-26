@@ -32,7 +32,7 @@ export class GroupSeed {
                 members: memberIds,
             });
             sampleGroupData.push(group);
-            parentGroupMap[parentGroup._id].childs.push(group._id);
+            parentGroupMap[parentGroup._id].children.push(group._id);
             memberIds.forEach(memberId => {
                 parentGroupMap[parentGroup._id].members.push(memberId);
             });

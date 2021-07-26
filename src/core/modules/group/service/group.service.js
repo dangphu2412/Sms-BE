@@ -1,6 +1,7 @@
-import { GroupFetchCase } from 'core/common/enum/groupFetchCase';
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
-import { DuplicateException, BadRequestException, NotFoundException } from '../../../../packages/httpException';
+import { mapByKey } from 'core/utils';
+import { TimetableRepository } from 'core/modules/timetable/repository';
+import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
 import { logger } from '../../logger/winston';
 import { Optional } from '../../../utils/optional';
@@ -12,6 +13,7 @@ class Service extends DataPersistenceService {
         super(GroupRepository);
         this.logger = logger;
         this.groupDataService = GroupDataService;
+        this.timetableRepository = TimetableRepository;
     }
 
     async createOne(groupDto) {
@@ -37,15 +39,26 @@ class Service extends DataPersistenceService {
         return { _id: createdGroup._id };
     }
 
-    async findOne(id, type) {
-        switch (type) {
-        case GroupFetchCase.GENERAL:
-            return this.repository.getGeneralById(id);
-        case GroupFetchCase.DETAIL:
-            return this.repository.getDetailById(id);
-        default:
-            throw new BadRequestException('Unsupported type');
-        }
+    async findChildren(id) {
+        Optional
+            .of(await this.repository.findById(id))
+            .throwIfNotPresent(new NotFoundException('Group not found'));
+
+        const childrenGroups = await this.repository.getChildrendById(id).lean();
+        const childrenGroupIds = mapByKey(childrenGroups.children, '_id');
+        const childTimetables = await this.timetableRepository.getManybyGroupIds(childrenGroupIds, ['groupId', 'registerTime']);
+
+        childrenGroups.children = childrenGroups.children.map(child => {
+            child.timetable = [];
+            childTimetables.forEach(childTimetable => {
+                if (child._id.equals(childTimetable.groupId)) {
+                    child.timetable.push({ _id: childTimetable._id, registerTime: childTimetable.registerTime });
+                }
+            });
+            return child;
+        });
+
+        return childrenGroups;
     }
 
     async deleteMember(id, deleteMembers) {
@@ -75,9 +88,9 @@ class Service extends DataPersistenceService {
     }
 
     #updateChildInParent = async (groupId, parentId) => {
-        const parentGroup = await this.repository.findById(parentId, '_id childs');
+        const parentGroup = await this.repository.findById(parentId, '_id children');
 
-        parentGroup.childs.push(groupId);
+        parentGroup.children.push(groupId);
 
         return parentGroup.save();
     }

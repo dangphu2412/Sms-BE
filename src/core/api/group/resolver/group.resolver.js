@@ -1,4 +1,3 @@
-import { GroupType } from 'core/common/swagger/groupType';
 import { hasAdminOrLeaderRole, hasAdminRole } from 'core/modules/auth/guard/roleDomain';
 import { interceptIdObject } from 'core/modules/mongoose/idObject.interceptor';
 import { Module } from '../../../../packages/handler/Module';
@@ -24,12 +23,12 @@ export const GroupResolver = Module.builder()
             preAuthorization: true
         },
         {
-            route: '/:id',
+            route: '/:id/children',
             method: 'get',
-            params: [ObjectId, GroupType],
+            params: [ObjectId],
             interceptors: [interceptIdObject],
             guards: [hasAdminOrLeaderRole],
-            controller: GroupController.findOne,
+            controller: GroupController.findChildren,
             preAuthorization: true
         },
         {

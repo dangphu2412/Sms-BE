@@ -13,7 +13,7 @@ class Controller {
     }
 
     getByType = async req => {
-        const data = await this.service.getByType(req.query.type, req.query.status);
+        const data = await this.service.getByType(req.query);
         return ValidHttpResponse.toCreatedResponse(data);
     }
 

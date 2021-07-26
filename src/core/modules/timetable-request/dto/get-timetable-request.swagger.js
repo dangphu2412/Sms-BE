@@ -12,5 +12,11 @@ export const getTimetableRequestQuerySwagger = [
         paramsIn: 'query',
         required: false,
         type: 'string',
+    }),
+    SwaggerDocument.ApiParams({
+        name: 'search',
+        paramsIn: 'query',
+        required: false,
+        type: 'string',
     })
 ];

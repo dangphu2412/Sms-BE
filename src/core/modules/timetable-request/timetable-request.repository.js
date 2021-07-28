@@ -21,7 +21,7 @@ class Repository extends DataRepository {
             .populate(queryFields.tempTimetable)
             .populate({
                 path: 'userId',
-                match: { deletedAt: { $eq: null } },
+                match: queryFields.userFilter,
                 select: '_id profile.fullName'
             });
     }

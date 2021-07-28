@@ -1,14 +1,10 @@
-import { responseJoiError } from '../../../utils';
-import { loginSchema } from './login.schema';
+import { DefaultValidatorInterceptor } from 'core/infrastructure/interceptor/default-validator.interceptor';
+import Joi from 'joi';
+import { SchemaValidatorBuilder } from '../../../utils';
 
-export class LoginInterceptor {
-    async intercept(req, res, next) {
-        const result = loginSchema.validate(req['body']);
-
-        if (result.error) {
-            return responseJoiError(res, result.error);
-        }
-
-        return next();
-    }
-}
+export const loginInterceptor = new DefaultValidatorInterceptor(
+    Joi.object({
+        email: SchemaValidatorBuilder.getEmailBuilder().required(),
+        password: SchemaValidatorBuilder.getPwdBuilder().required(),
+    })
+);

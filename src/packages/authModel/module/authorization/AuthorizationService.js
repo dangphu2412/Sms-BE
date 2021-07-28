@@ -1,4 +1,3 @@
-import { logger } from 'core/utils';
 import * as R from './AuthorizationValidator';
 
 export class AuthorizationService {
@@ -10,7 +9,6 @@ export class AuthorizationService {
      * @returns
      */
     static builder(rules) {
-        logger.info(`[${AuthorizationService.name} is bundling]`);
         const service = new AuthorizationService();
         service.rules = rules;
         return service;

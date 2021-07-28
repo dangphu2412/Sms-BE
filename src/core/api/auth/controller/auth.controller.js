@@ -1,6 +1,6 @@
 import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
 import { AuthService } from '../../../modules/auth/service/auth.service';
-import { LoginDto } from '../../../modules/auth/dto';
+import { ForgotPassword, LoginDto } from '../../../modules/auth/dto';
 
 class Controller {
     constructor() {
@@ -12,13 +12,13 @@ class Controller {
         return ValidHttpResponse.toOkResponse(data);
     }
 
-    /**
-     * This route is built for testing authorization
-     * TODO: Remove in the future
-     */
-    // eslint-disable-next-line no-unused-vars
-    testAuthorization = async req => {
-        await this.service.testAuthorization();
+    requestForgotPassword = async req => {
+        await this.service.verifyAndAllowToChangePassword(req.body.email);
+        return ValidHttpResponse.toNoContentResponse();
+    }
+
+    refreshPassword = async req => {
+        await this.service.refreshPassword(ForgotPassword(req.body));
         return ValidHttpResponse.toNoContentResponse();
     }
 }

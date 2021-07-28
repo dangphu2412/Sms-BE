@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
+import { ConfigService } from 'packages/config/config.service';
 import { MongooseProvider } from '../modules/mongoose/MongooseProvider';
-import { DATABASE_URL } from '../env';
 
 export const DatabaseInstance = MongooseProvider
     .builder()
-    .setConnectionString(DATABASE_URL)
+    .setConnectionString(ConfigService.getSingleton().get('DATABASE_URL'))
     .setMongooseInstance(mongoose);

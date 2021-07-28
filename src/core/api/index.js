@@ -4,7 +4,7 @@ import { GroupResolver } from './group/resolver/group.resolver';
 import { AuthResolver } from './auth/resolver/auth.resolver';
 import { TimetableSettingResolver } from './timetableSetting/resolver/timetableSetting.resolver';
 import { ExcelResolver } from './excel/resolver/excel.resolver';
-import { ApiDocument } from '../config/swagger';
+import { ApiDocument } from '../config/swagger.config';
 import { TimetableResolver } from './timetable/resolver/timetable.resolver';
 import { MediaResolver } from './media/resolver/media.resolver';
 import { GroupTagResolver } from './groupTag/resolver/groupTag.resolver';

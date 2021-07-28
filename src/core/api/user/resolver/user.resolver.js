@@ -1,5 +1,6 @@
 import { hasAdminRole, hasLeaderRole } from 'core/modules/auth/guard/roleDomain';
 import { interceptIdObject } from 'core/modules/mongoose/idObject.interceptor';
+import { changePasswordInterceptor } from 'core/modules/user/validator/change-password.interceptor';
 import { Module } from '../../../../packages/handler/Module';
 import { UserController } from '../controller/user.controller';
 import { DefaultQueryCriteriaDocument } from '../../../common/swagger/filter';
@@ -50,6 +51,14 @@ export const UserResolver = Module.builder()
             preAuthorization: true
         },
         {
+            route: '/password',
+            method: 'patch',
+            preAuthorization: true,
+            body: 'ChangePasswordDto',
+            interceptors: [changePasswordInterceptor],
+            controller: UserController.changePassword,
+        },
+        {
             route: '/:id',
             method: 'patch',
             params: [ObjectId],
@@ -70,5 +79,5 @@ export const UserResolver = Module.builder()
             interceptors: [interceptIdObject],
             controller: UserController.deleteOne,
             preAuthorization: true
-        }
+        },
     ]);

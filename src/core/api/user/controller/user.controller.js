@@ -1,3 +1,6 @@
+import { ChangePasswordDto } from 'core/modules/user/dto/change-password.dto';
+import { getUserContext } from 'packages/authModel/module/user/UserContext';
+import { MailSenderService } from 'core/modules/mail/mail-sender.service';
 import SearchUserSchema from '../query/searchUser.schema.json';
 import { UserService } from '../../../modules/user/service/user.service';
 import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
@@ -8,6 +11,7 @@ import { ValidHttpResponse } from '../../../../packages/handler/response/validHt
 class Controller {
     constructor() {
         this.service = UserService;
+        this.mailSenderService = MailSenderService.getSingleTon();
     }
 
     findAll = async req => {
@@ -45,6 +49,11 @@ class Controller {
 
     deleteOne = async req => {
         await this.service.deleteOne(req.params);
+        return ValidHttpResponse.toNoContentResponse();
+    }
+
+    changePassword = async req => {
+        await this.service.changePassword(getUserContext(req), ChangePasswordDto(req.body));
         return ValidHttpResponse.toNoContentResponse();
     }
 }

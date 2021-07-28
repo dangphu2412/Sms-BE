@@ -1,5 +1,5 @@
 import { SwaggerDocument } from '../../../../packages/swagger';
-import { ApiDocument } from '../../../config/swagger';
+import { ApiDocument } from '../../../config/swagger.config';
 
 ApiDocument.addModel('Activity', {
     name: SwaggerDocument.ApiProperty({ type: 'string' }),

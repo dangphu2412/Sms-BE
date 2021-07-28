@@ -1,7 +1,7 @@
 // @ts-check
 import { compareSync, hashSync, genSaltSync } from 'bcrypt';
-import { SALT_ROUNDS } from '../../../env';
-import { logger } from '../../logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { ConfigService } from 'packages/config/config.service';
 
 class Bcrypt {
     saltRounds;
@@ -11,7 +11,7 @@ class Bcrypt {
      */
     constructor(saltRounds) {
         this.saltRounds = saltRounds;
-        logger.info('[BcryptService] is bundling');
+        LoggerFactory.globalLogger.info('[BcryptService] is bundling');
     }
 
     /**
@@ -31,4 +31,4 @@ class Bcrypt {
     }
 }
 
-export const BcryptService = new Bcrypt(SALT_ROUNDS);
+export const BcryptService = new Bcrypt(Number.parseInt(ConfigService.getSingleton().get('SALT_ROUNDS'), 10));

@@ -1,7 +1,7 @@
 import express from 'express';
 import { getUserContext } from 'packages/authModel/module/user/UserContext';
 import { ForbiddenException } from 'packages/httpException/ForbiddenException';
-import { logger } from '../../core/modules/logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
 import { SwaggerContentCreator } from '../swagger/core/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
@@ -12,8 +12,6 @@ import { HttpResponse } from './response/http.response';
 import { InValidHttpResponse } from './response/invalidHttp.response';
 
 export class Module {
-    static logger = logger;
-
     /**
      * @type {
     [
@@ -94,7 +92,9 @@ export class Module {
                 return new InValidHttpResponse(err.status, err.code, err.message)
                     .toResponse(response);
             }
-            Module.logger.error(err.message);
+            // eslint-disable-next-line no-console
+            console.log(err);
+            LoggerFactory.globalLogger.error(err.message);
             return InValidHttpResponse
                 .toInternalResponse(err.message)
                 .toResponse(response);
@@ -155,7 +155,7 @@ export class Module {
     } apis
      */
     register(apis) {
-        Module.logger.info(`[${this.#prefix.module}] is bundling`);
+        LoggerFactory.globalLogger.info(`[${this.#prefix.module}] is bundling`);
 
         apis.forEach(api => {
             const {
@@ -184,7 +184,7 @@ export class Module {
 
             this.#router[method](route, ...middlewares, this.#createHandler(controller));
 
-            Module.logger.info(`[${this.#prefix.module}] ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);
+            LoggerFactory.globalLogger.info(`[${this.#prefix.module}] ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} mapped ${controller.name}`);
 
             this.#addSwaggerContent(api);
         });

@@ -3,23 +3,27 @@ import { keyBy } from 'lodash';
 import moment from 'moment';
 import { toJSON } from 'core/utils';
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
-import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
+import { MailConsumer } from 'core/modules/queue/consumer/mail.consumer';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { ChangePasswordTemplate } from 'core/modules/mail/template/change-password.template';
+import { DuplicateException, NotFoundException, UnAuthorizedException } from '../../../../packages/httpException';
 import { BcryptService } from '../../auth/service/bcrypt.service';
 import { UserRepository } from '../repository/user.repository';
-import { logger } from '../../logger/winston';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
 import { UserStatus } from '../../../common/enum/userStatus.enum';
 import { toDateTime } from '../../../utils/timeConvert';
 import { GroupRepository } from '../../group/repository/group.repository';
 import { TimetableRepository } from '../../timetable/repository';
+import { MailTemplateAdapter } from '../../queue/adapter/mail-template.adapter';
 
 class Service extends DataPersistenceService {
     constructor() {
         super(UserRepository);
-        this.bcrypt = BcryptService;
+        this.bcryptService = BcryptService;
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
-        this.logger = logger;
+        this.logger = LoggerFactory.create('UserService');
+        this.mailConsumer = MailConsumer;
     }
 
     async createOne(data) {
@@ -36,7 +40,7 @@ class Service extends DataPersistenceService {
         if (userProfile?.birthday && !toDateTime(userProfile?.birthday)) {
             throw new BadRequestException('Invalid birthday datetime type');
         }
-        data.password = this.bcrypt.hash(data.password);
+        data.password = this.bcryptService.hash(data.password);
 
         try {
             createdUser = await this.repository.model.create(data);
@@ -44,6 +48,15 @@ class Service extends DataPersistenceService {
             this.logger.error(e.message);
             return null;
         }
+        await this.mailConsumer.add(
+            MailTemplateAdapter(
+                new ChangePasswordTemplate(createdUser.email),
+                createdUser.email
+            ),
+            {
+                attempts: 3,
+            }
+        );
         return { _id: createdUser._id };
     }
 
@@ -110,30 +123,32 @@ class Service extends DataPersistenceService {
         return user;
     }
 
-    /**
-     * This function is built for testing
-     * authorization purpose
-     *
-     * You can log here to check data called
-     *
-     * TODO: remove in the future
-     */
-    mustBeAuthor = async () => {
-        const data = await this.repository.count();
-        return data;
-    }
+    async changePassword(user, changePasswordDto) {
+        const currentUser = await this.repository.model.findById(
+            user.payload._id,
+            '_id password remainingLoginTimes isPasswordChanged',
+            {
+                deletedAt: {
+                    $eq: null
+                }
+            }
+        );
 
-    /**
-     * This function is built for testing
-     * authorization purpose
-     *
-     * You can log here for checking parameters
-     *
-     * TODO: remove in the future
-     */
-    // eslint-disable-next-line no-unused-vars
-    isRoleAdmin(authContext, something) {
-        return true;
+        if (!this.bcryptService.compare(changePasswordDto.oldPassword, currentUser.password)) {
+            throw new UnAuthorizedException('Your current password is incorrect');
+        }
+
+        const updateDoc = {
+            password: this.bcryptService.hash(changePasswordDto.newPassword)
+        };
+
+        if (!currentUser.isPasswordChanged) {
+            updateDoc.isPasswordChanged = true;
+        }
+
+        await this.repository.model.updateOne({
+            _id: currentUser._id
+        }, updateDoc);
     }
 }
 

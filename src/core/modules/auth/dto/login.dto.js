@@ -1,5 +1,5 @@
 import { SwaggerDocument } from '../../../../packages/swagger';
-import { ApiDocument } from '../../../config/swagger';
+import { ApiDocument } from '../../../config/swagger.config';
 
 ApiDocument.addModel('LoginDto',
     {
@@ -7,12 +7,6 @@ ApiDocument.addModel('LoginDto',
         password: SwaggerDocument.ApiProperty({ type: 'string' })
     });
 
-/**
- *
- * @param body
- * @returns {{password, email}}
- * @constructor
- */
 export const LoginDto = body => ({
     email: body.email,
     password: body.password

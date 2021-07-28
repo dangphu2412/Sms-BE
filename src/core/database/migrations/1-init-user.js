@@ -1,4 +1,5 @@
-import { UserModel } from 'core/modules/user/model/userModel';
+import '../../config/config-service.config';
+import { UserModel } from 'core/modules/user/model/user.model';
 import { BcryptService } from 'core/utils';
 import { Types } from 'mongoose';
 import sgroupInitialUser from '../data/migration/initialUser.json';

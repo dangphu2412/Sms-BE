@@ -1,12 +1,10 @@
-import { logger } from '../../../../core/modules/logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 
 export class SearchFactory {
-    static logger = logger;
-
     static REGEX_SEARCH_CLEANER = '/[^\\w\\s]/gi';
 
     constructor() {
-        SearchFactory.logger.info(`[${SearchFactory.name}] is building`);
+        LoggerFactory.globalLogger.info(`[${SearchFactory.name}] is building`);
     }
 
     produce(req) {

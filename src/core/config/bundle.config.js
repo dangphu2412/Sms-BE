@@ -4,9 +4,10 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { InvalidResolver, InvalidFilter } from 'core/common/exceptions/system';
-import { logger } from '../modules/logger/winston';
-import { DatabaseInstance } from './database';
-import { CORS_ALLOW, NODE_ENV } from '../env';
+import { ConfigService } from 'packages/config/config.service';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { DatabaseInstance } from './database.config';
+import { queueRegister } from './queue.config';
 
 /**
  * @typedef Filter
@@ -14,14 +15,12 @@ import { CORS_ALLOW, NODE_ENV } from '../env';
  */
 
 export class AppBundle {
-    static logger = logger;
-
     BASE_PATH = '/api';
 
     BASE_PATH_SWAGGER = '/docs';
 
     static builder() {
-        AppBundle.logger.info('App is starting bundling');
+        LoggerFactory.globalLogger.info('App is starting bundling');
         return new AppBundle();
     }
 
@@ -64,7 +63,7 @@ export class AppBundle {
             swaggerUi.serve,
             swaggerUi.setup(swaggerBuilder.instance)
         );
-        AppBundle.logger.info('Building swagger');
+        LoggerFactory.globalLogger.info('Building swagger');
         // }
         return this;
     }
@@ -73,12 +72,12 @@ export class AppBundle {
      * Default config
      */
     init() {
-        AppBundle.logger.info(`Application is in mode ${NODE_ENV}`);
+        LoggerFactory.globalLogger.info(`Application is in mode [${ConfigService.getSingleton().get('NODE_ENV')}]`);
         /**
          * Setup basic express
          */
         this.app.use(cors({
-            origin: CORS_ALLOW,
+            origin: ConfigService.getSingleton().get('CORS_ALLOW'),
             optionsSuccessStatus: 200
         }));
         this.app.use(express.json());
@@ -100,7 +99,7 @@ export class AppBundle {
                 return undefined;
             }),
         );
-        AppBundle.logger.info('Building initial config');
+        LoggerFactory.globalLogger.info('Building initial config');
 
         return this;
     }
@@ -109,7 +108,8 @@ export class AppBundle {
     Setup asynchronous config here
      */
     async run() {
-        AppBundle.logger.info('Building asynchronous config');
+        LoggerFactory.globalLogger.info('Building asynchronous config');
+        await queueRegister.publish();
         await DatabaseInstance.connect();
     }
 }

@@ -7,17 +7,14 @@ services:
       context: ./docker/nginx
     ports:
       - "80:80"
-    networks:
-      - nginx
-      - backend
+
   mongo:
     container_name: sms-mongo
     image: mongo
     restart: always
     volumes: 
       - ./docker/data:/data/db
-    networks:
-      - backend
+
   backend:
     container_name: sms-be
     image: sms/be
@@ -26,14 +23,14 @@ services:
     restart: always
     env_file: .env
     depends_on: 
-      - mongo
+      - sms-mongo
     links:
-      - mongo
-    networks:
-      - backend
+      - sms-mongo
+      - sms-redis
 
-networks:
-  nginx:
-  backend:
+  redis:
+    container_name: sms-redis
+    image: redis:alpine
+
 volumes: 
   data:

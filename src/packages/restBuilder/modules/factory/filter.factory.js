@@ -1,14 +1,12 @@
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { FilterSign } from 'packages/restBuilder/enum';
-import { logger } from '../../../../core/modules/logger/winston';
 import { FilterValidator } from '../validator/filter.validator';
 
 export class FilterFactory {
-    static logger = logger;
-
     static filterValidator = new FilterValidator();
 
     constructor() {
-        FilterFactory.logger.info(`[${FilterFactory.name}] is building`);
+        LoggerFactory.globalLogger.info(`[${FilterFactory.name}] is building`);
     }
 
     produce({ filter }) {

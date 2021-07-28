@@ -1,9 +1,7 @@
-import { logger } from '../../../../core/modules/logger/winston';
+import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { BadRequestException } from '../../../httpException/BadRequestException';
 
 export class PaginationFactory {
-    static logger = logger;
-
     static DEFAULT_RADIX = 10;
 
     static MAX_PAGE = null;
@@ -15,7 +13,7 @@ export class PaginationFactory {
     static DEFAULT_SIZE = null;
 
     constructor() {
-        PaginationFactory.logger.info(`[${PaginationFactory.name}] is building`);
+        LoggerFactory.globalLogger.info(`[${PaginationFactory.name}] is building`);
     }
 
     produce({ page, size }) {

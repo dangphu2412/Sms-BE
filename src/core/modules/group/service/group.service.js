@@ -1,7 +1,7 @@
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
 import { mapByKey } from 'core/utils';
 import { TimetableRepository } from 'core/modules/timetable/repository';
-import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { LoggerFactory } from 'packages/logger';
 import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
 import { GroupRepository } from '../repository/group.repository';
 import { Optional } from '../../../utils/optional';
@@ -46,16 +46,27 @@ class Service extends DataPersistenceService {
 
         const childrenGroups = await this.repository.getChildrendById(id).lean();
         const childrenGroupIds = mapByKey(childrenGroups.children, '_id');
-        const childTimetables = await this.timetableRepository.getManybyGroupIds(childrenGroupIds, ['groupId', 'registerTime']);
+        const childrenTimetables = await this.timetableRepository.getManyByGroupIds(childrenGroupIds, ['groupId', 'registerTime']);
 
-        childrenGroups.children = childrenGroups.children.map(child => {
-            child.timetable = [];
-            childTimetables.forEach(childTimetable => {
-                if (child._id.equals(childTimetable.groupId)) {
-                    child.timetable.push({ _id: childTimetable._id, registerTime: childTimetable.registerTime });
-                }
-            });
-            return child;
+        const timetableMapChildren = {};
+
+        childrenTimetables.forEach(childrenTimetable => {
+            if (!timetableMapChildren[childrenTimetable.groupId]) {
+                timetableMapChildren[childrenTimetable.groupId] = [{
+                    _id: childrenTimetable._id,
+                    registerTime: childrenTimetable.registerTime
+                }];
+            } else {
+                timetableMapChildren[childrenTimetable.groupId].push({
+                    _id: childrenTimetable._id,
+                    registerTime: childrenTimetable.registerTime
+                });
+            }
+        });
+
+        childrenGroups.children = childrenGroups.children.map(childrenGroup => {
+            childrenGroup.timetables = timetableMapChildren[childrenGroup._id];
+            return childrenGroup;
         });
 
         return childrenGroups;

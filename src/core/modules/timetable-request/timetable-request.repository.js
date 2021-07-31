@@ -6,17 +6,17 @@ class Repository extends DataRepository {
         super(TimetableRequestModel);
     }
 
-    async findByType(queryFields, type, approvalStatus) {
-        const filterObj = {
-        };
+    async findMany(type, approvalStatus, queryFields) {
+        const filterFields = {};
+
         if (type) {
-            filterObj.type = type;
+            filterFields.type = type;
         }
         if (approvalStatus) {
-            filterObj.approvalStatus = approvalStatus;
+            filterFields.approvalStatus = approvalStatus;
         }
 
-        return this.model.find(filterObj)
+        return this.model.find(filterFields)
             .select(['_id', 'approvalStatus', 'createdAt', ...queryFields.timetableRequest.select])
             .populate(queryFields.tempTimetable)
             .populate({

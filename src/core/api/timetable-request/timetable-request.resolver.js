@@ -19,7 +19,7 @@ export const TimetableRequestResolver = Module.builder()
             interceptors: [
                 new GetTimetableRequestQueryInterceptor()
             ],
-            controller: TimetableRequestController.getByType,
+            controller: TimetableRequestController.getMany,
             preAuthorization: true
         },
         {

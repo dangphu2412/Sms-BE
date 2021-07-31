@@ -35,11 +35,11 @@ const schema = extendBaseModel({
         default: TIMETABLE_REQUEST_STATUS.PENDING,
         enum: Object.values(TIMETABLE_REQUEST_STATUS),
     },
-    approvedBy: {
+    updatedBy: {
         type: Schema.Types.ObjectId,
         ref: 'users',
         default: null
-    },
+    }
 });
 
 export const TimetableRequestModel = model('timetable_requests', schema);

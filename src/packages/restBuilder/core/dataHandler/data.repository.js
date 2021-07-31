@@ -104,14 +104,11 @@ export class DataRepository {
         return this.model.findByIdAndUpdate(id, payload, { new: true });
     }
 
-    updateDirectById(id, payload) {
-        return this.model.updateOne({ _id: id, payload });
-    }
-
-    patchById(id, updateDoc) {
-        return this.model.updateOne({
-            _id: id
-        }, { $set: updateDoc });
+    updateByIds(ids, fields) {
+        return this.model.updateMany(
+            { _id: { $in: ids } },
+            { ...fields }
+        );
     }
 
     softDeleteById(id) {

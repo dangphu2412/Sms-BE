@@ -4,3 +4,4 @@ export * from './optional.util';
 export * from './page.util';
 export * from './joi.util';
 export * from './time-convertor.util';
+export * from './array-object.util';

@@ -27,6 +27,7 @@ export const CreateUserDto = body => ({
     password: body.password,
     fingerprint: body?.fingerprint,
     status: body?.status,
+    specializedGroupId: body?.specializedGroupId,
     profile: {
         firstName: body?.profile?.firstName,
         lastName: body?.profile?.lastName,

@@ -10,7 +10,7 @@ export class MailSenderService {
      * 
      * @returns {MailSenderService}
      */
-    static getSingleTon() {
+    static getSingleton() {
         if (!MailSenderService.#instance) {
             this.#instance = new MailSenderService(SendGridMailService);
         }

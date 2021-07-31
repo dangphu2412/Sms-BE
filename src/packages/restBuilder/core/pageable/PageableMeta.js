@@ -33,6 +33,14 @@ export class PageableMeta {
         return meta;
     }
 
+    static with(page, size, total) {
+        const meta = new PageableMeta();
+        meta.currentPage = page;
+        meta.currentSize = size;
+        meta.totalRecord = total;
+        return meta;
+    }
+
     /**
      * @notes We finalize builder by build method
      * @returns {{totalPage: number, currentPage, totalRecord, currentSize}}
@@ -41,7 +49,7 @@ export class PageableMeta {
         return {
             currentPage: this.currentPage,
             currentSize: this.currentSize,
-            totalPage: Math.floor(this.totalRecord / this.currentSize),
+            totalPage: Math.ceil(this.totalRecord / this.currentSize),
             totalRecord: this.totalRecord
         };
     }

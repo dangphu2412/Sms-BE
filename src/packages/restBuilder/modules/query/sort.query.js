@@ -1,19 +1,23 @@
 import { SortDirection } from 'packages/restBuilder/enum';
 
-/**
- * @typedef SortFormat
- * @property {string} sort
- * @property {SortDirection} order
- */
-
 export class SortQuery {
     /**
-     * @type {SortFormat[]} rawSorts
+     * @type {{key: 1 | -1}} sortQuery
      */
-    #rawSorts;
+    #sortQuery;
 
     constructor(sortTransformed) {
-        this.#rawSorts = sortTransformed;
+        this.#sortQuery = SortQuery.toQuery(sortTransformed);
+    }
+
+    static toQuery(sortTransformed) {
+        const sortQuery = {};
+
+        sortTransformed.forEach(sortItem => {
+            sortQuery[sortItem.sort] = sortItem.order;
+        });
+
+        return sortQuery;
     }
 
     /**
@@ -22,14 +26,8 @@ export class SortQuery {
      * @author dangphu2412
      * @version 1.0
      */
-    generate() {
-        const sortQuery = {};
-
-        this.#rawSorts.forEach(sortItem => {
-            sortQuery[sortItem.sort] = sortItem.order;
-        });
-
-        return sortQuery;
+    getQuery() {
+        return this.#sortQuery;
     }
 
     /**
@@ -43,10 +41,14 @@ export class SortQuery {
         if (!SortDirection[order]) {
             throw new Error(`Invalid order added into addSort method from class ${SortQuery.name}`);
         }
-        this.#rawSorts.push({
-            sort,
-            order
-        });
+        this.#sortQuery[sort] = order;
+        return this;
+    }
+
+    removeSortByKey(key) {
+        if (this.#sortQuery[key]) {
+            delete this.#sortQuery[key];
+        }
         return this;
     }
 }

@@ -29,8 +29,8 @@ export class RequestTransformer {
         },
         filters: [{column: string,sign: '$eq' | '$gt' | '$like',value: string}],
         sorts: [{sort, order}],
-        search,
-        main: string[],
+        search: { value: string, criteria: []},
+        main: string[] | string | Record<String, 1>,
         associates: string[]
      }}
      */
@@ -60,7 +60,7 @@ export class RequestTransformer {
      */
     constructor(req, relationSchema) {
         this.content = {};
-        req.searchSchema = relationSchema?.searchCriteria;
+        req.searchCriteria = relationSchema?.searchCriteria;
         this.content.pagination = RequestTransformer.paginationFactory.produce(req);
         this.content.filters = RequestTransformer.filterFactory.produce(req);
         this.content.sorts = RequestTransformer.sortFactory.produce(req);

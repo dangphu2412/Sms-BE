@@ -11,18 +11,18 @@ export function setup(type) {
         throw new Error(`File mogp.config.json is missing in ${process.cwd()}`);
     }
     switch (type) {
-    case SetupEnum.MIGRATION:
-        if (!config.connectionString || !config.pathMigration) {
-            throw new Error('Missing config connectionString or pathMigration in mogp.config.json');
-        }
-        break;
-    case SetupEnum.SEEDING:
-        if (!config.connectionString || !config.pathSeeding) {
-            throw new Error('Missing config connectionString or pathSeeding in mogp.config.json');
-        }
-        break;
-    default:
-        throw new Error('Unsupported type for setup');
+        case SetupEnum.MIGRATION:
+            if (!config.connectionString || !config.pathMigration) {
+                throw new Error('Missing config connectionString or pathMigration in mogp.config.json');
+            }
+            break;
+        case SetupEnum.SEEDING:
+            if (!config.connectionString || !config.pathSeeding) {
+                throw new Error('Missing config connectionString or pathSeeding in mogp.config.json');
+            }
+            break;
+        default:
+            throw new Error('Unsupported type for setup');
     }
     MogpConfig.config({
         connectionString: config.connectionString,

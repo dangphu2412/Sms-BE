@@ -1,6 +1,6 @@
 // @ts-check
 import { compareSync, hashSync, genSaltSync } from 'bcrypt';
-import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { LoggerFactory } from 'packages/logger/factory';
 import { ConfigService } from 'packages/config/config.service';
 
 class Bcrypt {

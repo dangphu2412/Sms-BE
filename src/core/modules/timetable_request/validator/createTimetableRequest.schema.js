@@ -13,39 +13,39 @@ export class CreateTimetableRequestSchema {
         const requiredFields = {};
 
         switch (type) {
-        case TIMETABLE_REQUEST_TYPE.OUT: {
-            requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.OUT).required();
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ABSENT: {
-            requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.ABSENT).required();
-            requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
-            requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.ABSENT_ADD).required();
-            requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            requiredFields.registerTime = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ADD: {
-            requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.ADD).required();
-            requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            requiredFields.registerTime = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.SOON: {
-            requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.SOON).required();
-            requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            requiredFields.customEndTime = SchemaValidatorBuilder.getRequiredStringBuilder();
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.LATE: {
-            requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.LATE).required();
-            requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
-            requiredFields.customStartTime = SchemaValidatorBuilder.getRequiredStringBuilder();
-            break;
-        }
+            case TIMETABLE_REQUEST_TYPE.OUT: {
+                requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.OUT).required();
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.ABSENT: {
+                requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.ABSENT).required();
+                requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
+                requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.ABSENT_ADD).required();
+                requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                requiredFields.registerTime = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.ADD: {
+                requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.ADD).required();
+                requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                requiredFields.registerTime = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.SOON: {
+                requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.SOON).required();
+                requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                requiredFields.customEndTime = SchemaValidatorBuilder.getRequiredStringBuilder();
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.LATE: {
+                requiredFields.type = Joi.string().valid(TIMETABLE_REQUEST_TYPE.LATE).required();
+                requiredFields.timetableId = SchemaValidatorBuilder.getIdObjectBuilder().required();
+                requiredFields.customStartTime = SchemaValidatorBuilder.getRequiredStringBuilder();
+                break;
+            }
         }
         return requiredFields;
     };

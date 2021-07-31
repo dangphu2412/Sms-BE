@@ -48,78 +48,78 @@ class Service extends DataPersistenceService {
         }
 
         switch (data.type) {
-        case TIMETABLE_REQUEST_TYPE.OUT: {
-            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
-            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
-            const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
-
-            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
-                throw new BadRequestException('Some timetableId is not belong to some userId');
+            case TIMETABLE_REQUEST_TYPE.OUT: {
+                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+                break;
             }
+            case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
+                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
 
-            Optional
-                .of(await this.timetableSettingRepository.findByIds(validatingData.registerTimeIds))
-                .throwIfMissingValues(validatingData.registerTimeIds, new NotFoundException('Some timetableSettingId not found or have been deleted'));
-
-            registerTimeIdsFromTimetable.forEach(registerTimeId => {
-                if (mapParsedObjectIdToArr(data.tempTimetables, 'registerTime').some(val => val.equals(registerTimeId))) {
-                    throw new BadRequestException('lên bù date must not be as same as main timetable');
+                if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                    throw new BadRequestException('Some timetableId is not belong to some userId');
                 }
-            });
 
-            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ABSENT: {
-            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                Optional
+                    .of(await this.timetableSettingRepository.findByIds(validatingData.registerTimeIds))
+                    .throwIfMissingValues(validatingData.registerTimeIds, new NotFoundException('Some timetableSettingId not found or have been deleted'));
 
-            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
-                throw new BadRequestException('Some timetableId is not belong to some userId');
+                registerTimeIdsFromTimetable.forEach(registerTimeId => {
+                    if (mapParsedObjectIdToArr(data.tempTimetables, 'registerTime').some(val => val.equals(registerTimeId))) {
+                        throw new BadRequestException('lên bù date must not be as same as main timetable');
+                    }
+                });
+
+                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+                break;
             }
-            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.LATE: {
-            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+            case TIMETABLE_REQUEST_TYPE.ABSENT: {
+                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
 
-            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
-                throw new BadRequestException('Some timetableId is not belong to some userId');
-            }
-            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.SOON: {
-            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
-
-            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
-                throw new BadRequestException('Some timetableId is not belong to some userId');
-            }
-            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ADD: {
-            const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
-            const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
-
-            if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
-                throw new BadRequestException('Some timetableId is not belong to some userId');
-            }
-
-            Optional
-                .of(await this.timetableSettingRepository.findByIds(validatingData.registerTimeIds))
-                .throwIfMissingValues(validatingData.registerTimeIds, new NotFoundException('Some timetableSettingId not found or have been deleted'));
-
-            registerTimeIdsFromTimetable.forEach(registerTimeId => {
-                if (mapParsedObjectIdToArr(data.tempTimetables, 'registerTime').some(val => val.equals(registerTimeId))) {
-                    throw new BadRequestException('addition date must not be as same as main timetable');
+                if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                    throw new BadRequestException('Some timetableId is not belong to some userId');
                 }
-            });
-            data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
-            break;
-        }
+                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.LATE: {
+                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+
+                if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                    throw new BadRequestException('Some timetableId is not belong to some userId');
+                }
+                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.SOON: {
+                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+
+                if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                    throw new BadRequestException('Some timetableId is not belong to some userId');
+                }
+                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.ADD: {
+                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
+
+                if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
+                    throw new BadRequestException('Some timetableId is not belong to some userId');
+                }
+
+                Optional
+                    .of(await this.timetableSettingRepository.findByIds(validatingData.registerTimeIds))
+                    .throwIfMissingValues(validatingData.registerTimeIds, new NotFoundException('Some timetableSettingId not found or have been deleted'));
+
+                registerTimeIdsFromTimetable.forEach(registerTimeId => {
+                    if (mapParsedObjectIdToArr(data.tempTimetables, 'registerTime').some(val => val.equals(registerTimeId))) {
+                        throw new BadRequestException('addition date must not be as same as main timetable');
+                    }
+                });
+                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
+                break;
+            }
         }
 
         try {
@@ -142,58 +142,58 @@ class Service extends DataPersistenceService {
         };
 
         switch (type) {
-        case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
-        {
-            queryFields.tempTimetable.select = '_id';
-            queryFields.tempTimetable.populate = {
-                path: 'registerTime',
-                match: { deletedAt: { $eq: null } },
-                select: '_id name startTime endTime dayOfWeek'
-            };
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.LATE:
-        {
-            queryFields.timetableRequest.select = ['description'];
-
-            queryFields.tempTimetable.select = '_id customStartTime';
-            queryFields.tempTimetable.populate = {
-                path: 'timetableId',
-                match: { deletedAt: { $eq: null } },
-                select: '_id startDate endDate'
-            };
-            break;
-        }
-        case TIMETABLE_REQUEST_TYPE.ABSENT:
-        {
-            queryFields.timetableRequest.select = ['description'];
-
-            queryFields.tempTimetable.select = '_id';
-            queryFields.tempTimetable.populate = {
-                path: 'timetableId',
-                match: { deletedAt: { $eq: null } },
-                select: '_id startDate endDate'
-            };
-            break;
-        }
-        default:
-        {
-            queryFields.timetableRequest.select = ['description', 'type'];
-
-            queryFields.tempTimetable.select = '_id customStartTime';
-            queryFields.tempTimetable.populate = [
-                {
+            case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
+            {
+                queryFields.tempTimetable.select = '_id';
+                queryFields.tempTimetable.populate = {
                     path: 'registerTime',
                     match: { deletedAt: { $eq: null } },
                     select: '_id name startTime endTime dayOfWeek'
-                },
-                {
+                };
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.LATE:
+            {
+                queryFields.timetableRequest.select = ['description'];
+
+                queryFields.tempTimetable.select = '_id customStartTime';
+                queryFields.tempTimetable.populate = {
                     path: 'timetableId',
                     match: { deletedAt: { $eq: null } },
                     select: '_id startDate endDate'
-                }
-            ];
-        }
+                };
+                break;
+            }
+            case TIMETABLE_REQUEST_TYPE.ABSENT:
+            {
+                queryFields.timetableRequest.select = ['description'];
+
+                queryFields.tempTimetable.select = '_id';
+                queryFields.tempTimetable.populate = {
+                    path: 'timetableId',
+                    match: { deletedAt: { $eq: null } },
+                    select: '_id startDate endDate'
+                };
+                break;
+            }
+            default:
+            {
+                queryFields.timetableRequest.select = ['description', 'type'];
+
+                queryFields.tempTimetable.select = '_id customStartTime';
+                queryFields.tempTimetable.populate = [
+                    {
+                        path: 'registerTime',
+                        match: { deletedAt: { $eq: null } },
+                        select: '_id name startTime endTime dayOfWeek'
+                    },
+                    {
+                        path: 'timetableId',
+                        match: { deletedAt: { $eq: null } },
+                        select: '_id startDate endDate'
+                    }
+                ];
+            }
         }
 
         return TimetableRequestRepository.findByType(queryFields, type, approvalStatus);

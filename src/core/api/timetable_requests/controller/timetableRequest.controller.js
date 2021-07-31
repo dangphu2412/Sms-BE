@@ -1,6 +1,7 @@
 import { ValidHttpResponse } from 'packages/handler/response/validHttp.response';
 import { TimetableRequestService } from 'core/modules/timetable_request/service/timetableRequest.service';
-import { CreateTimetableRequestDto, ActionTimetableRequestDto } from 'core/modules/timetable_request/dto';
+import { CreateTimetableRequestDto } from 'core/modules/timetable_request/dto';
+import { getUserContext } from 'packages/authModel/module/user/UserContext';
 
 class Controller {
     constructor() {
@@ -17,9 +18,14 @@ class Controller {
         return ValidHttpResponse.toCreatedResponse(data);
     }
 
-    actionOne = async req => {
-        const data = await this.service.actionOne(req.params.id, ActionTimetableRequestDto(req.body));
-        return ValidHttpResponse.toCreatedResponse(data);
+    approveOne = async req => {
+        await this.service.approveOne(req.params.id, getUserContext(req)['payload']._id);
+        return ValidHttpResponse.toNoContentResponse();
+    }
+
+    rejectOne = async req => {
+        await this.service.rejectOne(req.params.id, getUserContext(req)['payload']._id);
+        return ValidHttpResponse.toNoContentResponse();
     }
 }
 

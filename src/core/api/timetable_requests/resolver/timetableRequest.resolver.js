@@ -1,7 +1,7 @@
 import { hasAdminRole } from 'core/modules/auth/guard/roleDomain';
 import { interceptIdObject } from 'core/modules/mongoose/idObject.interceptor';
+import { actionTimetableRequestSwagger } from 'core/modules/timetable_request/dto';
 import { getTimetableRequestQuerySwagger } from 'core/modules/timetable_request/dto/getTimetableRequestSwagger';
-import { ActionTimetableRequestInterceptor } from 'core/modules/timetable_request/validator/actionTimetableRequest.interceptor';
 import { CreateTimetableRequestInterceptor } from 'core/modules/timetable_request/validator/createTimetableRequest.interceptor';
 import { GetTimetableRequestQueryInterceptor } from 'core/modules/timetable_request/validator/getTimetableRequestQuery.interceptor';
 import { Module } from 'packages/handler/Module';
@@ -27,6 +27,7 @@ export const TimetableRequestResolver = Module.builder()
         {
             route: '/',
             method: 'post',
+            params: actionTimetableRequestSwagger,
             interceptors: [
                 new CreateTimetableRequestInterceptor()
             ],
@@ -35,12 +36,19 @@ export const TimetableRequestResolver = Module.builder()
             preAuthorization: true
         },
         {
-            route: '/:id/action',
+            route: '/:id/approve',
             method: 'patch',
-            interceptors: [interceptIdObject, new ActionTimetableRequestInterceptor()],
+            interceptors: [interceptIdObject],
             guards: [hasAdminRole],
-            body: 'actionTimetableRequestDto',
-            controller: TimetableRequestController.actionOne,
+            controller: TimetableRequestController.approveOne,
+            preAuthorization: true
+        },
+        {
+            route: '/:id/reject',
+            method: 'patch',
+            interceptors: [interceptIdObject],
+            guards: [hasAdminRole],
+            controller: TimetableRequestController.rejectOne,
             preAuthorization: true
         },
     ]);

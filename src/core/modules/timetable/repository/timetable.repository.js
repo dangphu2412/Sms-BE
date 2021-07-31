@@ -127,6 +127,13 @@ class Repository extends DataRepository {
             isApproved: true,
         });
     }
+
+    updateByIds(ids, fields) {
+        return this.model.updateMany(
+            { _id: { $in: ids } },
+            { ...fields }
+        );
+    }
 }
 
 export const TimetableRepository = new Repository();

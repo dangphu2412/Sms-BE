@@ -31,7 +31,7 @@ const schema = extendBaseModel({
         firstName: { type: String, trim: true, default: null },
         lastName: { type: String, trim: true, default: null },
         fullName: {
-            type: String, trim: true, default: null, index: true
+            type: String, trim: true, default: null
         },
         birthday: { type: Date, default: null },
         phone: { type: String, trim: true, default: null },
@@ -52,9 +52,13 @@ const schema = extendBaseModel({
         type: Number,
         default: 3
     },
+    specializedGroup: {
+        type: Schema.Types.ObjectId,
+        ref: 'groups',
+        default: null
+    },
     deletedAt: { type: Date, default: null },
 });
-
 schema.pre(['save', 'updateOne'], saveFullNameHook);
-
+schema.index({ 'profile.fullName': 'text' });
 export const UserModel = model('users', schema);

@@ -5,8 +5,6 @@ import { SearchQuery } from 'packages/restBuilder/modules/query/search.query';
 import { SortQuery } from 'packages/restBuilder/modules/query/sort.query';
 
 export class QueryBuilder {
-    #model;
-
     #buildType;
 
     #limit;
@@ -31,13 +29,14 @@ export class QueryBuilder {
      */
     #builder;
 
-    constructor(model) {
-        this.#model = model;
-    }
-
-    static builder(model, queryBuilder) {
+    /**
+     * 
+     * @param {import('mongoose').Model} model 
+     * @param {QueryBuilder} queryBuilder 
+     * @returns 
+     */
+    static builder(queryBuilder) {
         const newIntance = new QueryBuilder();
-        newIntance.#model = model;
         if (queryBuilder) {
             const queryDocument = queryBuilder.getQueryDocument();
             newIntance.#filterDocument = queryDocument.filterDocument;
@@ -53,10 +52,14 @@ export class QueryBuilder {
         };
     }
 
-    #init = buildType => () => {
-        this.#builder = this.#model[buildType]();
+    #init = buildType => model => {
+        this.#builder = model[buildType]();
         this.#buildType = buildType;
         return this;
+    }
+
+    getBuilder() {
+        return this.#builder;
     }
 
     getQueryDocument() {
@@ -141,7 +144,7 @@ export class QueryBuilder {
             if (!(filter instanceof FilterQuery)) {
                 throw new Error(`Call method addFilter of QueryBuilder with param is not an instance of ${FilterQuery.name}`);
             }
-            this.#filterDocument = filter.generate();
+            this.#filterDocument = filter.getQuery();
         }
 
         return this;
@@ -155,7 +158,7 @@ export class QueryBuilder {
             if (!(search instanceof SearchQuery)) {
                 throw new Error(`Call method addSearch of QueryBuilder with param is not an instance of ${SearchQuery.name}`);
             }
-            this.#searchDocument = search.generate();
+            this.#searchDocument = search.getQuery();
         }
         return this;
     }
@@ -168,7 +171,7 @@ export class QueryBuilder {
             if (!(sort instanceof SortQuery)) {
                 throw new Error(`Call method addSort of QueryBuilder with param is not an instance of ${SortQuery.name}`);
             }
-            this.#sortDocument = sort.generate();
+            this.#sortDocument = sort.getQuery();
         }
         return this;
     }

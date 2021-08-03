@@ -1,7 +1,7 @@
 import '../../config/config-service.config';
 import { UserModel } from 'core/modules/user/model/user.model';
-import { BcryptService } from 'core/utils';
 import { Types } from 'mongoose';
+import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
 import sgroupInitialUser from '../data/migration/initialUser.json';
 
 export class CreateUserWithHighestPriority {

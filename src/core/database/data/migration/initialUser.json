@@ -6,6 +6,7 @@
             "firstName": "Đặng",
             "lastName": "Phú",
             "fullName": "Đặng Phú",
+            "birthday": "1999-12-24T06:58:09.028+00:00",
             "hometown": "Đà Nẵng",
             "facebook": "https://www.facebook.com/people/%C4%90%E1%BA%B7ng-Ph%C3%BA/100010295231002"
         },
@@ -18,6 +19,7 @@
             "firstName": "Nguyễn Thị Tuyết",
             "lastName": "Trinh",
             "fullName": "Nguyễn Thị Tuyết Trinh",
+            "birthday": "1999-02-02T06:58:09.028+00:00",
             "hometown": "Gia Lai",
             "facebook": "https://www.facebook.com/nttt165"
         },
@@ -30,6 +32,7 @@
             "firstName": "Nguyễn",
             "lastName": "Hoài Nam",
             "fullName": "Nguyễn Hoài Nam",
+            "birthday": "2000-02-02T06:58:09.028+00:00",
             "hometown": "Hà Nội",
             "facebook": "https://www.facebook.com/hoaineronam"
         },
@@ -42,6 +45,7 @@
             "firstName": "Phạm",
             "lastName": "Thúy Nga",
             "fullName": "Phạm Thúy Nga",
+            "birthday": "2000-05-04T06:58:09.028+00:00",
             "hometown": "Đà Nẵng",
             "facebook": "https://www.facebook.com/thuyngaduong23"
         },
@@ -54,6 +58,7 @@
             "firstName": "Hồ",
             "lastName": "Minh Hoàng",
             "fullName": "Hồ Minh Hoàng",
+            "birthday": "1999-07-08T06:58:09.028+00:00",
             "hometown": "Đà Nẵng",
             "facebook": "https://www.facebook.com/minhhoang.ho.99"
         },
@@ -66,6 +71,7 @@
             "firstName": "Hồ",
             "lastName": "Văn Vy",
             "fullName": "Hồ Văn Vy",
+            "birthday": "2001-05-04T06:58:09.028+00:00",
             "hometown": "Huế",
             "facebook": "https://www.facebook.com/hovanvydut"
         },

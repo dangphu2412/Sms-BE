@@ -1,12 +1,11 @@
 import { hasAdminRole, hasLeaderRole } from 'core/modules/auth/guard/roleDomain';
 import { interceptIdObject } from 'core/modules/mongoose/idObject.interceptor';
 import { changePasswordInterceptor } from 'core/modules/user/validator/change-password.interceptor';
-import { Module } from '../../../../packages/handler/Module';
+import { ObjectId, generateDocBasedOnSchema } from 'core/common/swagger';
+import { Module } from 'packages/handler/Module';
+import SearchUserSchema from '../query/search-user.schema.json';
 import { UserController } from '../controller/user.controller';
-import { DefaultQueryCriteriaDocument } from '../../../common/swagger/filter';
-import { CreateUserInterceptor } from '../../../modules/user/validator/createUser.interceptor';
-import { UpdateProfileInterceptor } from '../../../modules/user/validator/updateProfile.interceptor';
-import { ObjectId } from '../../../common/swagger/objectId';
+import { createUserInterceptor, UpdateProfileInterceptor } from '../../../modules/user/validator';
 
 export const UserResolver = Module.builder()
     .addPrefix({
@@ -18,7 +17,7 @@ export const UserResolver = Module.builder()
         {
             route: '/',
             method: 'get',
-            params: DefaultQueryCriteriaDocument,
+            params: generateDocBasedOnSchema(SearchUserSchema),
             guards: [hasAdminRole],
             controller: UserController.findAll,
             preAuthorization: true
@@ -45,7 +44,7 @@ export const UserResolver = Module.builder()
             route: '/',
             method: 'post',
             body: 'UpsertUserDto',
-            interceptors: [new CreateUserInterceptor()],
+            interceptors: [createUserInterceptor],
             guards: [hasAdminRole],
             controller: UserController.createOne,
             preAuthorization: true

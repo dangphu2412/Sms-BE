@@ -101,6 +101,7 @@ export class SwaggerDocument {
             paramsIn = 'query',
             required = true,
             example,
+            description
         } = options;
 
         let swaggerType;
@@ -119,6 +120,7 @@ export class SwaggerDocument {
             schema: swaggerType,
             required,
             example,
+            description
         };
     }
 

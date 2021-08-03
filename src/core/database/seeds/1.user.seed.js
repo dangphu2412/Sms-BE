@@ -3,7 +3,7 @@ import { UserModel } from 'core/modules/user/model/user.model';
 import { Role } from 'core/rules';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker/locale/vi';
-import { BcryptService } from '../../utils';
+import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
 
 export class UserSeeder {
     static async run() {
@@ -17,15 +17,15 @@ export class UserSeeder {
             sampleUserData.push({
                 email: `user${i}@gmail.com`,
                 password: defaultPwd,
-                createdAt: faker.date.recent(),
-                updatedAt: faker.date.recent(),
+                createdAt: faker.date.between('2015-01-01', '2017-12-01'),
+                updatedAt: faker.date.between('2015-01-01', '2017-12-01'),
                 deletedAt: null,
                 roles: faker.random.arrayElements(roles, 1),
                 profile: {
                     firstName,
                     lastName,
                     fullName: `${firstName} ${lastName}`,
-                    birthday: faker.date.between('01-01-1995', '01-01-2003'),
+                    birthday: faker.date.between('2015-01-01', '2017-12-01'),
                     phone: faker.phone.phoneNumber(),
                     hometown: faker.address.city(),
                     facebook: 'https://www.facebook.com/',

@@ -8,7 +8,7 @@ import { QueueConsumer } from '../queue.consumer';
 export class Consumer extends QueueConsumer {
     constructor() {
         super('mail-consumer');
-        this.mailSenderService = MailSenderService.getSingleTon();
+        this.mailSenderService = MailSenderService.getSingleton();
         this.logger = LoggerFactory.createByTransports(
             TransportFactory.create(TransportGenerator.Console, new OutputFormat('MailConsumer')),
             TransportFactory.create(TransportGenerator.File, new FileOutputFormat('MailConsumer')),

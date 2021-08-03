@@ -1,7 +1,7 @@
 import express from 'express';
 import { getUserContext } from 'packages/authModel/module/user/UserContext';
 import { ForbiddenException } from 'packages/httpException/ForbiddenException';
-import { LoggerFactory } from 'packages/logger/factory/logger.factory';
+import { LoggerFactory } from 'packages/logger';
 import { ArgumentRequired } from './exceptions/ArgumentRequired';
 import { SwaggerContentCreator } from '../swagger/core/content';
 import { SwaggerContentDto } from '../swagger/model/SwaggerContentDto';
@@ -92,9 +92,8 @@ export class Module {
                 return new InValidHttpResponse(err.status, err.code, err.message)
                     .toResponse(response);
             }
-            // eslint-disable-next-line no-console
-            console.log(err);
             LoggerFactory.globalLogger.error(err.message);
+            LoggerFactory.globalLogger.error(err.stack);
             return InValidHttpResponse
                 .toInternalResponse(err.message)
                 .toResponse(response);

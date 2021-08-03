@@ -30,7 +30,7 @@ export class DataRepository {
      */
     getTemplateQuery(pagination, filter, sort, search, main, associates, querySelector = BUILDER_TYPE.FIND) {
         return QueryBuilder
-            .builder(this.model)[querySelector]()
+            .builder()[querySelector](this.model)
             .addFilter(filter)
             .addPagination(pagination)
             .addSearch(search)
@@ -44,7 +44,7 @@ export class DataRepository {
 
         return parallel([
             baseQuery,
-            QueryBuilder.builder(this.model, baseQuery)
+            QueryBuilder.builder(baseQuery)
                 .countDocuments()
                 .clearPagination()
         ], task => task.run());
@@ -121,9 +121,10 @@ export class DataRepository {
         return this.model.deleteMany(conditions, options);
     }
 
-    hasRecord(field, value) {
+    hasRecord(field, value, filter = {}) {
         return this.model.countDocuments({
-            [field]: value
+            [field]: value,
+            ...filter
         });
     }
 }

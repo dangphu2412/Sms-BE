@@ -1,0 +1,32 @@
+[
+    {
+        "_id": "60d9df044ff1044250059d4d",
+        "email": "dangphu241299@gmail.com",
+        "specializedGroup": "Lập trình"
+    },
+    {
+        "_id": "60d9df044ff1044250059d4e",
+        "email": "trinhnguyen123@gmail.com",
+        "specializedGroup": "Lập trình"
+    },
+    {
+        "_id": "60d9df044ff1044250059d50",
+        "email": "hoainam@gmail.com",
+        "specializedGroup": "Thiết kế"
+    },
+    {
+        "_id": "60d9df044ff1044250059d51",
+        "email": "ngapham@gmail.com",
+        "specializedGroup": "Marketing Online"
+    },
+    {
+        "_id": "60d9df044ff1044250059d52",
+        "email": "minhhoangho@gmail.com",
+        "specializedGroup": "Lập trình"
+    },
+    {
+        "_id": "60d9df0d875b7c3e388ee41c",
+        "email": "hovanvydut@gmail.com",
+        "specializedGroup": "Lập trình"
+    }
+]

@@ -1,0 +1,45 @@
+{
+  "main": {
+    "status": 1,
+    "createdAt": 1, 
+    "updatedAt": 1, 
+    "profile.fullName": 1, 
+    "profile.firstName": 1, 
+    "profile.lastName": 1, 
+    "profile.birthday": 1, 
+    "profile.phone": 1,
+    "specializedGroup._id": 1,
+    "specializedGroup.name": 1
+  },
+  "associates": [
+    {
+      "from": "groups",
+      "localField": "specializedGroup",
+      "foreignField": "_id",
+      "as": "specializedGroup"
+    }
+  ],
+  "locks": {
+    "filters": [
+      "profile.firstName",
+      "profile.fullName",
+      "birthdayMonth",
+      "profile.phone",
+      "specializedGroup.name",
+      "status",
+      "createdAt",
+      "updatedAt"
+    ],
+    "sorts": [
+      "profile.firstName",
+      "profile.fullName",
+      "birthdayMonth",
+      "profile.phone",
+      "specializedGroup.name",
+      "status",
+      "createdAt",
+      "updatedAt"
+    ]
+  },
+  "searchCriteria": ["profile.fullName"]
+}

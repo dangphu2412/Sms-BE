@@ -1,30 +1,20 @@
 import { ChangePasswordDto } from 'core/modules/user/dto/change-password.dto';
 import { getUserContext } from 'packages/authModel/module/user/UserContext';
-import { MailSenderService } from 'core/modules/mail/mail-sender.service';
-import SearchUserSchema from '../query/searchUser.schema.json';
+import SearchUserSchema from '../query/search-user.schema.json';
 import { UserService } from '../../../modules/user/service/user.service';
 import { RequestTransformer } from '../../../../packages/restBuilder/core/requestTransformer';
-import { Pageable, PageableMeta } from '../../../../packages/restBuilder/core/pageable';
 import { CreateUserDto, UpdateProfileDto } from '../../../modules/user/dto';
 import { ValidHttpResponse } from '../../../../packages/handler/response/validHttp.response';
 
 class Controller {
     constructor() {
         this.service = UserService;
-        this.mailSenderService = MailSenderService.getSingleTon();
     }
 
     findAll = async req => {
         const reqTransformed = new RequestTransformer(req.query, SearchUserSchema);
         const data = await this.service.getAndCount(reqTransformed);
-        const pagedData = Pageable.of(data[0])
-            .addMeta(
-                PageableMeta
-                    .builder(reqTransformed, data[1])
-                    .build()
-            )
-            .build();
-        return ValidHttpResponse.toOkResponse(pagedData);
+        return ValidHttpResponse.toOkResponse(data);
     }
 
     findTimetables = async req => {

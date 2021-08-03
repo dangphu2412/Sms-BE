@@ -1,21 +1,15 @@
 import { FilterFactory } from '../factory/filter.factory';
 
 export class FilterQuery {
-    #rawFilters;
+    #filterQuery;
 
     constructor(filterTransformed) {
-        this.#rawFilters = filterTransformed;
+        this.#filterQuery = FilterQuery.toQuery(filterTransformed);
     }
 
-    /**
-     * @access This method to communicate with queryBuilder.
-     * Do not call this when you are building Filter query
-     * @author dangphu2412
-     * @version 1.0
-     */
-    generate() {
+    static toQuery(filterTransformed) {
         const filterQuery = {};
-        this.#rawFilters.forEach(filter => {
+        filterTransformed.forEach(filter => {
             if (!filterQuery[filter.column]) {
                 filterQuery[filter.column] = {};
             }
@@ -26,17 +20,46 @@ export class FilterQuery {
     }
 
     /**
+     * @access This method to communicate with queryBuilder.
+     * Do not call this when you are building Filter query
+     * @author dangphu2412
+     * @version 1.0
+     * @return {{column: { sign: value }}}
+     * @example {
+     *      firstName: {
+     *          $eq: 'fusdeptrai'
+     *          $gt: 'o'
+     *      }
+     * }
+     */
+    getQuery() {
+        return this.#filterQuery;
+    }
+
+    /**
      * @access This method provide an flexible way to add custom filter to existed query
      * @author dangphu2412
      * @version 1.0
      */
     addFilter(column, sign, value) {
         FilterFactory.filterValidator.validate([column, sign, value]);
-        this.#rawFilters.push({
-            column,
-            sign,
-            value
-        });
+        if (!this.#filterQuery[column]) {
+            this.#filterQuery[column] = {};
+        }
+        this.#filterQuery[column] = {
+            [sign]: value
+        };
         return this;
+    }
+
+    removeFilterByColumn(column) {
+        if (this.#filterQuery[column]) {
+            delete this.#filterQuery[column];
+        }
+        return this;
+    }
+
+    getColBySign(col, sign) {
+        return this.#filterQuery[col]?.[sign];
     }
 }

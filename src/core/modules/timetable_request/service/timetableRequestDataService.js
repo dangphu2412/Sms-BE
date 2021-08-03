@@ -14,18 +14,18 @@ class Service {
         });
 
         switch (type) {
-        case TIMETABLE_REQUEST_TYPE.OUT:
-            break;
-        case TIMETABLE_REQUEST_TYPE.ABSENT:
-        case TIMETABLE_REQUEST_TYPE.SOON:
-        case TIMETABLE_REQUEST_TYPE.LATE:
-            dto.timetableIds = data.map(tempTimetable => tempTimetable.timetableId);
-            break;
-        case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
-        case TIMETABLE_REQUEST_TYPE.ADD:
-            dto.timetableIds = data.map(tempTimetable => tempTimetable.timetableId);
-            dto.registerTimeIds = data.map(tempTimetable => tempTimetable.registerTime);
-            break;
+            case TIMETABLE_REQUEST_TYPE.OUT:
+                break;
+            case TIMETABLE_REQUEST_TYPE.ABSENT:
+            case TIMETABLE_REQUEST_TYPE.SOON:
+            case TIMETABLE_REQUEST_TYPE.LATE:
+                dto.timetableIds = data.map(tempTimetable => tempTimetable.timetableId);
+                break;
+            case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
+            case TIMETABLE_REQUEST_TYPE.ADD:
+                dto.timetableIds = data.map(tempTimetable => tempTimetable.timetableId);
+                dto.registerTimeIds = data.map(tempTimetable => tempTimetable.registerTime);
+                break;
         }
         return dto;
     }

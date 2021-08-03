@@ -18,7 +18,7 @@ export class SearchFactory {
             ''
         );
 
-        schema.criteria = req.searchSchema;
+        schema.criteria = req.searchCriteria;
 
         return schema;
     }

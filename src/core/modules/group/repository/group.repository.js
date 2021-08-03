@@ -42,6 +42,17 @@ class Repository extends DataRepository {
     deleteMember(groupId, memberIds) {
         return this.model.updateMany({ _id: groupId }, { $pullAll: { members: memberIds } });
     }
+
+    isParent(id) {
+        return this.repository.hasRecord('_id', id, {
+            deletedAt: {
+                $eq: null
+            },
+            parent: {
+                $eq: null
+            }
+        });
+    }
 }
 
 export const GroupRepository = new Repository();

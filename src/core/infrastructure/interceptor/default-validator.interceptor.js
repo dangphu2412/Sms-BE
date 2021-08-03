@@ -20,14 +20,14 @@ export class DefaultValidatorInterceptor {
      */
     getData = request => {
         switch (request.method) {
-        case 'POST':
-        case 'PUT':
-        case 'PATCH':
-        case 'DELETE':
-            return request.body;
-        case 'GET':
-        default:
-            return request.query;
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+            case 'DELETE':
+                return request.body;
+            case 'GET':
+            default:
+                return request.query;
         }
     };
 

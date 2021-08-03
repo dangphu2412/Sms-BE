@@ -59,25 +59,25 @@ export class MigrationProcessor extends BaseProcessor {
 
     afterProcess() {
         switch (this.#state) {
-        case MigrationState.NEW:
-            console.log('Insert migration history to database');
-            return MigrationModel.create({
-                history: this.#history
-            });
-        case MigrationState.UPDATE:
-            console.log('Update migration history to database');
-            return MigrationModel.updateOne(
-                {
-                    _id: this.#id
-                }, {
+            case MigrationState.NEW:
+                console.log('Insert migration history to database');
+                return MigrationModel.create({
                     history: this.#history
-                }
-            );
-        case MigrationState.NONE:
-            console.log('Migration history is not changed');
-            break;
-        default:
-            throw new Error('Unsupported state of migration');
+                });
+            case MigrationState.UPDATE:
+                console.log('Update migration history to database');
+                return MigrationModel.updateOne(
+                    {
+                        _id: this.#id
+                    }, {
+                        history: this.#history
+                    }
+                );
+            case MigrationState.NONE:
+                console.log('Migration history is not changed');
+                break;
+            default:
+                throw new Error('Unsupported state of migration');
         }
     }
 }

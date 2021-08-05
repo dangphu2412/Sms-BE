@@ -2,6 +2,7 @@ import { extendBaseModel } from 'core/infrastructure/model';
 import { Schema, model } from 'mongoose';
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
 import { TIMETABLE_REQUEST_STATUS } from 'core/common/enum/timetableRequestStatus.enum';
+import { TempTimetableModel } from 'core/modules/temp_timetables/model/tempTimetableModel';
 
 const schema = extendBaseModel({
     type: {
@@ -16,8 +17,8 @@ const schema = extendBaseModel({
     },
     tempTimetables: [
         {
-            type: Schema.Types.ObjectId,
-            ref: 'temp_timetables',
+            type: TempTimetableModel.schema,
+            require: true,
         }
     ],
     attachment: {

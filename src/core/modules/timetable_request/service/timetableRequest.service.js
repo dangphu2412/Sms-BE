@@ -2,7 +2,7 @@ import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/da
 import { TimetableSettingRepository } from 'core/modules/timetableSetting/repository';
 import { TempTimetableRepository } from 'core/modules/temp_timetables/repository/temp_timetable.repository';
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
-import { isEqualArray, mapParsedObjectIdToArr, mapObjectToArrByKey } from 'core/utils/helper';
+import { isEqualArray, mapParsedObjectIdToArr, mapByKey } from 'core/utils/helper';
 import { TimetableRepository } from 'core/modules/timetable/repository';
 import { BadRequestException, NotFoundException } from 'packages/httpException';
 import { Optional } from 'core/utils/optional';
@@ -46,15 +46,13 @@ class Service extends DataPersistenceService {
                 .of(await this.timetableRepository.findByIds(validatingData.timetableIds))
                 .throwIfMissingValues(validatingData.timetableIds, new NotFoundException('Some timetableId not found or have been deleted'));
         }
-
         switch (data.type) {
             case TIMETABLE_REQUEST_TYPE.OUT: {
-                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
                 break;
             }
             case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
-                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
-                const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
+                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const registerTimeIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
 
                 if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
                     throw new BadRequestException('Some timetableId is not belong to some userId');
@@ -70,39 +68,35 @@ class Service extends DataPersistenceService {
                     }
                 });
 
-                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
                 break;
             }
             case TIMETABLE_REQUEST_TYPE.ABSENT: {
-                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
 
                 if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
                     throw new BadRequestException('Some timetableId is not belong to some userId');
                 }
-                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
                 break;
             }
             case TIMETABLE_REQUEST_TYPE.LATE: {
-                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
 
                 if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
                     throw new BadRequestException('Some timetableId is not belong to some userId');
                 }
-                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
                 break;
             }
             case TIMETABLE_REQUEST_TYPE.SOON: {
-                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
 
                 if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
                     throw new BadRequestException('Some timetableId is not belong to some userId');
                 }
-                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
                 break;
             }
             case TIMETABLE_REQUEST_TYPE.ADD: {
-                const userIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
-                const registerTimeIdsFromTimetable = mapParsedObjectIdToArr(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
+                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const registerTimeIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
 
                 if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {
                     throw new BadRequestException('Some timetableId is not belong to some userId');
@@ -117,7 +111,6 @@ class Service extends DataPersistenceService {
                         throw new BadRequestException('addition date must not be as same as main timetable');
                     }
                 });
-                data.tempTimetables = await this.#getTemptableIds(data.tempTimetables);
                 break;
             }
         }
@@ -201,7 +194,7 @@ class Service extends DataPersistenceService {
 
     #getTemptableIds = async tempTimetable => {
         const createdTempTimetable = await this.tempTimetableRepository.model.create(tempTimetable);
-        return mapObjectToArrByKey(createdTempTimetable, '_id');
+        return mapByKey(createdTempTimetable, '_id');
     }
 }
 

@@ -1,4 +1,4 @@
-import { getUserContext } from 'packages/authModel/module/user/UserContext';
+import { getUserContext } from 'packages/authModel/module/user';
 
 export class UnionRoleGuard {
     #unionRoles;

@@ -1,2 +1,2 @@
-export * from './InvalidFilter';
-export * from './InvalidResolver';
+export * from './invalid-filter.error';
+export * from './invalid-resolver.error';

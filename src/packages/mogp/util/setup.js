@@ -21,12 +21,18 @@ export function setup(type) {
                 throw new Error('Missing config connectionString or pathSeeding in mogp.config.json');
             }
             break;
+        case SetupEnum.ROLLBACK:
+            if (!config.connectionString || !config.pathRollback) {
+                throw new Error('Missing config connectionString or pathRollback in mogp.config.json');
+            }
+            break;
         default:
             throw new Error('Unsupported type for setup');
     }
     MogpConfig.config({
         connectionString: config.connectionString,
         pathMigration: config.pathMigration,
-        pathSeeding: config.pathSeeding
+        pathSeeding: config.pathSeeding,
+        pathRollback: config.pathRollback
     });
 }

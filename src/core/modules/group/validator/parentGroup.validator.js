@@ -1,6 +1,6 @@
 import { NotFoundException } from '../../../../packages/httpException';
-import { GroupRepository } from '../repository/group.repository';
-import { Optional } from '../../../utils/optional';
+import { GroupRepository } from '../group.repository';
+import { Optional } from '../../../utils/optional.util';
 
 export class ParentGroupValidator {
     parentId;

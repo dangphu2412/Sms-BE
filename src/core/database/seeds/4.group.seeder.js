@@ -1,15 +1,14 @@
 import {
     keyBy, sample, sampleSize, uniq
 } from 'lodash';
-import { GroupRepository } from 'core/modules/group/repository/group.repository';
 import { parallel } from 'packages/taskExecution';
-import { UserModel } from 'core/modules/user/model/user.model';
-import { GroupModel } from 'core/modules/group/model/groupModel';
+import { UserModel } from 'core/modules/user';
+import { GroupModel } from 'core/modules/group';
 
 export class GroupSeed {
     static async run() {
         const users = await UserModel.find();
-        const parentGroups = await GroupRepository.model.find({
+        const parentGroups = await GroupModel.find({
             parent: {
                 $eq: null
             }

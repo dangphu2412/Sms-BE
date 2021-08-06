@@ -1,12 +1,12 @@
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
 import { mapByKey } from 'core/utils';
-import { TimetableRepository } from 'core/modules/timetable/repository';
+import { TimetableRepository } from 'core/modules/timetable';
 import { LoggerFactory } from 'packages/logger';
-import { DuplicateException, NotFoundException } from '../../../../packages/httpException';
-import { GroupRepository } from '../repository/group.repository';
-import { Optional } from '../../../utils/optional';
-import { CreateGroupValidator } from '../validator/createGroup.validator';
+import { DuplicateException, NotFoundException } from 'packages/httpException';
+import { Optional } from '../../../utils/optional.util';
+import { GroupRepository } from '../group.repository';
 import { GroupDataService } from './groupData.service';
+import { CreateGroupValidator } from '../validator';
 
 class Service extends DataPersistenceService {
     constructor() {

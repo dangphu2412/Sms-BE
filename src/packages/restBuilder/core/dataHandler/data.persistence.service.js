@@ -1,4 +1,4 @@
-import { Optional } from 'core/utils/optional';
+import { Optional } from 'core/utils/optional.util';
 import { DuplicateException } from 'packages/httpException';
 import { FilterQuery } from 'packages/restBuilder/modules/query/filter.query';
 import { PaginationQuery } from 'packages/restBuilder/modules/query/pagination.query';

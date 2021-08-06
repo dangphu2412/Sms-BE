@@ -1,13 +1,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker/locale/vi';
 import { sample } from 'lodash';
-import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetableRequest.enum';
-import { TIMETABLE_REQUEST_STATUS } from 'core/common/enum/timetableRequestStatus.enum';
-import { TimetableSettingRepository } from 'core/modules/timetableSetting/repository';
-import { TimetableRepository } from 'core/modules/timetable/repository';
+import { TIMETABLE_REQUEST_TYPE, TIMETABLE_REQUEST_STATUS } from 'core/common/enum';
+import { TimetableSettingRepository } from 'core/modules/timetable-setting';
+import { TimetableRepository } from 'core/modules/timetable';
 import mongoose from 'mongoose';
-import { UserRepository } from '../../modules/user/repository/user.repository';
-import { TimetableRequestModel } from '../../modules/timetable_request/model/timetableRequestModel';
+import { UserRepository } from 'core/modules/user';
+import { TimetableRequestModel } from 'core/modules/timetable-request';
 
 export class TimetableRequestSeed {
     static async run() {

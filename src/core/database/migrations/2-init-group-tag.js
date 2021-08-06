@@ -1,4 +1,4 @@
-import { GroupTagModel } from 'core/modules/groupTag/model/groupTag.model';
+import { GroupTagModel } from 'core/modules/group-tag';
 import { Types } from 'mongoose';
 import sgroupGroupTag from '../data/migration/initialGroupTag.json';
 

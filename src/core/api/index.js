@@ -1,14 +1,14 @@
-import { HandlerResolver } from '../../packages/handler/HandlerResolver';
-import { UserResolver } from './user/resolver/user.resolver';
-import { GroupResolver } from './group/resolver/group.resolver';
-import { AuthResolver } from './auth/resolver/auth.resolver';
-import { TimetableSettingResolver } from './timetableSetting/resolver/timetableSetting.resolver';
-import { ExcelResolver } from './excel/resolver/excel.resolver';
+import { HandlerResolver } from 'packages/handler/HandlerResolver';
+import { UserResolver } from './user';
+import { GroupResolver } from './group';
+import { AuthResolver } from './auth';
 import { ApiDocument } from '../config/swagger.config';
-import { TimetableResolver } from './timetable/resolver/timetable.resolver';
-import { MediaResolver } from './media/resolver/media.resolver';
-import { GroupTagResolver } from './groupTag/resolver/groupTag.resolver';
-import { TimetableRequestResolver } from './timetable_requests/resolver/timetableRequest.resolver';
+import { TimetableSettingResolver } from './timetable-setting';
+import { TimetableResolver } from './timetable';
+import { ExcelResolver } from './excel';
+import { MediaResolver } from './media';
+import { GroupTagResolver } from './group-tag';
+import { TimetableRequestResolver } from './timetable-request';
 
 export const ModuleResolver = HandlerResolver
     .builder()

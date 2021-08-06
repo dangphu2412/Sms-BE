@@ -1,5 +1,5 @@
-import { UserRepository } from 'core/modules/user/repository/user.repository';
-import { Optional } from '../../../utils/optional';
+import { UserRepository } from 'core/modules/user/user.repository';
+import { Optional } from '../../../utils/optional.util';
 import { NotFoundException } from '../../../../packages/httpException';
 
 export class LeaderGroupValidator {

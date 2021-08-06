@@ -2,9 +2,9 @@ import xlsx from 'xlsx';
 import { InternalServerException } from 'packages/httpException';
 import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { unlink } from 'fs';
-import { UserRepository } from '../../user/repository/user.repository';
+import { UserRepository } from '../../user/user.repository';
 import { BadRequestException } from '../../../../packages/httpException/BadRequestException';
-import { toTimestamp } from '../../../utils/timeConvert';
+import { toTimestamp } from '../../../utils/time-convertor.util';
 import { InValidHttpResponse } from '../../../../packages/handler/response/invalidHttp.response';
 
 class Service {

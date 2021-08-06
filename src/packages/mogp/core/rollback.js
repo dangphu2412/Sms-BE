@@ -5,7 +5,7 @@ import { setup } from '../util/setup';
 
 (async () => {
     try {
-        setup(SetupEnum.MIGRATION);
+        setup(SetupEnum.ROLLBACK);
         console.log('\x1B[31mStart migration');
         await (new RollbackProcessor()).process();
     } catch (error) {

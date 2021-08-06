@@ -86,7 +86,7 @@ export class BaseProcessor {
                     await this.afterRun(task);
                 }
             } catch (error) {
-                console.error(error);
+                console.error(error.message);
                 process.exit(0);
             }
         });

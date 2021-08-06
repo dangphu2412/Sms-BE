@@ -3,6 +3,7 @@
  * @property {string} connectionString
  * @property {string} pathMigration
  * @property {string} pathSeeding
+ * @property {string} pathRollback
  */
 
 export class MogpConfig {
@@ -14,12 +15,14 @@ export class MogpConfig {
     static config({
         connectionString,
         pathMigration,
-        pathSeeding
+        pathSeeding,
+        pathRollback
     }) {
         this.#configuration = {
             connectionString,
             pathMigration: process.cwd() + pathMigration,
-            pathSeeding: process.cwd() + pathSeeding
+            pathSeeding: process.cwd() + pathSeeding,
+            pathRollback: process.cwd() + pathRollback
         };
     }
 

@@ -1,4 +1,4 @@
-import { MailConsumer } from 'core/modules/queue/consumer/mail.consumer';
+import { MailConsumer } from 'core/modules/mail/mail.consumer';
 import { QueueRegister } from 'core/modules/queue/queue.register';
 
 const queueRegister = new QueueRegister();

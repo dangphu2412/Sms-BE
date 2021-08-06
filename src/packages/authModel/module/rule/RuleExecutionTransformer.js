@@ -39,7 +39,7 @@ export class RuleExecutionTransformer {
             case RuleSplitCase.NO_PARAMS:
                 return RuleExecutionTransformer.toRuleExecution(ruleExecutionCollection[0]);
 
-                /** @notes:
+            /** @notes:
             Example for this case:
             - localVariable=service.isAdmin() -> first argument will be used as storeKey
             - service.exec(param1,param2) -> first argument will be used as methodExecution

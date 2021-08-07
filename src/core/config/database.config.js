@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { ConfigService } from 'packages/config/config.service';
-import { MongooseProvider } from '../modules/mongoose/MongooseProvider';
+import { MongooseProvider } from '../modules/mongoose/mongoose.provider';
 
 export const DatabaseInstance = MongooseProvider
     .builder()

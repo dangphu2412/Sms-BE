@@ -1,4 +1,4 @@
-import { TimetableSettingModel } from 'core/modules/timetableSetting/model/timetableSetting.model';
+import { TimetableSettingModel } from 'core/modules/timetable-setting';
 import { parallel } from 'packages/taskExecution';
 import { timetableSettingDump } from '../data/seeding/init';
 

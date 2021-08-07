@@ -1,6 +1,6 @@
 import '../../config/config-service.config';
-import { UserModel } from 'core/modules/user/model/user.model';
-import { GroupModel } from 'core/modules/group/model/groupModel';
+import { UserModel } from 'core/modules/user';
+import { GroupModel } from 'core/modules/group';
 import assignSpecializedGroupData from '../data/migration/assignSpecGroup.json';
 
 export class AssignSpecializedGroupToLeader {

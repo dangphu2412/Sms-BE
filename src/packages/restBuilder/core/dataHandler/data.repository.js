@@ -1,4 +1,4 @@
-import { UnsupportedMethodException } from 'core/infrastructure/exceptions/unsupportedMethod.exception';
+import { UnsupportedMethodException } from 'core/infrastructure/exceptions/unsupported-method.exception';
 import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { camelCase, upperFirst } from 'lodash';
 import { parallel } from 'packages/taskExecution';

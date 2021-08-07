@@ -1,5 +1,5 @@
-import { SwaggerDocument } from '../../../../packages/swagger';
-import { ApiDocument } from '../../../config/swagger.config';
+import { ApiDocument } from 'core/config/swagger.config';
+import { SwaggerDocument } from 'packages/swagger';
 
 ApiDocument.addModel('LoginDto',
     {

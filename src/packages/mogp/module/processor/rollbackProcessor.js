@@ -6,7 +6,6 @@ import { MogpConfig } from 'packages/mogp/core/config';
 import { MigrationModel } from 'packages/mogp/model/Migration';
 import { parallel } from 'packages/taskExecution';
 import { BaseProcessor } from '../base/baseProcessor';
-import { MigrationCollector } from '../collector/migrationCollector';
 
 /**
  * Currently will delete all the tables
@@ -14,7 +13,7 @@ import { MigrationCollector } from '../collector/migrationCollector';
 export class RollbackProcessor extends BaseProcessor {
     constructor() {
         const container = new BaseContainer();
-        container.pattern = `${process.cwd()}/src/core/modules/**/model/*.js`;
+        container.pattern = MogpConfig.getConfig().pathRollback;
         super(container);
     }
 

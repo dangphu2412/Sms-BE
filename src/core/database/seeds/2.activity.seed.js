@@ -1,4 +1,4 @@
-import { ActivityModel } from 'core/modules/activity/model/activity.model';
+import { ActivityModel } from 'core/modules/activity';
 import { parallel } from 'packages/taskExecution';
 import { activityDump } from '../data/seeding/init';
 

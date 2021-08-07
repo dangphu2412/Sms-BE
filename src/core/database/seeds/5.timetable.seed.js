@@ -1,10 +1,10 @@
 import { sample } from 'lodash';
-import { TimetableModel } from 'core/modules/timetable/model/timetable.model';
+import { TimetableModel } from 'core/modules/timetable';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker/locale/vi';
-import { UserRepository } from '../../modules/user/repository/user.repository';
-import { GroupRepository } from '../../modules/group/repository/group.repository';
-import { TimetableSettingRepository } from '../../modules/timetableSetting/repository/timetableSetting.repository';
+import { UserRepository } from 'core/modules/user';
+import { GroupRepository } from 'core/modules/group';
+import { TimetableSettingRepository } from 'core/modules/timetable-setting';
 
 export class TimetableSeed {
     static async run() {

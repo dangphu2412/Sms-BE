@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable import/no-extraneous-dependencies */
-import { TempTimetableModel } from 'core/modules/temp_timetables/model/tempTimetableModel';
-import { TimetableRequestRepository } from 'core/modules/timetable_request/repository/timetableRequest.repository';
+import { TempTimetableModel } from 'core/modules/temp-timetables';
+import { TimetableRequestRepository } from 'core/modules/timetable-request';
 
 export class TempTimetableSeed {
     static async run() {

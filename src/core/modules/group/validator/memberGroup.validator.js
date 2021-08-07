@@ -1,7 +1,7 @@
 import { UserStatus } from 'core/common/enum';
 import { NotFoundException } from '../../../../packages/httpException';
-import { GroupRepository } from '../repository/group.repository';
-import { UserRepository } from '../../user/repository/user.repository';
+import { GroupRepository } from '../group.repository';
+import { UserRepository } from '../../user/user.repository';
 
 export class MemberGroupValidator {
     memberIds;

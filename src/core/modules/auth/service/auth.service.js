@@ -1,12 +1,10 @@
-import { pick } from 'lodash';
-import { MailTemplateAdapter } from 'core/modules/queue/adapter/mail-template.adapter';
-import { MailConsumer } from 'core/modules/queue/consumer/mail.consumer';
-import { ForgotPasswordTemplate } from 'core/modules/mail/template/forgot-password.template';
-import { UserRepository } from '../../user/repository/user.repository';
+import pick from 'lodash/pick';
+import { ForgotPasswordTemplate, MailConsumer, MailTemplateAdapter } from 'core/modules/mail';
+import { NotFoundException, UnAuthorizedException } from 'packages/httpException';
+import { UserRepository } from '../../user';
 import { BcryptService } from './bcrypt.service';
 import { JwtService } from './jwt.service';
-import { JwtPayload } from '../dto/index';
-import { NotFoundException, UnAuthorizedException } from '../../../../packages/httpException';
+import { JwtPayload } from '../dto';
 
 class Service {
     constructor() {

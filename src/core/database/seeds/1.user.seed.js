@@ -1,9 +1,9 @@
 import '../../config/config-service.config';
-import { UserModel } from 'core/modules/user/model/user.model';
+import { UserModel } from 'core/modules/user';
 import { Role } from 'core/rules';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker/locale/vi';
-import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
+import { BcryptService } from 'core/modules/auth/service';
 
 export class UserSeeder {
     static async run() {

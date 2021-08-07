@@ -1,5 +1,6 @@
 {
     "connectionString": "Put your database connection string here and create file: mogp.config.json",
     "pathMigration": "/src/core/database/migrations/**.js",
-    "pathSeeding": "/src/core/database/seeds/**.js"
+    "pathSeeding": "/src/core/database/seeds/**.js",
+    "pathRollback": "/src/core/modules/**/**.model.js"
 }

@@ -1,6 +1,6 @@
-import { GroupModel } from 'core/modules/group/model/groupModel';
-import { GroupTagRepository } from 'core/modules/groupTag/groupTag.repository';
-import { UserRepository } from 'core/modules/user/repository/user.repository';
+import { GroupModel } from 'core/modules/group';
+import { GroupTagRepository } from 'core/modules/group-tag';
+import { UserRepository } from 'core/modules/user';
 import { keyBy } from 'lodash';
 import { parallel } from 'packages/taskExecution';
 import sgroupGroup from '../data/migration/initialGroup.json';

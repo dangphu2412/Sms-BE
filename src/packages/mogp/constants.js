@@ -1,6 +1,7 @@
 export const SetupEnum = {
     MIGRATION: 0,
-    SEEDING: 1
+    SEEDING: 1,
+    ROLLBACK: 2
 };
 
 export const MigrationState = {

@@ -34,10 +34,7 @@ export const QueryCriteriaDocument = {
         paramsIn: 'query',
         required: false,
         type: 'string',
-<<<<<<< HEAD
         description: desc
-=======
->>>>>>> [SMS-28] View requested form schedule
     })
 };
 

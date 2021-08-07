@@ -61,7 +61,7 @@ export class CreateTimetableRequestSchema {
             appliedDate: JoiUtils.date().required(),
             ...this.#getRequiredInterceptFieldsByType(this.#type)
         }))
-            .unique(this.#type === TIMETABLE_REQUEST_TYPE.OUT ? '' : 'timetableId')
+            .unique(this.#type === TIMETABLE_REQUEST_TYPE.OUT ? '' : 'timetable')
             .required(),
     })
 }

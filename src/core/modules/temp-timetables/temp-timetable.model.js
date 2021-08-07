@@ -15,7 +15,7 @@ const schema = extendBaseModel({
         enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
-    timetableId: {
+    timetable: {
         type: Schema.Types.ObjectId,
         ref: 'timetables',
         default: null

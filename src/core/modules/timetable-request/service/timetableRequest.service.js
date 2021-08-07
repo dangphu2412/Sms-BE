@@ -151,7 +151,7 @@ class Service extends DataPersistenceService {
 
                 queryFields.tempTimetable.select = '_id customStartTime';
                 queryFields.tempTimetable.populate = {
-                    path: 'timetableId',
+                    path: 'timetable',
                     match: { deletedAt: { $eq: null } },
                     select: '_id startDate endDate'
                 };
@@ -163,7 +163,7 @@ class Service extends DataPersistenceService {
 
                 queryFields.tempTimetable.select = '_id';
                 queryFields.tempTimetable.populate = {
-                    path: 'timetableId',
+                    path: 'timetable',
                     match: { deletedAt: { $eq: null } },
                     select: '_id startDate endDate'
                 };
@@ -181,7 +181,7 @@ class Service extends DataPersistenceService {
                         select: '_id name startTime endTime dayOfWeek'
                     },
                     {
-                        path: 'timetableId',
+                        path: 'timetable',
                         match: { deletedAt: { $eq: null } },
                         select: '_id startDate endDate'
                     }

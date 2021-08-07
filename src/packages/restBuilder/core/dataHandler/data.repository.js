@@ -20,10 +20,10 @@ export class DataRepository {
     }
 
     /**
-     * @param {import('../../modules/query/pagination.query').PaginationQuery} pagination 
-     * @param {import('../../modules/query/filter.query').FilterQuery} filter 
-     * @param {import('../../modules/query/sort.query').SortQuery} sort 
-     * @param {import('../../modules/query/search.query').SearchQuery[]} search 
+     * @param {import('../../modules/query/pagination.query').PaginationQuery} pagination
+     * @param {import('../../modules/query/filter.query').FilterQuery} filter
+     * @param {import('../../modules/query/sort.query').SortQuery} sort
+     * @param {import('../../modules/query/search.query').SearchQuery[]} search
      * @param {import('mongoose').PopulateOptions} associates
      * @returns {import('../queryBuilder/queryBuilder').QueryBuilder}
      * @param {import('../../enum/buildType.enum').BUILDER_TYPE} querySelector
@@ -68,7 +68,7 @@ export class DataRepository {
 
     /**
      *
-     * @param {import('../../modules/query/search.query').SearchQuery} searchQuery 
+     * @param {import('../../modules/query/search.query').SearchQuery} searchQuery
      * @param {import('mongoose').PopulateOptions[]} associates
      */
     search(searchQuery, main, associates) {
@@ -105,7 +105,7 @@ export class DataRepository {
     }
 
     softDeleteById(id) {
-        if (!this.model.deletedAt) {
+        if (!this.model.schema.obj.deletedAt) {
             throw new UnsupportedMethodException(
                 this.collection,
                 'soft delete',
@@ -115,7 +115,7 @@ export class DataRepository {
     }
 
     deleteMany(conditions, options = {}) {
-        if (this.model.deletedAt) {
+        if (this.model.schema.obj.deletedAt) {
             return this.model.updateMany(conditions, { deletedAt: new Date() });
         }
         return this.model.deleteMany(conditions, options);

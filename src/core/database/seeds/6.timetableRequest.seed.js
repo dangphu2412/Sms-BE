@@ -36,7 +36,7 @@ export class TimetableRequestSeed {
                 type: sampleType,
                 userId: sample(userIds),
                 appliedDate: faker.date.between(faker.date.recent(), faker.date.future()),
-                ...(sampleType !== TIMETABLE_REQUEST_TYPE.OUT) ? { timetableId: sample(timetableIds) } : { timetableId: null },
+                ...(sampleType !== TIMETABLE_REQUEST_TYPE.OUT) ? { timetable: sample(timetableIds) } : { timetable: null },
                 ...(sampleType !== TIMETABLE_REQUEST_TYPE.OUT) ? { registerTime: sample(timetableSettingIds) } : { registerTime: null },
                 ...(sampleType === TIMETABLE_REQUEST_TYPE.SOON) ? { customStartTime: sample(soonMins) } : { customStartTime: null },
                 ...(sampleType === TIMETABLE_REQUEST_TYPE.LATE) ? { customEndTime: sample(lateMins) } : { customEndTime: null },

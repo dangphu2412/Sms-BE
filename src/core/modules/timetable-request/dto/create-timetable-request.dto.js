@@ -26,6 +26,11 @@ export const CreateTimetableRequestDto = body => ({
     type: body.type,
     description: body.description,
     attachment: body.attachment ?? null,
-    tempTimetables: [...body.tempTimetables],
+    tempTimetables: body.tempTimetables.map(tempTimetable => {
+        delete Object.assign(tempTimetable, {
+            timetable: tempTimetable['timetableId']
+        })['timetableId'];
+        return tempTimetable;
+    }),
     isApproved: body.isApproved ?? false,
 });

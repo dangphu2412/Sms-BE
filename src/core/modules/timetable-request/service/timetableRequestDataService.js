@@ -19,11 +19,11 @@ class Service {
             case TIMETABLE_REQUEST_TYPE.ABSENT:
             case TIMETABLE_REQUEST_TYPE.SOON:
             case TIMETABLE_REQUEST_TYPE.LATE:
-                dto.timetableIds = data.map(tempTimetable => tempTimetable.timetableId);
+                dto.timetableIds = data.map(tempTimetable => tempTimetable.timetable);
                 break;
             case TIMETABLE_REQUEST_TYPE.ABSENT_ADD:
             case TIMETABLE_REQUEST_TYPE.ADD:
-                dto.timetableIds = data.map(tempTimetable => tempTimetable.timetableId);
+                dto.timetableIds = data.map(tempTimetable => tempTimetable.timetable);
                 dto.registerTimeIds = data.map(tempTimetable => tempTimetable.registerTime);
                 break;
         }

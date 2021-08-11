@@ -19,19 +19,18 @@ class Repository extends DataRepository {
      */
     getManyByUserAndRegisterTime(conditions) {
         conditions = conditions?.map(item => ({
-            userId: item.userId,
+            user: item.userId,
             'registerTime._id': item.registerTimeId
         }));
         return this.find({
             $or: conditions,
             isActive: true,
-            isApproved: true,
         });
     }
 
-    getByUserId(userId) {
-        const selectFields = ['_id', 'name', 'registerTime._id', 'registerTime.name', 'registerTime.isActive', 'registerTime.startTime', 'registerTime.endTime', 'type', 'dayOfWeek', 'startDate', 'endDate', 'isActive', 'isApproved'];
-        return this.model.find({ userId }, selectFields)
+    getByMemberIds(userId) {
+        const selectFields = '_id name registerTime._id registerTime.name registerTime.isActive registerTime.startTime registerTime.endTime type dayOfWeek startDate endDate isActive';
+        return this.model.find({ user: userId }, selectFields)
             .populate({
                 path: 'activities',
                 match: { deletedAt: { $eq: null } },
@@ -52,80 +51,51 @@ class Repository extends DataRepository {
      */
     getManyByGroupAndRegisterTime(conditions) {
         conditions = conditions?.map(item => ({
-            groupId: item.groupId,
+            group: item.groupId,
             'registerTime._id': item.registerTimeId
         }));
         return this.find({
             $or: conditions,
             isActive: true,
-            isApproved: true,
         });
     }
 
     /**
      * Get current timetable of group
-     * @param {Array} conditions
-     * [
-     *  {
-     *    groupId: ObjectId,
-     *    startDate: Date,
-     *    endDate: Date
-     *  }
-     * ]
+     * @param {*} startDate
+     * @param {*} endDate
+     * @param {import('../../common/query/query.field').QueryField[]} customFields
      * @returns
      */
-    getManyByGroupsAndDateRange(conditions) {
-        conditions = conditions?.map(item => ({
-            groupId: item.groupId,
+    searchByDateRange(startDate, endDate, ...customFields) {
+        const customFilter = {};
+        customFields.forEach(field => {
+            Object.assign(customFilter, {
+                [field.field]: {
+                    [field.queryChar]: field.value
+                }
+            });
+        });
+        return this.find({
+            ...customFilter,
             startDate: {
-                $gt: item.startDate
+                $gt: startDate
             },
             $or: [
-                { endDate: { $lte: item.endDate } },
-                { endDate: null }
-            ]
-        }));
-        if (!conditions.length) return [];
-        return this.find({
-            $or: conditions,
-            isApproved: true,
-        });
+                { endDate: null },
+                {
+                    endDate: {
+                        $lte: endDate
+                    }
+                }
+            ],
+        }).populate('group');
     }
 
     getManyByGroupIds(groups, fields = []) {
         return this.model.find({
-            groupId: { $in: groups }
+            group: { $in: groups }
         }).select(fields);
-    }
-
-    /**
-     * Get current timetable of group
-     * @param {Array} conditions
-     * [
-     *  {
-     *    userId: ObjectId,
-     *    startDate: Date,
-     *    endDate: Date
-     *  }
-     * ]
-     * @returns
-     */
-    getManyByUsersAndDateRange(conditions) {
-        conditions = conditions?.map(item => ({
-            groupId: item.userId,
-            startDate: {
-                $gt: item.startDate
-            },
-            $or: [
-                { endDate: { $lte: item.endDate } },
-                { endDate: null }
-            ]
-        }));
-        if (!conditions.length) return [];
-        return this.find({
-            $or: conditions,
-            isApproved: true,
-        });
     }
 }
 

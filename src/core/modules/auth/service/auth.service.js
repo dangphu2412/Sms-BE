@@ -1,17 +1,19 @@
 import pick from 'lodash/pick';
 import { ForgotPasswordTemplate, MailConsumer, MailTemplateAdapter } from 'core/modules/mail';
-import { NotFoundException, UnAuthorizedException } from 'packages/httpException';
+import { NotFoundException, UnAuthorizedException, UnprocessableEntityExeception } from 'packages/httpException';
+import { LoggerFactory } from 'packages/logger';
 import { UserRepository } from '../../user';
 import { BcryptService } from './bcrypt.service';
 import { JwtService } from './jwt.service';
 import { JwtPayload } from '../dto';
 
-class Service {
+class AuthServiceImpl {
     constructor() {
         this.bcryptService = BcryptService;
         this.jwtService = JwtService;
         this.userRepository = UserRepository;
         this.mailConsumer = MailConsumer;
+        LoggerFactory.globalLogger.info(`[${AuthServiceImpl.name}] is bundling`);
     }
 
     async login(loginDto) {
@@ -45,29 +47,34 @@ class Service {
     }
 
     async refreshPassword(refreshPasswordDto) {
-        const { email } = this.jwtService.decode(refreshPasswordDto.refreshPasswordToken);
-        const currentUser = await this.userRepository.getAvailableByEmail(email);
+        const jwtPayload = this.jwtService.decode(refreshPasswordDto.refreshPasswordToken);
 
-        if (currentUser) {
-            if (!this.bcryptService.compare(refreshPasswordDto.oldPassword, currentUser.password)) {
-                throw new UnAuthorizedException('Your current password is incorrect');
-            }
-
-            const updateDoc = {
-                password: this.bcryptService.hash(refreshPasswordDto.newPassword)
-            };
-
-            if (!currentUser.isPasswordChanged) {
-                updateDoc.isPasswordChanged = true;
-            }
-
-            await this.userRepository.model.updateOne({
-                _id: currentUser._id
-            }, updateDoc);
+        if (!jwtPayload) {
+            throw new UnAuthorizedException('Invalid refreshPasswordToken to refresh password');
         }
+
+        const currentUser = await this.userRepository.getAvailableByEmail(jwtPayload.email);
+
+        if (!currentUser) {
+            throw new UnprocessableEntityExeception(`User ${jwtPayload.email} is not available now. Please contact admin to reactive your account first`);
+        }
+
+        this.bcryptService.verifyComparison(refreshPasswordDto.oldPassword, currentUser.password);
+
+        const updateDoc = {
+            password: this.bcryptService.hash(refreshPasswordDto.newPassword)
+        };
+
+        if (!currentUser.isPasswordChanged) {
+            updateDoc.isPasswordChanged = true;
+        }
+
+        await this.userRepository.model.updateOne({
+            _id: currentUser._id
+        }, updateDoc);
     }
 
     #getUserInfo = user => pick(user, ['_id', 'email', 'profile', 'roles', 'avatar', 'status', 'isPasswordChanged']);
 }
 
-export const AuthService = new Service();
+export const AuthService = new AuthServiceImpl();

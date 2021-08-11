@@ -3,6 +3,7 @@ import { hasAdminRole, hasLeaderRole } from 'core/modules/auth';
 import { interceptIdObject } from 'core/modules/mongoose/objectId.interceptor';
 import { changePasswordInterceptor, createUserInterceptor, UpdateProfileInterceptor } from 'core/modules/user';
 import { Module } from 'packages/handler/Module';
+import { SwaggerDocument } from 'packages/swagger';
 import SearchUserSchema from './user-overview.query.json';
 import { UserController } from './user.controller';
 
@@ -24,7 +25,21 @@ export const UserResolver = Module.builder()
         {
             route: '/:id/timetables',
             method: 'get',
-            params: [ObjectId],
+            params: [
+                ObjectId,
+                SwaggerDocument.ApiParams({
+                    name: 'startDate',
+                    paramsIn: 'query',
+                    required: false,
+                    type: 'string',
+                }),
+                SwaggerDocument.ApiParams({
+                    name: 'endDate',
+                    paramsIn: 'query',
+                    required: false,
+                    type: 'string',
+                }),
+            ],
             interceptors: [interceptIdObject],
             guards: [hasLeaderRole],
             controller: UserController.findTimetables,

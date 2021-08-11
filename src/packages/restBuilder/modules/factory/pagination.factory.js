@@ -1,5 +1,5 @@
-import { LoggerFactory } from 'packages/logger/factory/logger.factory';
-import { BadRequestException } from '../../../httpException/BadRequestException';
+import { LoggerFactory } from 'packages/logger/factory';
+import { BadRequestException } from 'packages/httpException';
 
 export class PaginationFactory {
     static DEFAULT_RADIX = 10;
@@ -24,12 +24,16 @@ export class PaginationFactory {
             parsedPage = PaginationFactory.DEFAULT_PAGE;
         } else if (parsedPage > PaginationFactory.MAX_PAGE) {
             throw new BadRequestException('Page reach max');
+        } else if (parsedPage <= 0) {
+            throw new BadRequestException('Page should be greater than 0');
         }
 
         if (Number.isNaN(parsedSize)) {
             parsedSize = PaginationFactory.DEFAULT_SIZE;
         } else if (parsedSize > PaginationFactory.MAX_SIZE) {
             throw new BadRequestException('Size reach max');
+        } else if (parsedPage < 0) {
+            throw new BadRequestException('Size must not be a negative number');
         }
 
         return {

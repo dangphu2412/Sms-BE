@@ -6,6 +6,4 @@ export const hasAdminRole = new SpecificRoleGuard(Role.ADMIN.name);
 
 export const hasLeaderRole = new SpecificRoleGuard(Role.LEADER.name);
 
-export const hasMemberRole = new SpecificRoleGuard(Role.MEMBER.name);
-
 export const hasAdminOrLeaderRole = new UnionRoleGuard(Role.ADMIN.name, Role.LEADER.name);

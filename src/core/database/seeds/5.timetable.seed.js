@@ -16,8 +16,8 @@ export class TimetableSeed {
         for (let i = 1; i <= 100; i += 1) {
             sampleTimetableData.push(
                 {
-                    userId: sample(userIds),
-                    groupId: sample(groupIds),
+                    user: sample(userIds),
+                    group: sample(groupIds),
                     registerTime: sample(registerTime),
                     startDate: faker.date.past(),
                     endDate: faker.date.future(),

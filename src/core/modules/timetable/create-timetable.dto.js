@@ -1,64 +1,52 @@
-import { SwaggerDocument } from '../../../packages/swagger';
-import { ApiDocument } from '../../config/swagger.config';
+import { ApiDocument } from 'core/config/swagger.config';
+import { SwaggerDocument } from 'packages/swagger';
 
-ApiDocument.addModel('CreateMemeberTimetablesDtos', {
+ApiDocument.addModel('CreateMemberTimetableDtos', {
     userId: SwaggerDocument.ApiProperty({ type: 'string' }),
-    type: SwaggerDocument.ApiProperty({ type: 'string' }),
     registerTimeId: SwaggerDocument.ApiProperty({ type: 'string' }),
     activityId: SwaggerDocument.ApiProperty({ type: 'string' }),
     startDate: SwaggerDocument.ApiProperty({ type: 'dateTime' }),
     endDate: SwaggerDocument.ApiProperty({ type: 'dateTime' }),
-    isActive: SwaggerDocument.ApiProperty({ type: 'bool' }),
-    isApproved: SwaggerDocument.ApiProperty({ type: 'bool', required: false }),
+    isActive: SwaggerDocument.ApiProperty({ type: 'bool' })
 }, true);
 
 ApiDocument.addModel('CreateGroupTimetableDtos', {
     groupId: SwaggerDocument.ApiProperty({ type: 'string' }),
-    type: SwaggerDocument.ApiProperty({ type: 'string' }),
     registerTimeId: SwaggerDocument.ApiProperty({ type: 'string' }),
     activityId: SwaggerDocument.ApiProperty({ type: 'string' }),
     startDate: SwaggerDocument.ApiProperty({ type: 'dateTime' }),
     endDate: SwaggerDocument.ApiProperty({ type: 'dateTime' }),
-    isActive: SwaggerDocument.ApiProperty({ type: 'bool' }),
-    isApproved: SwaggerDocument.ApiProperty({ type: 'bool', required: false }),
+    isActive: SwaggerDocument.ApiProperty({ type: 'bool' })
 }, true);
 
-export const CreateMemeberTimetablesDtos = body => body.map(({
+export const CreateMemberTimetableDtos = body => body.map(({
     userId,
-    type,
     registerTimeId,
     activityId,
     startDate,
     endDate,
-    isActive,
-    isApproved,
+    isActive
 }) => ({
     userId,
-    type,
     registerTimeId,
     activityId,
     startDate,
     endDate,
-    isActive,
-    isApproved,
+    isActive
 }));
 
 export const CreateGroupTimetableDtos = body => body.map(({
     groupId,
-    type,
     registerTimeId,
     activityId,
     startDate,
     endDate,
-    isActive,
-    isApproved,
+    isActive
 }) => ({
     groupId,
-    type,
     registerTimeId,
     activityId,
     startDate,
     endDate,
-    isActive,
-    isApproved,
+    isActive
 }));

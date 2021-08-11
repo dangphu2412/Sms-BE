@@ -2,16 +2,16 @@
 import { compareSync, hashSync, genSaltSync } from 'bcrypt';
 import { LoggerFactory } from 'packages/logger/factory';
 import { ConfigService } from 'packages/config/config.service';
+import { UnAuthorizedException } from 'packages/httpException';
 
-class Bcrypt {
+class BcryptServiceImpl {
+    static DEFAULT_MSG_INCOMPATIBLE_PWD = 'Your current password is incorrect';
+
     saltRounds;
 
-    /**
-     * @param {number} saltRounds
-     */
-    constructor(saltRounds) {
-        this.saltRounds = saltRounds;
-        LoggerFactory.globalLogger.info('[BcryptService] is bundling');
+    constructor() {
+        this.saltRounds = Number.parseInt(ConfigService.getSingleton().get('SALT_ROUNDS'), 10);
+        LoggerFactory.globalLogger.info(`[${BcryptServiceImpl.name}] is bundling`);
     }
 
     /**
@@ -29,6 +29,12 @@ class Bcrypt {
         const salt = genSaltSync(this.saltRounds);
         return hashSync(str, salt);
     }
+
+    verifyComparison(str, hashed, msg = BcryptServiceImpl.DEFAULT_MSG_INCOMPATIBLE_PWD) {
+        if (!this.compare(str, hashed)) {
+            throw new UnAuthorizedException(msg);
+        }
+    }
 }
 
-export const BcryptService = new Bcrypt(Number.parseInt(ConfigService.getSingleton().get('SALT_ROUNDS'), 10));
+export const BcryptService = new BcryptServiceImpl();

@@ -1,4 +1,4 @@
-import { CreateTimetableGroupInterceptor, CreateTimetableMemberInterceptor } from 'core/modules/timetable';
+import { createTimetableGroupInterceptor, createTimetableMemberInterceptor } from 'core/modules/timetable';
 import { hasAdminRole } from 'core/modules/auth/guard';
 import { Module } from 'packages/handler';
 import { TimetableController } from './timetable.controller';
@@ -13,16 +13,16 @@ export const TimetableResolver = Module.builder()
         {
             route: '/members/register',
             method: 'post',
-            interceptors: [new CreateTimetableMemberInterceptor()],
+            interceptors: [createTimetableMemberInterceptor],
             controller: TimetableController.createMemberTimetables,
-            body: 'CreateMemeberTimetablesDtos',
+            body: 'CreateMemberTimetableDtos',
             guards: [hasAdminRole],
             preAuthorization: true
         },
         {
             route: '/groups/register',
             method: 'post',
-            interceptors: [new CreateTimetableGroupInterceptor()],
+            interceptors: [createTimetableGroupInterceptor],
             controller: TimetableController.createGroupTimetable,
             body: 'CreateGroupTimetableDtos',
             preAuthorization: true

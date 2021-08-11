@@ -1,7 +1,8 @@
-import { AuthService, ForgotPassword, LoginDto } from 'core/modules/auth';
+import { ForgotPassword, LoginDto } from 'core/modules/auth';
+import { AuthService } from 'core/modules/auth/service/auth.service';
 import { ValidHttpResponse } from 'packages/handler/response';
 
-class Controller {
+class AuthControllerImpl {
     constructor() {
         this.service = AuthService;
     }
@@ -22,4 +23,4 @@ class Controller {
     }
 }
 
-export const AuthController = new Controller();
+export const AuthController = new AuthControllerImpl();

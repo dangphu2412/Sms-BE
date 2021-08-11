@@ -2,7 +2,7 @@ import { SortDirection } from 'packages/restBuilder/enum';
 
 export class SortQuery {
     /**
-     * @type {{key: 1 | -1}} sortQuery
+     * @type {Record<string, (1 | -1)>} sortQuery
      */
     #sortQuery;
 

@@ -1,9 +1,8 @@
-import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler/data.persistence.service';
-import { mapByKey } from 'core/utils';
+import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler';
+import { mapByKey, Optional } from 'core/utils';
 import { TimetableRepository } from 'core/modules/timetable';
 import { LoggerFactory } from 'packages/logger';
 import { DuplicateException, NotFoundException } from 'packages/httpException';
-import { Optional } from '../../../utils/optional.util';
 import { GroupRepository } from '../group.repository';
 import { GroupDataService } from './groupData.service';
 import { CreateGroupValidator } from '../validator';
@@ -44,20 +43,20 @@ class Service extends DataPersistenceService {
             .of(await this.repository.findById(id))
             .throwIfNotPresent(new NotFoundException('Group not found'));
 
-        const childrenGroups = await this.repository.getChildrendById(id).lean();
+        const childrenGroups = await this.repository.getChildrenById(id).lean();
         const childrenGroupIds = mapByKey(childrenGroups.children, '_id');
-        const childrenTimetables = await this.timetableRepository.getManyByGroupIds(childrenGroupIds, ['groupId', 'registerTime']);
+        const childrenTimetables = await this.timetableRepository.getManyByGroupIds(childrenGroupIds, ['group', 'registerTime']);
 
         const timetableMapChildren = {};
 
         childrenTimetables.forEach(childrenTimetable => {
-            if (!timetableMapChildren[childrenTimetable.groupId]) {
-                timetableMapChildren[childrenTimetable.groupId] = [{
+            if (!timetableMapChildren[childrenTimetable.group]) {
+                timetableMapChildren[childrenTimetable.group] = [{
                     _id: childrenTimetable._id,
                     registerTime: childrenTimetable.registerTime
                 }];
             } else {
-                timetableMapChildren[childrenTimetable.groupId].push({
+                timetableMapChildren[childrenTimetable.group].push({
                     _id: childrenTimetable._id,
                     registerTime: childrenTimetable.registerTime
                 });

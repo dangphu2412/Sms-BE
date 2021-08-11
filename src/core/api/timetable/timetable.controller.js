@@ -1,4 +1,4 @@
-import { CreateGroupTimetableDtos, CreateMemeberTimetablesDtos, TimetableService } from 'core/modules/timetable';
+import { CreateGroupTimetableDtos, CreateMemberTimetableDtos, TimetableService } from 'core/modules/timetable';
 import { ValidHttpResponse } from 'packages/handler/response';
 
 class Controller {
@@ -8,7 +8,7 @@ class Controller {
 
     createMemberTimetables = async req => {
         const data = await this.service.createMemberTimetables(
-            CreateMemeberTimetablesDtos(req.body),
+            CreateMemberTimetableDtos(req.body),
         );
         return ValidHttpResponse.toCreatedResponse(data);
     };

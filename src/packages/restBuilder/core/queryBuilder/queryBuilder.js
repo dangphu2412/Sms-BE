@@ -30,10 +30,8 @@ export class QueryBuilder {
     #builder;
 
     /**
-     * 
-     * @param {import('mongoose').Model} model 
-     * @param {QueryBuilder} queryBuilder 
-     * @returns 
+     * @param {QueryBuilder=} queryBuilder
+     * @returns
      */
     static builder(queryBuilder) {
         const newIntance = new QueryBuilder();
@@ -66,7 +64,7 @@ export class QueryBuilder {
         return {
             limit: this.#limit,
             offset: this.#offset,
-            filteDocument: this.#filterDocument,
+            filterDocument: this.#filterDocument,
             sortDocument: this.#sortDocument,
             searchDocument: this.#searchDocument,
         };
@@ -96,7 +94,7 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {number} offset 
+     * @param {number} offset
      */
     addOffset(offset) {
         this.#offset = offset;
@@ -104,7 +102,7 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {number} offset 
+     * @param {number} limit
      */
     addLimit(limit) {
         this.#limit = limit;
@@ -112,8 +110,8 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {number} offset 
-     * @param {number} limit 
+     * @param {number} offset
+     * @param {number} limit
      */
     addOffsetAndLimit(offset, limit) {
         this.#offset = offset;
@@ -122,7 +120,7 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {typeof import('../../modules/query/pagination.query').PaginationQuery} pagination 
+     * @param {typeof import('../../modules/query/pagination.query').PaginationQuery} pagination
      */
     addPagination(pagination) {
         if (pagination) {
@@ -137,7 +135,7 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {typeof import('../../modules/query/filter.query').FilterQuery} filter 
+     * @param {typeof import('../../modules/query/filter.query').FilterQuery} filter
      */
     addFilter(filter) {
         if (filter) {
@@ -151,7 +149,7 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {typeof import('../../modules/query/search.query').SearchQuery} search 
+     * @param {typeof import('../../modules/query/search.query').SearchQuery} search
      */
     addSearch(search) {
         if (search) {
@@ -164,7 +162,7 @@ export class QueryBuilder {
     }
 
     /**
-     * @param {typeof import('../../modules/query/sort.query').SortQuery} sort 
+     * @param {typeof import('../../modules/query/sort.query').SortQuery} sort
      */
     addSort(sort) {
         if (sort) {

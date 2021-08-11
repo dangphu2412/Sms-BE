@@ -3,11 +3,11 @@ import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { camelCase, upperFirst } from 'lodash';
 import { parallel } from 'packages/taskExecution';
 import { BUILDER_TYPE } from '../../enum/buildType.enum';
-import { QueryBuilder } from '../queryBuilder/queryBuilder';
+import { QueryBuilder, AggregateBuilder } from '../queryBuilder';
 
 export class DataRepository {
     /**
-     * @type {import('mongoose').Model)}
+     * @type {import('mongoose').Model<Document<any, {}>, {}>}
      */
     model;
 
@@ -45,7 +45,7 @@ export class DataRepository {
         return parallel([
             baseQuery,
             QueryBuilder.builder(baseQuery)
-                .countDocuments()
+                .countDocuments(this.model)
                 .clearPagination()
         ], task => task.run());
     }
@@ -82,26 +82,36 @@ export class DataRepository {
     */
 
     find(query = {}, fields = []) {
-        return this.model.find(query).select(fields).exec();
+        return this.model.find(query).select(fields).lean();
     }
 
     findByIds(ids, fields = []) {
         return this.model
             .find({ _id: { $in: ids } })
             .select(fields)
-            .exec();
+            .lean();
     }
 
     findOne(condition, fields = []) {
-        return this.model.findOne(condition, fields).exec();
+        return this.model.findOne(condition, fields).lean();
     }
 
     findById(id, fields = []) {
-        return this.model.findById(id, fields).exec();
+        return this.model.findById(id, fields).lean();
     }
 
     updateById(id, payload) {
         return this.model.findByIdAndUpdate(id, payload, { new: true });
+    }
+
+    updateDirectById(id, payload) {
+        return this.model.updateOne({ _id: id, payload });
+    }
+
+    patchById(id, updateDoc) {
+        return this.model.updateOne({
+            _id: id
+        }, { $set: updateDoc });
     }
 
     softDeleteById(id) {
@@ -126,5 +136,23 @@ export class DataRepository {
             [field]: value,
             ...filter
         });
+    }
+
+    /**
+    * =======================================================================
+    * ==================       Aggregate method            ==================
+    * =======================================================================
+    */
+
+    /**
+     *
+     * @returns {AggregateBuilder}
+     */
+    emptyAggregate() {
+        return AggregateBuilder.builder(this.model);
+    }
+
+    fromAggregate(aggregate) {
+        return AggregateBuilder.from(this.model, aggregate);
     }
 }

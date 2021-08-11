@@ -51,7 +51,7 @@ class Service extends DataPersistenceService {
                 break;
             }
             case TIMETABLE_REQUEST_TYPE.ABSENT_ADD: {
-                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'userId'), 'userId');
+                const userIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'user'), 'user');
                 const registerTimeIdsFromTimetable = mapByKey(await this.timetableRepository.findByIds(validatingData.timetableIds, 'registerTime'), 'registerTime');
 
                 if (!isEqualArray(mapParsedObjectIdToArr(data.tempTimetables, 'userId'), userIdsFromTimetable)) {

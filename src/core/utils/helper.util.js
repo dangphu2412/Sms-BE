@@ -7,10 +7,6 @@ export function parseObjectId(str) {
     return mongoose.Types.ObjectId(str);
 }
 
-export function toJSON(mongoCollection) {
-    return JSON.parse(JSON.stringify(mongoCollection));
-}
-
 export function filterUndefinedKey(obj) {
     return pickBy(obj, value => value !== undefined);
 }

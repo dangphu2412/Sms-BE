@@ -6,7 +6,7 @@ class Repository extends DataRepository {
         super(TimetableRequestModel);
     }
 
-    async findMany(type, approvalStatus, queryFields) {
+    async findByTypeAndApprovalStatus(type, approvalStatus, queryFields) {
         const filterFields = {};
 
         if (type) {

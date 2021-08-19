@@ -2,7 +2,7 @@ import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { sign, decode } from 'jsonwebtoken';
 import { ConfigService } from 'packages/config/config.service';
 
-class Jwt {
+class JwtServiceImpl {
     secret = ConfigService.getSingleton().get('JWT_SECRET');
 
     expiresIn = ConfigService.getSingleton().get('EXPIRE_DAYS');
@@ -22,4 +22,4 @@ class Jwt {
     }
 }
 
-export const JwtService = new Jwt();
+export const JwtService = new JwtServiceImpl();

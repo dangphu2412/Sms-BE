@@ -10,7 +10,7 @@ class Repository extends DataRepository {
         return this.model.findOne({ name }).select(fields);
     }
 
-    getChildrendById(id) {
+    getChildrenById(id) {
         return this.model.findById(id).select('children')
             .populate({
                 path: 'children',
@@ -29,8 +29,9 @@ class Repository extends DataRepository {
             });
     }
 
-    getByUserId(id) {
-        return this.model.find({ members: id })
+    getByMemberIds(ids = []) {
+        const filter = ids.length ? { members: { $in: ids } } : {};
+        return this.model.find(filter)
             .select(['_id', 'name', 'description', 'registerTime'])
             .populate({
                 path: 'leader',
@@ -44,7 +45,7 @@ class Repository extends DataRepository {
     }
 
     isParent(id) {
-        return this.repository.hasRecord('_id', id, {
+        return this.hasRecord('_id', id, {
             deletedAt: {
                 $eq: null
             },

@@ -1,6 +1,6 @@
-import { responseJoiError } from 'core/utils';
+import { AbstractInputValidatorInterceptor } from './input-validator.interceptor';
 
-export class DefaultValidatorInterceptor {
+export class DefaultValidatorInterceptor extends AbstractInputValidatorInterceptor {
     /**
       * @type {import('joi').ObjectSchema<TSchema>} schema
       */
@@ -10,36 +10,29 @@ export class DefaultValidatorInterceptor {
       * @param {import('joi').ObjectSchema<TSchema>} schema
       */
     constructor(schema) {
+        super();
         this.schema = schema;
     }
 
     /**
-     * @abstract this method has default implemetation to transfer request into
-     * value to validate. If we want to change the way to validate we can override
-     * this method
+     * @override getSchema
+     * @implements default we no need to change schema based on request
      */
-    getData = request => {
-        switch (request.method) {
+    // eslint-disable-next-line no-unused-vars
+    getSchema(req) {
+        return this.schema;
+    }
+
+    getValueToValidate(req) {
+        switch (req.method) {
             case 'POST':
             case 'PUT':
             case 'PATCH':
             case 'DELETE':
-                return request.body;
+                return req.body;
             case 'GET':
             default:
-                return request.query;
+                return req.query;
         }
-    };
-
-    intercept = async (req, res, next) => {
-        try {
-            await this.schema.validateAsync(
-                this.getData(req),
-                { abortEarly: false }
-            );
-            return next();
-        } catch (error) {
-            return responseJoiError(res, error);
-        }
-    };
+    }
 }

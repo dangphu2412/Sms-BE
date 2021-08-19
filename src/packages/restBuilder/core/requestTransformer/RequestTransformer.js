@@ -30,7 +30,7 @@ export class RequestTransformer {
         filters: [{column: string,sign: '$eq' | '$gt' | '$like',value: string}],
         sorts: [{sort, order}],
         search: { value: string, criteria: []},
-        main: string[] | string | Record<String, 1>,
+        main: string[] | string | Record<String, 1 | 0>,
         associates: string[]
      }}
      */
@@ -97,14 +97,14 @@ export class RequestTransformer {
 
     addSort(input) {
         this.content.sorts.push(
-            SortFactory.transformOne(input)[0]
+            SortFactory.transform(input)[0]
         );
         return this;
     }
 
     addFilter(input) {
         this.content.filters.push(
-            FilterFactory.transformOne(input)[0]
+            FilterFactory.transform(input)
         );
         return this;
     }

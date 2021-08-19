@@ -32,12 +32,12 @@ class Controller {
     }
 
     patchOne = async req => {
-        await this.service.patchOne(req.params, UpdateProfileDto(req.body));
+        await this.service.updateProfile(req.params.id, UpdateProfileDto(req.body));
         return ValidHttpResponse.toNoContentResponse();
     }
 
     deleteOne = async req => {
-        await this.service.deleteOne(req.params);
+        await this.service.deleteOne(req.params.id);
         return ValidHttpResponse.toNoContentResponse();
     }
 

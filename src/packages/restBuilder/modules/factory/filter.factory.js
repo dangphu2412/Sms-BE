@@ -1,6 +1,6 @@
 import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { FilterSign } from 'packages/restBuilder/enum';
-import { FilterValidator } from '../validator/filter.validator';
+import { FilterValidator } from '../validator';
 
 export class FilterFactory {
     static filterValidator = new FilterValidator();
@@ -15,18 +15,18 @@ export class FilterFactory {
         if (!filter || filter.length === 0) return listFilter;
 
         if (typeof filter === 'string') {
-            listFilter.push(this.transform(filter));
+            listFilter.push(FilterFactory.transform(filter));
             return listFilter;
         }
 
         if (typeof filter === 'object') {
-            listFilter = filter.map(item => this.transform(item));
+            listFilter = filter.map(item => FilterFactory.transform(item));
         }
 
         return listFilter;
     }
 
-    transform(filter) {
+    static transform(filter) {
         const filterItems = filter.split('|');
 
         FilterFactory.filterValidator.validate(filterItems);

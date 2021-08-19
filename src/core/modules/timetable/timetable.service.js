@@ -50,7 +50,7 @@ class Service {
         const currentTimetableOfUser = await this.timetableRepository.getManyByUserAndRegisterTime(dtos);
         const currentTimetableOfUserMap = keyBy(
             currentTimetableOfUser,
-            'userId',
+            'user',
         );
 
         dtos.forEach((item, index) => {
@@ -107,7 +107,7 @@ class Service {
         const currentTimetableOfGroup = await this.timetableRepository.getManyByGroupAndRegisterTime(dtos);
         const currentTimetableOfGroupMap = keyBy(
             currentTimetableOfGroup,
-            'groupId',
+            'group',
         );
 
         dtos.forEach((item, index) => {

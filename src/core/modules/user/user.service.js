@@ -1,37 +1,39 @@
-import { keyBy } from 'lodash';
+import { merge } from 'lodash';
 import moment from 'moment';
 
 import { DataPersistenceService } from 'packages/restBuilder/core/dataHandler';
 import { LoggerFactory } from 'packages/logger';
-import { FilterQuery, SortQuery } from 'packages/restBuilder/modules/query';
-import { AggregateBuilder } from 'packages/restBuilder/core/queryBuilder';
-import { FieldUtils } from 'packages/restBuilder/modules/utils';
-import { FilterSign } from 'packages/restBuilder/enum';
+import { QueryExtractor } from 'packages/restBuilder/modules/query';
 import {
-    DuplicateException, NotFoundException, UnAuthorizedException,
-    BadRequestException, InternalServerException, UnprocessableEntityExeception
+    DuplicateException, NotFoundException, InternalServerException,
 } from 'packages/httpException';
+import { FilterSign } from 'packages/restBuilder/enum';
 
 import { ChangePasswordTemplate, MailTemplateAdapter, MailConsumer } from 'core/modules/mail';
 import {
-    toPageData, toPageDataWith, toJSON, Optional, toDateTime
+    toPageData, toPageDataWith, Optional, mapByKey
 } from 'core/utils';
-import { BcryptService } from 'core/modules/auth';
-import { UserStatus } from 'core/common/enum';
-
+import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
+import { MONGOOSE_ID_KEY } from 'core/common/constants';
+import { DocumentCleanerVisitor } from 'packages/restBuilder/core/dataHandler/document-cleaner.visitor';
 import { UserRepository } from './user.repository';
 import { GroupRepository } from '../group';
-import { TimetableRepository } from '../timetable';
+import { TimetableRepository, TimetablePopulateKey } from '../timetable';
+import { UserQueryService } from './user-query.service';
+import { QueryField } from '../../common/query';
+import { CreateUserValidator } from './validator';
 
-class Service extends DataPersistenceService {
+class UserServiceImpl extends DataPersistenceService {
     static RETRY_SEND_MAIL_TIMES = 3;
 
     constructor() {
         super(UserRepository);
+        this.userQueryService = UserQueryService;
         this.bcryptService = BcryptService;
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
-        this.logger = LoggerFactory.create('UserService');
+        this.createUserValidator = CreateUserValidator;
+        this.logger = LoggerFactory.create(UserServiceImpl.name);
         this.mailConsumer = MailConsumer;
     }
 
@@ -41,82 +43,28 @@ class Service extends DataPersistenceService {
      * @note Make sure you understand pipeline in this case when you want to change something
      */
     async getAndCount(reqTransformed) {
-        let filterSpecializedGroup;
-        let sortSpecializedGroup;
+        const query = QueryExtractor.extractToObject(reqTransformed);
 
-        const filterQuery = new FilterQuery(reqTransformed.content.filters);
-        const sortQuery = new SortQuery(reqTransformed.content.sorts);
+        this.userQueryService
+            .modifyQueryWithBirthDayMonth(query.selectedFieldMap, query.filterQuery, query.sortQuery);
 
-        /** @type{Record<string, 1>} */
-        const fieldsSelectedObject = reqTransformed.content.main;
+        this.userQueryService
+            .modifyQueryWithSpecializedGroupName(query.filterQuery, query.sortQuery);
 
-        if (filterQuery.getQuery().birthdayMonth || sortQuery.getQuery().birthdayMonth) {
-            Object.assign(fieldsSelectedObject, { birthdayMonth: FieldUtils.buildMonth('profile.birthday') });
-        }
+        const rootAggregate = this.repository.getOverviewRootAggregate(
+            query.selectedFieldMap,
+            query.associates,
+            query.filterQuery,
+            query.sortQuery
+        );
 
-        if (filterQuery.getQuery().birthdayMonth) {
-            const birthdayMonth = filterQuery.getColBySign('birthdayMonth', FilterSign.$eq);
+        const [resultBuilder, totalBuilder] = this.repository.toResultAndTotalBuilder(rootAggregate, reqTransformed);
 
-            if (!birthdayMonth) {
-                throw new BadRequestException(`Filter birthdayMonth must use ${FilterSign.$eq} signature`);
-            }
+        let result = this.repository.emptyAggregate();
 
-            filterQuery.addFilter(
-                'birthdayMonth',
-                FilterSign.$eq,
-                Number.parseInt(birthdayMonth, 10)
-            );
-        }
-
-        if (filterQuery.getQuery()['specializedGroup.name']) {
-            filterSpecializedGroup = {
-                'specializedGroup.name': {
-                    $eq: filterQuery.getQuery()['specializedGroup.name']['$eq']
-                }
-            };
-            filterQuery.removeFilterByColumn('specializedGroup.name');
-        }
-
-        if (sortQuery.getQuery()['specializedGroup.name']) {
-            sortSpecializedGroup = {
-                'specializedGroup.name': sortQuery.getQuery()['specializedGroup.name']
-            };
-            sortQuery.removeSortByKey('specializedGroup.name');
-        }
-
-        const resultBuilder = AggregateBuilder.builder(this.repository.model)
-            .setAssociates(reqTransformed.content.associates)
-            .addUnwind('specializedGroup')
-            .setSelectedFields(fieldsSelectedObject)
-            .addFilter(filterQuery)
-            .addSort(sortQuery)
-            .addOffsetAndLimit(
-                reqTransformed.content.pagination.offset,
-                reqTransformed.content.pagination.size
-            );
-
-        const totalBuilder = AggregateBuilder.builder(this.repository.model)
-            .setAssociates(reqTransformed.content.associates)
-            .addUnwind('specializedGroup')
-            .setSelectedFields(fieldsSelectedObject)
-            .addFilter(filterQuery)
-            .addSort(sortQuery);
-
-        if (filterSpecializedGroup) {
-            resultBuilder.getBuilder().match(filterSpecializedGroup);
-            totalBuilder.getBuilder().match(filterSpecializedGroup);
-        }
-
-        if (sortSpecializedGroup) {
-            resultBuilder.getBuilder().sort(sortSpecializedGroup);
-            totalBuilder.getBuilder().sort(sortSpecializedGroup);
-        }
-
-        // Count should be the final pipeline
-        totalBuilder.addCount('total');
-
-        let result = AggregateBuilder.builder(this.repository.model);
-
+        /**
+         * Search will be apply to both result and total by facet
+         */
         if (reqTransformed.content.search) {
             result.addSearch(reqTransformed.content.search.value);
         }
@@ -140,76 +88,38 @@ class Service extends DataPersistenceService {
         return toPageData(reqTransformed, result[0].content, total);
     }
 
-    async createOne(data) {
-        let createdUser;
+    /**
+     * @param {import('core/modules/user').CreateUserDto} createUserDto
+     * @returns
+     */
+    async createOne(createUserDto) {
         const user = Optional
-            .of(await this.repository.getByEmail(data.email))
-            .throwIfPresent(new DuplicateException('Email is used'))
+            .of(await this.repository.getByEmail(createUserDto.email))
+            .throwIfPresent(new DuplicateException('Email is being used'))
             .get();
 
-        if (user?.status === UserStatus.SUSPEND) {
-            throw new BadRequestException('This account is not available at the moment');
-        }
+        await this.createUserValidator.validate(user, createUserDto);
 
-        const userProfile = data.profile;
+        createUserDto.password = this.bcryptService.hash(createUserDto.password);
 
-        if (userProfile?.birthday && !toDateTime(userProfile?.birthday)) {
-            throw new BadRequestException('Invalid birthday datetime type');
-        }
-
-        if (await this.groupRepository.isParent(data.specilizedGroupId)) {
-            throw new UnprocessableEntityExeception(
-                'Group relate to specializedGroupId is not exist or not a parent group'
-            );
-        } else {
-            data.specilizedGroup = data.specilizedGroupId;
-            delete data.specilizedGroupId;
-        }
-
-        data.password = this.bcryptService.hash(data.password);
-
-        try {
-            createdUser = await this.repository.model.create(data);
-        } catch (e) {
-            this.logger.error(e.message);
-            this.logger.error(e.stack);
-            throw new InternalServerException('Getting internal error during create new user');
-        }
-
-        await this.mailConsumer.add(
-            MailTemplateAdapter(
-                new ChangePasswordTemplate(createdUser.email),
-                createdUser.email
-            ),
-            {
-                attempts: Service.RETRY_SEND_MAIL_TIMES,
-            }
+        const createdUser = await this.createOneSafety(
+            createUserDto,
+            () => new InternalServerException('Getting internal error during create new user')
         );
+
+        await this.notifyMailToUser(createdUser);
+
         return { _id: createdUser._id };
     }
 
     async findTimetables(userId, query) {
-        const { startDate = moment().subtract(7, 'days').toISOString(), endDate = moment().add(7, 'days').toISOString() } = query;
-        Optional.of(await this.repository.findById(userId))
-            .throwIfNotPresent(new NotFoundException('User Id is invalid'));
-        const groups = await this.groupRepository.getByUserId(userId);
-        const groupMapped = keyBy(groups, '_id');
+        const [startDate, endDate] = this.extractDateRangeFromQuery(query);
 
-        // Get  timetable of user and timetable of group (of user) in date range
-        const conditionGroupTimetable = groups.map(group => ({ groupId: group.id, startDate, endDate }));
-        const conditionUserTimetable = [{ userId, startDate, endDate }];
-        const groupTimetable = await this.timetableRepository.getManyByGroupsAndDateRange(conditionGroupTimetable);
-        const userTimetable = toJSON(await this.timetableRepository.getManyByGroupsAndDateRange(conditionUserTimetable));
-        const timetableGroupMapped = keyBy(groupTimetable, 'registerTime._id');
+        const timetables = await this.getMergedTimetableBetweenGroupAndSelf(
+            startDate, endDate, userId
+        );
 
-        userTimetable.forEach((timetable, index) => {
-            userTimetable[index].groups = [];
-            // If the timetable of user concides with group timetable
-            if (timetableGroupMapped[timetable.registerTime?._id]) {
-                userTimetable[index].groups.push(groupMapped[timetableGroupMapped[timetable.registerTime?._id].groupId]);
-            }
-        });
-        return toPageDataWith(userTimetable, userTimetable.length);
+        return toPageDataWith(timetables, timetables.length);
     }
 
     async findOne({ id }) {
@@ -220,46 +130,33 @@ class Service extends DataPersistenceService {
         return user;
     }
 
-    async patchOne({ id }, data) {
-        Object.keys(data.profile).forEach(key => (data.profile[key] === undefined ? delete data.profile[key] : {}));
-
+    /**
+     * 
+     * @param {string} id
+     * @param {import('core/modules/user').UpdateProfileDto} updateProfileDto
+     * @returns
+     */
+    async updateProfile(id, updateProfileDto) {
         const user = await this.repository.findById(id);
         if (!user) {
             throw new NotFoundException('User not found');
         }
-        user.profile = { ...user.profile, ...data.profile };
-        if (data.status) user.status = data.status;
+
+        new DocumentCleanerVisitor(user.profile).visit();
+
+        user.profile = { ...user.profile, ...updateProfileDto.profile };
+        if (updateProfileDto.status) user.status = updateProfileDto.status;
         return user.save();
     }
 
-    // TODO: Update delete user in the future
-    async deleteOne({ id }) {
-        let user;
-        try {
-            user = await this.repository.model.findByIdAndDelete(id);
-        } catch (e) {
-            this.logger.error(e.message);
-        }
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-        return user;
+    deleteOne(id) {
+        return this.softDeleteById(id, () => new NotFoundException('User not found'));
     }
 
     async changePassword(user, changePasswordDto) {
-        const currentUser = await this.repository.model.findById(
-            user.payload._id,
-            '_id password remainingLoginTimes isPasswordChanged',
-            {
-                deletedAt: {
-                    $eq: null
-                }
-            }
-        );
+        const currentUser = await this.repository.getDetectingPasswordInfo(user.payload._id);
 
-        if (!this.bcryptService.compare(changePasswordDto.oldPassword, currentUser.password)) {
-            throw new UnAuthorizedException('Your current password is incorrect');
-        }
+        this.bcryptService.verifyComparison(changePasswordDto.oldPassword, currentUser.password);
 
         const updateDoc = {
             password: this.bcryptService.hash(changePasswordDto.newPassword)
@@ -269,10 +166,60 @@ class Service extends DataPersistenceService {
             updateDoc.isPasswordChanged = true;
         }
 
-        await this.repository.model.updateOne({
-            _id: currentUser._id
-        }, updateDoc);
+        await this.repository.patchById(currentUser._id, updateDoc);
+    }
+
+    /** Smaller function do their story */
+
+    /**
+     * @returns {[string, string]}
+     */
+    extractDateRangeFromQuery(query) {
+        const DEFAULT_DATE_RANGE = 7;
+        return [
+            query.startDate ?? moment().subtract(DEFAULT_DATE_RANGE, 'days').toISOString(),
+            query.endDate ?? moment().add(DEFAULT_DATE_RANGE, 'days').toISOString()
+        ];
+    }
+
+    /**
+     *
+     * @param {string} startDate
+     * @param {string} endDate
+     * @param {string} userId
+     * @returns {Promise<[]>}
+     */
+    async getMergedTimetableBetweenGroupAndSelf(startDate, endDate, userId) {
+        let selfJoinedGroups = await this.groupRepository.getByMemberIds([userId]);
+
+        const selfJoinedGroupIds = mapByKey(selfJoinedGroups, MONGOOSE_ID_KEY);
+
+        // Release the object heap
+        selfJoinedGroups = null;
+
+        const [joinedGroupTimetables, selfTimetables] = await Promise.all([
+            this.timetableRepository.searchByDateRange(
+                startDate, endDate, new QueryField(TimetablePopulateKey.group, FilterSign.$in, selfJoinedGroupIds)
+            ),
+            this.timetableRepository.searchByDateRange(
+                startDate, endDate, new QueryField(TimetablePopulateKey.user, FilterSign.$eq, userId)
+            )
+        ]);
+
+        return merge(joinedGroupTimetables, selfTimetables);
+    }
+
+    notifyMailToUser(createdUser) {
+        return this.mailConsumer.add(
+            MailTemplateAdapter(
+                new ChangePasswordTemplate(createdUser.email),
+                createdUser.email
+            ),
+            {
+                attempts: UserServiceImpl.RETRY_SEND_MAIL_TIMES,
+            }
+        );
     }
 }
 
-export const UserService = new Service();
+export const UserService = new UserServiceImpl();

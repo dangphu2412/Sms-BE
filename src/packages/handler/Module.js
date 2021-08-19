@@ -142,10 +142,10 @@ export class Module {
      * @param {
         [{
             route: string,
-            controller,
+            controller: any,
             method: 'get' | 'post' | 'update' | 'patch' | 'delete',
-            interceptors: [],
-            guards: [],
+            interceptors?: [],
+            guards?: [],
             preAuthorization?: boolean,
             description?: string,
             model?:any,

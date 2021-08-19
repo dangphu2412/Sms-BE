@@ -1,4 +1,4 @@
-import { BadRequestException } from '../../../httpException/BadRequestException';
+import { BadRequestException } from 'packages/httpException';
 
 export class LockValidator {
     sorts;

@@ -24,7 +24,7 @@ export class FilterQuery {
      * Do not call this when you are building Filter query
      * @author dangphu2412
      * @version 1.0
-     * @return {{column: { sign: value }}}
+     * @return {Record<string, Record<string, import('../../enum/filter.enum').FilterSign>>}
      * @example {
      *      firstName: {
      *          $eq: 'fusdeptrai'
@@ -59,7 +59,7 @@ export class FilterQuery {
         return this;
     }
 
-    getColBySign(col, sign) {
+    getValue(col, sign) {
         return this.#filterQuery[col]?.[sign];
     }
 }

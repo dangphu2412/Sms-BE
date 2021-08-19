@@ -3,12 +3,12 @@ import { Schema, model } from 'mongoose';
 import { TimetableSettingModel } from 'core/modules/timetable-setting/timetable-setting.model';
 
 const schema = extendBaseModel({
-    userId: {
+    user: {
         type: Schema.Types.ObjectId,
         default: null,
         ref: 'users'
     },
-    groupId: {
+    group: {
         type: Schema.Types.ObjectId,
         default: null,
         ref: 'groups'

@@ -59,9 +59,9 @@ export class SwaggerDocument {
     }
 
     /**
-     * 
-     * @param {{type: DocumentType, model: string, required: boolean, readOnly: boolean, example: string}} options 
-     * @returns 
+     *
+     * @param {{type: DocumentType, model: string, required: boolean, readOnly: boolean, example: string}} options
+     * @returns
      */
     static ApiProperty(options) {
         const {
@@ -89,9 +89,9 @@ export class SwaggerDocument {
     }
 
     /**
-     * 
-     * @param {{type: DocumentType, model: string, required: boolean, readOnly: boolean, example: string, name: string, paramsIn: string, description: string}} options 
-     * @returns 
+     *
+     * @param {{type?: DocumentType, model?: string, required?: boolean, readOnly?: boolean, example?: string, name?: string, paramsIn?: string, description?: string}} options
+     * @returns
      */
     static ApiParams(options) {
         const {

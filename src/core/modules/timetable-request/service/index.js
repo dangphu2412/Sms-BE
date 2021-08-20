@@ -1,2 +1,1 @@
-export * from './timetableRequest.service';
-export * from './timetableRequestDataService';
+export * from './timetable-request.service';

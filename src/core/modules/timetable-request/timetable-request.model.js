@@ -10,7 +10,7 @@ const schema = extendBaseModel({
         enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
-    userId: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'users',
         required: [true, 'user ID is empty'],

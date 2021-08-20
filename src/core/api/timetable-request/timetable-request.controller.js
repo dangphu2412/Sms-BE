@@ -12,18 +12,18 @@ class Controller {
         return ValidHttpResponse.toCreatedResponse(data);
     }
 
-    getMany = async req => {
-        const data = await this.service.getMany(req.query);
+    getByType = async req => {
+        const data = await this.service.getTimetableRequestByType(req.query.type, req.query.status);
         return ValidHttpResponse.toCreatedResponse(data);
     }
 
     approveOne = async req => {
-        await this.service.approveOne(req.params.id, getUserContext(req)['payload']._id);
+        await this.service.approveOneTimetableRequest(req.params.id, getUserContext(req)['payload']._id);
         return ValidHttpResponse.toNoContentResponse();
     }
 
     rejectOne = async req => {
-        await this.service.rejectOne(req.params.id, getUserContext(req)['payload']._id);
+        await this.service.rejectOneTimetableRequest(req.params.id, getUserContext(req)['payload']._id);
         return ValidHttpResponse.toNoContentResponse();
     }
 }

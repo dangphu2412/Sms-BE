@@ -1,11 +1,11 @@
-import { UserValidator } from './user.validator';
+import { UserValidatorForTimetableRequest } from './user.validator';
 
 export class ActionTimetableRequestDefaultValidator {
     tasks=[]
 
     constructor(dto) {
         this.dto = dto;
-        this.tasks.push(new UserValidator(this.dto.userId));
+        this.tasks.push(new UserValidatorForTimetableRequest({ userId: this.dto.userId }));
     }
 
     async validate() {

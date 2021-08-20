@@ -176,7 +176,6 @@ export class Module {
                     middlewares.push(Module.#produceGuard(guard));
                 });
             }
-
             if (!controller) {
                 throw new Error(`${this.#prefix.module} with ${method.toUpperCase()} ${this.#prefix.prefixPath}${route} can not mapping controller`);
             }

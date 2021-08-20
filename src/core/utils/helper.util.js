@@ -1,7 +1,7 @@
 import { pickBy, keysIn } from 'lodash';
 import mongoose from 'mongoose';
 
-export function parseObjectId(str) {
+export function toObjectId(str) {
     return mongoose.Types.ObjectId(str);
 }
 

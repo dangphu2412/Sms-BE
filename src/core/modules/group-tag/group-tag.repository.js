@@ -5,6 +5,10 @@ class Repository extends DataRepository {
     constructor() {
         super(GroupTagModel);
     }
+
+    getByName(name, fields = '') {
+        return this.find({ name }, fields);
+    }
 }
 
 export const GroupTagRepository = new Repository();

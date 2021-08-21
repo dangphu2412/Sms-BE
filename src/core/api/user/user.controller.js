@@ -27,7 +27,7 @@ class Controller {
     }
 
     findOne = async req => {
-        const data = await this.service.findOne(req.params);
+        const data = await this.service.findOne(req.params.id);
         return ValidHttpResponse.toOkResponse(data);
     }
 

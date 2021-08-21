@@ -1,6 +1,6 @@
 import { ObjectId } from 'core/common/swagger';
 import { hasAdminOrLeaderRole, hasAdminRole } from 'core/modules/auth';
-import { createGroupInterceptor, updateGroupInterceptor } from 'core/modules/group';
+import { groupCreationInterceptor, groupModificationInterceptor } from 'core/modules/group';
 import { interceptIdObject } from 'core/modules/mongoose/objectId.interceptor';
 import { Module } from 'packages/handler';
 import { GroupController } from './group.controller';
@@ -15,10 +15,10 @@ export const GroupResolver = Module.builder()
         {
             route: '/',
             method: 'post',
-            body: 'CreateGroupDto',
+            body: 'GroupCreationDto',
             guards: [hasAdminRole],
             controller: GroupController.createOne,
-            interceptors: [createGroupInterceptor],
+            interceptors: [groupCreationInterceptor],
             preAuthorization: true
         },
         {
@@ -35,9 +35,9 @@ export const GroupResolver = Module.builder()
             method: 'patch',
             params: [ObjectId],
             guards: [hasAdminOrLeaderRole],
-            body: 'UpdateGroupDto',
+            body: 'GroupModificationDto',
             controller: GroupController.patchOne,
-            interceptors: [interceptIdObject, updateGroupInterceptor],
+            interceptors: [interceptIdObject, groupModificationInterceptor],
             preAuthorization: true
         }
     ]);

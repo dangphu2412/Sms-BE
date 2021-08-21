@@ -2,12 +2,13 @@ import { DefaultValidatorInterceptor } from 'core/infrastructure/interceptor';
 import { JoiUtils } from 'core/utils';
 import Joi from 'joi';
 
-export const updateGroupInterceptor = new DefaultValidatorInterceptor(
+export const groupCreationInterceptor = new DefaultValidatorInterceptor(
     Joi.object({
-        name: Joi.string().min(0).optional(),
-        description: JoiUtils.optionalString().optional(),
+        name: Joi.string().min(0).required(),
+        description: JoiUtils.optionalString(),
+        tagId: JoiUtils.objectId().required(),
         parentId: JoiUtils.objectId().optional(),
-        leaderId: JoiUtils.objectId().optional(),
+        leaderId: JoiUtils.objectId().required(),
         memberIds: Joi.array().items(JoiUtils.objectId()).unique().optional()
     })
 );

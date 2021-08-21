@@ -11,7 +11,7 @@ export class SearchFactory {
         const { search } = req;
         const schema = {};
 
-        if (!search || search.length === 0) return null;
+        if (!search) return null;
 
         schema.value = search.replace(
             SearchFactory.REGEX_SEARCH_CLEANER,

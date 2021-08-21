@@ -122,7 +122,7 @@ class UserServiceImpl extends DataPersistenceService {
         return toPageDataWith(timetables, timetables.length);
     }
 
-    async findOne({ id }) {
+    async findOne(id) {
         const user = await this.repository.getDetailById(id);
         if (!user) {
             throw new NotFoundException('User not found');

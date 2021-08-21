@@ -1,6 +1,5 @@
 import { UserStatus } from 'core/common/enum';
 import { NotFoundException } from '../../../../packages/httpException';
-import { GroupRepository } from '../group.repository';
 import { UserRepository } from '../../user/user.repository';
 
 export class MemberGroupValidator {
@@ -8,13 +7,12 @@ export class MemberGroupValidator {
 
     constructor(dto) {
         this.memberIds = dto.memberIds;
-        this.groupRepository = GroupRepository;
         this.userRepository = UserRepository;
     }
 
     async validate() {
-        if (this.memberIds.length > 0) {
-            const members = await this.groupRepository.findByIds(this.memberIds, '_id deletedAt');
+        if (this.memberIds?.length > 0) {
+            const members = await this.userRepository.findByIds(this.memberIds, '_id deletedAt');
 
             if (members.length > 0) {
                 if (this.memberIds.length > members.length) {

@@ -81,7 +81,7 @@ export class DataPersistenceService {
      * @param {Record<any, any>} updateDocument 
      */
     async patchOne(id, sourceDocument, updateDocument) {
-        new DocumentCleanerVisitor(sourceDocument).visit();
+        new DocumentCleanerVisitor(updateDocument).visit();
         const updateDoc = { ...sourceDocument, ...updateDocument };
         await this.repository.model.updateOne({
             _id: id

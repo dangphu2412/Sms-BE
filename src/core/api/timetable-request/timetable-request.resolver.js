@@ -1,6 +1,8 @@
+import { hasAdminRole } from 'core/modules/auth/guard/roleDomain';
 import { CreateTimetableRequestInterceptor, GetTimetableRequestQueryInterceptor } from 'core/modules/timetable-request';
 import { getTimetableRequestQuerySwagger } from 'core/modules/timetable-request/dto/get-timetable-request.swagger';
 import { Module } from 'packages/handler';
+import { interceptIdObject } from 'core/modules/mongoose/objectId.interceptor';
 import { TimetableRequestController } from './timetable-request.controller';
 
 export const TimetableRequestResolver = Module.builder()
@@ -28,6 +30,22 @@ export const TimetableRequestResolver = Module.builder()
             ],
             body: 'CreateTimetableRequestDto',
             controller: TimetableRequestController.createOne,
+            preAuthorization: true
+        },
+        {
+            route: '/:id/approve',
+            method: 'patch',
+            interceptors: [interceptIdObject],
+            guards: [hasAdminRole],
+            controller: TimetableRequestController.approveOne,
+            preAuthorization: true
+        },
+        {
+            route: '/:id/reject',
+            method: 'patch',
+            interceptors: [interceptIdObject],
+            guards: [hasAdminRole],
+            controller: TimetableRequestController.rejectOne,
             preAuthorization: true
         },
     ]);

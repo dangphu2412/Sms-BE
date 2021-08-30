@@ -1,5 +1,6 @@
 import { CreateTimetableRequestDto, TimetableRequestService } from 'core/modules/timetable-request';
 import { ValidHttpResponse } from 'packages/handler';
+import { getUserContext } from 'packages/authModel/module/user/UserContext';
 
 class Controller {
     constructor() {
@@ -14,6 +15,16 @@ class Controller {
     getByType = async req => {
         const data = await this.service.getByType(req.query.type, req.query.status);
         return ValidHttpResponse.toCreatedResponse(data);
+    }
+
+    approveOne = async req => {
+        await this.service.approveOne(req.params.id, getUserContext(req)['payload']._id);
+        return ValidHttpResponse.toNoContentResponse();
+    }
+
+    rejectOne = async req => {
+        await this.service.rejectOne(req.params.id, getUserContext(req)['payload']._id);
+        return ValidHttpResponse.toNoContentResponse();
     }
 }
 

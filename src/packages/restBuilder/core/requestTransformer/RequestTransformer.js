@@ -55,16 +55,16 @@ export class RequestTransformer {
     }
 
     /**
-     * @param {any} req from client
+     * @param {any} requestQuery from client
      * @param relationSchema backend definition in json schema file
      */
-    constructor(req, relationSchema) {
+    constructor(requestQuery, relationSchema) {
         this.content = {};
-        req.searchCriteria = relationSchema?.searchCriteria;
-        this.content.pagination = RequestTransformer.paginationFactory.produce(req);
-        this.content.filters = RequestTransformer.filterFactory.produce(req);
-        this.content.sorts = RequestTransformer.sortFactory.produce(req);
-        this.content.search = RequestTransformer.searchFactory.produce(req);
+        requestQuery.searchCriteria = relationSchema?.searchCriteria;
+        this.content.pagination = RequestTransformer.paginationFactory.produce(requestQuery);
+        this.content.filters = RequestTransformer.filterFactory.produce(requestQuery);
+        this.content.sorts = RequestTransformer.sortFactory.produce(requestQuery);
+        this.content.search = RequestTransformer.searchFactory.produce(requestQuery);
         this.content.main = relationSchema?.main;
         this.content.associates = relationSchema?.associates;
         RequestTransformer.constructValidator(this.content, relationSchema?.locks);

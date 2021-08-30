@@ -7,7 +7,7 @@ export class SearchQuery {
 
     constructor(searchTransformed) {
         this.#searchQuery = SearchQuery.toQuery(searchTransformed);
-        this.#searchValue = searchTransformed.value;
+        this.#searchValue = searchTransformed?.value;
     }
 
     static toSearchItem(value) {

@@ -92,7 +92,7 @@ class Repository extends DataRepository {
         }).populate('group');
     }
 
-    getManyByGroupIds(groups, fields = []) {
+    getManyByGroupIds(groups, fields = '') {
         return this.model.find({
             group: { $in: groups }
         }).select(fields);

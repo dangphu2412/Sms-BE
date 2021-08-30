@@ -1,16 +1,16 @@
 import { DataRepository } from 'packages/restBuilder/core/dataHandler/data.repository';
 import { GroupModel } from './group.model';
 
-class Repository extends DataRepository {
+class GroupRepositoryImpl extends DataRepository {
     constructor() {
         super(GroupModel);
     }
 
-    findByName(name, fields = '') {
+    getByName(name, fields = '') {
         return this.model.findOne({ name }).select(fields);
     }
 
-    getChildrenById(id) {
+    getWithChildrenById(id) {
         return this.model.findById(id).select('children')
             .populate({
                 path: 'children',
@@ -40,10 +40,6 @@ class Repository extends DataRepository {
             });
     }
 
-    deleteMember(groupId, memberIds) {
-        return this.model.updateMany({ _id: groupId }, { $pullAll: { members: memberIds } });
-    }
-
     isParent(id) {
         return this.hasRecord('_id', id, {
             deletedAt: {
@@ -56,4 +52,4 @@ class Repository extends DataRepository {
     }
 }
 
-export const GroupRepository = new Repository();
+export const GroupRepository = new GroupRepositoryImpl();

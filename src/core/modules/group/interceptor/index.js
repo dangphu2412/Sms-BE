@@ -1,2 +1,2 @@
-export * from './createGroup.interceptor';
-export * from './updateGroup.interceptor';
+export * from './group-creation.interceptor';
+export * from './group-modification.interceptor';

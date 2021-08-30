@@ -1,4 +1,4 @@
-import { CreateGroupDto, GroupService, UpdateGroupDto } from 'core/modules/group';
+import { GroupCreationDto, GroupService, GroupModificationDto } from 'core/modules/group';
 import { ValidHttpResponse } from 'packages/handler';
 
 class Controller {
@@ -7,7 +7,7 @@ class Controller {
     }
 
     createOne = async req => {
-        const data = await this.service.createOne(CreateGroupDto(req.body));
+        const data = await this.service.createOne(GroupCreationDto(req.body));
         return ValidHttpResponse.toCreatedResponse(data);
     }
 
@@ -17,7 +17,7 @@ class Controller {
     }
 
     patchOne = async req => {
-        await this.service.patchOne(req.params.id, UpdateGroupDto(req.body));
+        await this.service.patchOne(req.params.id, GroupModificationDto(req.body));
         return ValidHttpResponse.toNoContentResponse();
     }
 }

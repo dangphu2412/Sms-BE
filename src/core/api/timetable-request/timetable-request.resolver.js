@@ -1,4 +1,4 @@
-import { hasAdminRole } from 'core/modules/auth/guard/roleDomain';
+import { hasAdminRole } from 'core/modules/auth/guard/role.manager';
 import { CreateTimetableRequestInterceptor, GetTimetableRequestQueryInterceptor } from 'core/modules/timetable-request';
 import { getTimetableRequestQuerySwagger } from 'core/modules/timetable-request/dto/get-timetable-request.swagger';
 import { Module } from 'packages/handler';

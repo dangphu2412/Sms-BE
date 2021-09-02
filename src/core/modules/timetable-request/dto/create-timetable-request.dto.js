@@ -26,6 +26,6 @@ export const CreateTimetableRequestDto = body => ({
     type: body.type,
     description: body.description,
     attachment: body.attachment ?? null,
-    tempTimetables: [...body.tempTimetables],
+    tempTimetables: body.tempTimetables,
     isApproved: body.isApproved ?? false,
 });

@@ -12,8 +12,8 @@ class Controller {
         return ValidHttpResponse.toCreatedResponse(data);
     }
 
-    getByType = async req => {
-        const data = await this.service.getByType(req.query.type, req.query.status);
+    getMany = async req => {
+        const data = await this.service.getMany(req.query);
         return ValidHttpResponse.toCreatedResponse(data);
     }
 

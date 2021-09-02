@@ -1,3 +1,4 @@
+import { QueryCriteriaDocument } from 'core/common/swagger/filter';
 import { SwaggerDocument } from 'packages/swagger';
 
 export const getTimetableRequestQuerySwagger = [
@@ -12,5 +13,6 @@ export const getTimetableRequestQuerySwagger = [
         paramsIn: 'query',
         required: false,
         type: 'string',
-    })
+    }),
+    QueryCriteriaDocument.search
 ];

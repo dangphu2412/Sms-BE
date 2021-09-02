@@ -195,7 +195,7 @@ class Service extends DataPersistenceService {
             }
         }
 
-        return this.repository.findByType(queryFields, type, approvalStatus);
+        return this.repository.findByTypeAndApprovalStatus(type, approvalStatus, queryFields);
     }
 
     async approveOne(id, userId) {

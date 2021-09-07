@@ -7,7 +7,7 @@ ApiDocument.addModel('tempTimetables', {
     groupId: SwaggerDocument.ApiProperty({ type: 'string' }),
     timetableId: SwaggerDocument.ApiProperty({ type: 'string' }),
     type: SwaggerDocument.ApiProperty({ type: 'enum', model: TIMETABLE_REQUEST_TYPE }),
-    registerTime: SwaggerDocument.ApiProperty({ type: 'string' }),
+    registerTimeId: SwaggerDocument.ApiProperty({ type: 'string' }),
     appliedDate: SwaggerDocument.ApiProperty({ type: 'dateTime' }),
     customStartTime: SwaggerDocument.ApiProperty({ type: 'string' }),
     customEndTime: SwaggerDocument.ApiProperty({ type: 'string' }),

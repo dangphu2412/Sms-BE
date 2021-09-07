@@ -34,12 +34,12 @@ export class TimetableRequestSeed {
             const tempTimetable = {
                 _id: new mongoose.Types.ObjectId(),
                 type: sampleType,
-                userId: sample(userIds),
+                user: sample(userIds),
                 appliedDate: faker.date.between(faker.date.recent(), faker.date.future()),
-                ...(sampleType !== TIMETABLE_REQUEST_TYPE.OUT) ? { timetableId: sample(timetableIds) } : { timetableId: null },
-                ...(sampleType !== TIMETABLE_REQUEST_TYPE.OUT) ? { registerTime: sample(timetableSettingIds) } : { registerTime: null },
-                ...(sampleType === TIMETABLE_REQUEST_TYPE.SOON) ? { customStartTime: sample(soonMins) } : { customStartTime: null },
-                ...(sampleType === TIMETABLE_REQUEST_TYPE.LATE) ? { customEndTime: sample(lateMins) } : { customEndTime: null },
+                timetableId: sampleType !== TIMETABLE_REQUEST_TYPE.OUT ? sample(timetableIds) : null,
+                registerTime: sampleType !== TIMETABLE_REQUEST_TYPE.OUT ? sample(timetableSettingIds) : null,
+                customStartTime: sampleType !== TIMETABLE_REQUEST_TYPE.SOON ? sample(soonMins) : null,
+                customEndTime: sampleType !== TIMETABLE_REQUEST_TYPE.LATE ? sample(lateMins) : null
 
             };
             sampleTempTimetableData.push(tempTimetable);
@@ -47,7 +47,7 @@ export class TimetableRequestSeed {
         const sampleTimetableRequestData = [];
         for (let i = 0; i < 10; i += 1) {
             const timetableRequests = {
-                userId: sample(userIds),
+                user: sample(userIds),
                 tempTimetables: sampleTempTimetableData.slice(3 * i, 3 * i + 3),
                 type: sample(Object.values(TIMETABLE_REQUEST_TYPE)),
                 description: sample(reasons),

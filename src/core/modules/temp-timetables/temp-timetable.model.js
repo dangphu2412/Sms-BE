@@ -4,7 +4,7 @@ import { Schema, model } from 'mongoose';
 import { TIMETABLE_REQUEST_TYPE } from 'core/common/enum/timetable-request.enum';
 
 const schema = extendBaseModel({
-    userId: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'users',
         require: [true, 'userId is empty']
@@ -15,7 +15,7 @@ const schema = extendBaseModel({
         enum: Object.values(TIMETABLE_REQUEST_TYPE),
         require: [true, 'type of form is empty']
     },
-    timetableId: {
+    timetable: {
         type: Schema.Types.ObjectId,
         ref: 'timetables',
         default: null

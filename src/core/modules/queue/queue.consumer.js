@@ -3,7 +3,9 @@ import { ConfigService } from 'packages/config/config.service';
 import { LoggerFactory } from '../../../packages/logger/factory/logger.factory';
 
 export class QueueConsumer {
-    static REDIS_CONNECTION = ConfigService.getSingleton().get('REDIS_CONNECTION');
+    static REDIS_URL = ConfigService.getSingleton().get('REDIS_URL');
+
+    static IS_TLS_REQUIRED = ConfigService.getSingleton().get('TLS');
 
     /**
      * @type {import('bull').Queue}
@@ -11,7 +13,11 @@ export class QueueConsumer {
     queue;
 
     constructor(name) {
-        this.queue = new Queue(name, QueueConsumer.REDIS_CONNECTION);
+        this.queue = new Queue(name, QueueConsumer.REDIS_URL, {
+            redis: {
+                tls: { rejectUnauthorized: QueueConsumer.IS_TLS_REQUIRED === 'true' && true }
+            }
+        });
         LoggerFactory.globalLogger.info(`[${QueueConsumer.name}] is creating ${name} queue in Redis`);
     }
 

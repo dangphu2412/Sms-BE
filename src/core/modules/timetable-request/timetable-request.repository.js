@@ -1,7 +1,7 @@
-import { DataRepository } from 'packages/restBuilder/core/dataHandler/data.repository';
+import { DataRepository } from 'packages/restBuilder/core/dataHandler';
 import { TimetableRequestModel } from './timetable-request.model';
 
-class Repository extends DataRepository {
+class TimetableRequestRepositoryImpl extends DataRepository {
     constructor() {
         super(TimetableRequestModel);
     }
@@ -27,4 +27,4 @@ class Repository extends DataRepository {
     }
 }
 
-export const TimetableRequestRepository = new Repository();
+export const TimetableRequestRepository = new TimetableRequestRepositoryImpl();

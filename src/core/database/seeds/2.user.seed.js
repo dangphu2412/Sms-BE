@@ -4,11 +4,13 @@ import { Role } from 'core/rules';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import faker from 'faker/locale/vi';
 import { BcryptService } from 'core/modules/auth/service';
+import { sample } from 'lodash';
+import { UniversityRepository } from 'core/modules/university/university.repository';
 
 export class UserSeeder {
     static async run() {
         const roles = [Role.LEADER.name, Role.MEMBER.name];
-
+        const universities = await UniversityRepository.find({}, '_id');
         const defaultPwd = BcryptService.hash('Abc123@@');
         const sampleUserData = [];
         for (let i = 1; i <= 100; i += 1) {
@@ -29,6 +31,7 @@ export class UserSeeder {
                     phone: faker.phone.phoneNumber(),
                     hometown: faker.address.city(),
                     facebook: 'https://www.facebook.com/',
+                    university: sample(universities)
                 }
             });
         }

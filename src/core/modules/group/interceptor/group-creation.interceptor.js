@@ -4,8 +4,8 @@ import Joi from 'joi';
 
 export const groupCreationInterceptor = new DefaultValidatorInterceptor(
     Joi.object({
-        name: Joi.string().min(0).required(),
-        description: JoiUtils.optionalString(),
+        name: JoiUtils.requiredString(),
+        description: JoiUtils.optionalString().trim(),
         tagId: JoiUtils.objectId().required(),
         parentId: JoiUtils.objectId().optional(),
         leaderId: JoiUtils.objectId().required(),

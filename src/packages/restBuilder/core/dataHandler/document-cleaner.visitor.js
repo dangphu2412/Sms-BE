@@ -6,11 +6,12 @@ import { DocumentVisitor } from './document.visitor';
  */
 export class DocumentCleanerVisitor extends DocumentVisitor {
     visit() {
+        const plainObject = this.document.toObject({ getters: true });
         Object
-            .keys(this.document)
+            .keys(plainObject)
             .forEach(key => {
-                if (isEmpty(this.document[key])) {
-                    delete this.document[key];
+                if (isEmpty(plainObject[key])) {
+                    delete plainObject[key];
                 }
             });
     }

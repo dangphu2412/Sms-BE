@@ -32,7 +32,7 @@ SwaggerContentCreator
     .build()
 ```
 ## Swagger core:
-- First we should initilize swagger builder with prefix config:
+- First we should initialize swagger builder with prefix config:
 ```
 const options = {
     openapi: '3.0.1',
@@ -78,7 +78,7 @@ const options = {
 };
 const ApiDocument = SwaggerBuilder.builder().addConfig(options)
 ```
-- Then it will inititial with some basic information
+- Then it will initial with some basic information
 - addTag function to add tag of api to persistence server
 - api function to create api compatible to swagger document:
 ```
@@ -95,7 +95,7 @@ const ApiDocument = SwaggerBuilder.builder().addConfig(options)
 ```
 - addModel:
   - Will add model schema with specific name in to current swagger memory with the name of that then we can point out the model by the name reference.
-  - Second parameter shoulb be build with the supporting of SwaggerDocument
+  - Second parameter should be build with the supporting of SwaggerDocument
 ## Swagger document
 - ApiProperty
   - Input of this function should be:

@@ -1,6 +1,6 @@
 import { ObjectId } from 'core/common/swagger';
 import { hasAdminRole } from 'core/modules/auth';
-import { CreateTimetableSettingInterceptor, UpdateTimetableSettingInterceptor } from 'core/modules/timetable-setting';
+import { createTimetableSettingInterceptor, updateTimetableSettingInterceptor } from 'core/modules/timetable-setting';
 import { Module } from 'packages/handler';
 import { TimetableSettingController } from './timetable-setting.controller';
 
@@ -14,7 +14,7 @@ export const TimetableSettingResolver = Module.builder()
         {
             route: '/',
             method: 'post',
-            interceptors: [new CreateTimetableSettingInterceptor()],
+            interceptors: [createTimetableSettingInterceptor],
             controller: TimetableSettingController.createOne,
             guards: [hasAdminRole],
             body: 'CreateTimeTableSettingDto',
@@ -23,7 +23,7 @@ export const TimetableSettingResolver = Module.builder()
         {
             route: '/:id',
             method: 'put',
-            interceptors: [new UpdateTimetableSettingInterceptor()],
+            interceptors: [updateTimetableSettingInterceptor],
             controller: TimetableSettingController.updateOne,
             params: [ObjectId],
             guards: [hasAdminRole],

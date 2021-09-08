@@ -1,6 +1,6 @@
 import pick from 'lodash/pick';
 import { ForgotPasswordTemplate, MailConsumer, MailTemplateAdapter } from 'core/modules/mail';
-import { NotFoundException, UnAuthorizedException, UnprocessableEntityExeception } from 'packages/httpException';
+import { NotFoundException, UnAuthorizedException, UnprocessableEntityException } from 'packages/httpException';
 import { LoggerFactory } from 'packages/logger';
 import { UserRepository } from '../../user';
 import { BcryptService } from './bcrypt.service';
@@ -56,7 +56,7 @@ class AuthServiceImpl {
         const currentUser = await this.userRepository.getAvailableByEmail(jwtPayload.email);
 
         if (!currentUser) {
-            throw new UnprocessableEntityExeception(`User ${jwtPayload.email} is not available now. Please contact admin to reactive your account first`);
+            throw new UnprocessableEntityException(`User ${jwtPayload.email} is not available now. Please contact admin to reactive your account first`);
         }
 
         this.bcryptService.verifyComparison(refreshPasswordDto.oldPassword, currentUser.password);

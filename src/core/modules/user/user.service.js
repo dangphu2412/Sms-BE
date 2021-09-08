@@ -15,7 +15,7 @@ import {
 } from 'core/utils';
 import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
 import { MONGOOSE_ID_KEY } from 'core/common/constants';
-import { DocumentCleanerVisitor } from 'packages/restBuilder/core/dataHandler/document-cleaner.visitor';
+import { filterUndefinedKey } from 'core/utils/helper.util';
 import { UserRepository } from './user.repository';
 import { GroupRepository } from '../group';
 import { TimetableRepository, TimetablePopulateKey } from '../timetable';
@@ -23,6 +23,8 @@ import { UserQueryService } from './user-query.service';
 import { QueryField } from '../../common/query';
 import { CreateUserValidator } from './validator';
 import { MediaService } from '../document';
+import { mapToModelByUserCreationDto, mapToModelByUserUpdateDto } from './mapper/user.mapper';
+import { UpdateProfileValidator } from './validator/update-profile.validator';
 
 class UserServiceImpl extends DataPersistenceService {
     static RETRY_SEND_MAIL_TIMES = 3;
@@ -35,6 +37,7 @@ class UserServiceImpl extends DataPersistenceService {
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
         this.createUserValidator = CreateUserValidator;
+        this.updateProfileValidator = UpdateProfileValidator;
         this.logger = LoggerFactory.create(UserServiceImpl.name);
         this.mailConsumer = MailConsumer;
     }
@@ -104,8 +107,10 @@ class UserServiceImpl extends DataPersistenceService {
 
         createUserDto.password = this.bcryptService.hash(createUserDto.password);
 
+        const mappedUserCreateDtoToModel = mapToModelByUserCreationDto(createUserDto);
+
         const createdUser = await this.createOneSafety(
-            createUserDto,
+            mappedUserCreateDtoToModel,
             () => new InternalServerException('Getting internal error during create new user')
         );
 
@@ -133,22 +138,25 @@ class UserServiceImpl extends DataPersistenceService {
     }
 
     /**
-     * 
+     *
      * @param {string} id
      * @param {import('core/modules/user').UpdateProfileDto} updateProfileDto
      * @returns
      */
-    async updateProfile(id, updateProfileDto) {
-        const user = await this.repository.findById(id);
+    async updateOne(id, updateProfileDto) {
+        const user = await this.repository.model.findById(id);
+
         if (!user) {
             throw new NotFoundException('User not found');
         }
 
-        new DocumentCleanerVisitor(user.profile).visit();
+        await UpdateProfileValidator.validate(updateProfileDto);
 
-        user.profile = { ...user.profile, ...updateProfileDto.profile };
-        if (updateProfileDto.status) user.status = updateProfileDto.status;
-        return user.save();
+        updateProfileDto.profile = filterUndefinedKey(updateProfileDto.profile);
+        updateProfileDto = mapToModelByUserUpdateDto(updateProfileDto);
+        updateProfileDto.profile = { ...user.profile, ...updateProfileDto.profile };
+
+        await this.repository.updateById(id, updateProfileDto);
     }
 
     async updateAvatar(id, file, folderName) {

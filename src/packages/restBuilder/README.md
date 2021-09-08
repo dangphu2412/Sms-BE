@@ -83,7 +83,7 @@ reqTransformed.addSearch();
 ### Data handler
 #### DataPersistenceService
  - Construct with DataRepository
- - Provide usefull method to adapt with request transformer like:
+ - Provide useful method to adapt with request transformer like:
 ```typescript
 interface IDataResponse<T> {
     content: T[]
@@ -138,8 +138,8 @@ enum FilterSign {
 ```javascript
 localhost:3000?filter=${column}|${sign}|${value}
 
-Example: 
-localhost:3000?filter=username|$eq|somename // Normal filter
+Example:
+localhost:3000?filter=username|$eq|someName // Normal filter
 
 localhost:3000?filter=startDate|$gt|${startDate}&filter=startDate|$lt|${startDate} // Filter with date
 
@@ -158,13 +158,13 @@ enum SortDirection {
 ```javascript
 localhost:3000?sort=${direction}${column}
 
-Example: 
+Example:
 localhost:3000?sort=firstName // Sort as increasing firstName
-localhost:3000?sort=-firstName // Sort as descreasing firstName
+localhost:3000?sort=-firstName // Sort as decreasing firstName
 ```
 ### Search
 - Just simply put the value in query search
-Example: 
+Example:
 ```
 localhost:3000?search=value // Search
 ```

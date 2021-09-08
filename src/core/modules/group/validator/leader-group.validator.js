@@ -12,14 +12,14 @@ export class LeaderGroupValidator {
 
     async validate() {
         if (this.leaderId) {
-            const optionalParentGroup = Optional
+            const leader = Optional
                 .of(await this.userRepository.findById(this.leaderId, '_id deletedAt'));
 
-            optionalParentGroup.throwIfNullable(
+            leader.throwIfNullable(
                 new NotFoundException(`Leader with ${this.leaderId} is not exist`)
             );
 
-            optionalParentGroup.throwIfNotPresent(
+            leader.throwIfNotPresent(
                 new NotFoundException(`Leader with ${this.leaderId} has been deleted`)
             );
         }

@@ -2,7 +2,7 @@ import { generateDocBasedOnSchema, ObjectId } from 'core/common/swagger';
 import { hasAdminRole, hasLeaderRole } from 'core/modules/auth';
 import { MediaInterceptor } from 'core/modules/document';
 import { interceptIdObject } from 'core/modules/mongoose/objectId.interceptor';
-import { changePasswordInterceptor, createUserInterceptor, UpdateProfileInterceptor } from 'core/modules/user';
+import { changePasswordInterceptor, createUserInterceptor, updateProfileInterceptor } from 'core/modules/user';
 import { Module } from 'packages/handler/Module';
 import { SwaggerDocument } from 'packages/swagger';
 import SearchUserSchema from './user-overview.query.json';
@@ -100,7 +100,7 @@ export const UserResolver = Module.builder()
             body: 'UpdateProfileDto',
             interceptors: [
                 interceptIdObject,
-                new UpdateProfileInterceptor()
+                updateProfileInterceptor
             ],
             guards: [hasAdminRole],
             controller: UserController.patchOne,

@@ -4,7 +4,7 @@ import Joi from 'joi';
 
 export const groupModificationInterceptor = new DefaultValidatorInterceptor(
     Joi.object({
-        name: Joi.string().min(0).optional(),
+        name: JoiUtils.optionalString(),
         description: JoiUtils.optionalString(),
         tagId: JoiUtils.objectId().optional(),
         parentId: JoiUtils.objectId().optional(),

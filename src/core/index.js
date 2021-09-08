@@ -13,7 +13,8 @@ import { ModuleResolver } from './api';
 const app = express();
 
 (async () => {
-    await AppBundle.builder()
+    await AppBundle
+        .builder()
         .applyAppContext(app)
         .init()
         .applyGlobalFilters([new SecurityFilter()])
@@ -21,7 +22,6 @@ const app = express();
         .applySwagger(ApiDocument)
         .applyGlobalFilters([new HttpExceptionFilter(), new InvalidUrlFilter()])
         .run();
-
     const container = await new AuthorizationLookup().collect();
     AuthorizationValidator.addAuthorizeStore(container);
 })();

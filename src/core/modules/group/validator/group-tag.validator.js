@@ -7,13 +7,13 @@ export class GroupTagValidator {
 
     constructor(dto) {
         this.tagId = dto?.tagId;
-        this.repository = GroupTagRepository;
+        this.groupTagRepository = GroupTagRepository;
     }
 
     async validate() {
         if (this.tagId) {
             Optional
-                .of(await this.repository.findById(this.tagId, '_id'))
+                .of(await this.groupTagRepository.findById(this.tagId, '_id'))
                 .throwIfNullable(new NotFoundException(`Group tag: ${this.tagId} does not exist`));
         }
     }

@@ -30,6 +30,7 @@ export class JoiUtils {
     static requiredString() {
         return Joi
             .string()
+            .trim()
             .required();
     }
 

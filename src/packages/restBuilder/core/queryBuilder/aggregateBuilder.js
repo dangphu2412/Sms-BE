@@ -36,40 +36,40 @@ export class AggregateBuilder {
     #builder;
 
     /**
-     * 
-     * @param {import('mongoose').Model=} mongooseModel 
+     *
+     * @param {import('mongoose').Model=} mongooseModel
      * @returns {AggregateBuilder}
      */
     static builder(mongooseModel) {
-        const newIntance = new AggregateBuilder();
+        const newInstance = new AggregateBuilder();
 
         if (mongooseModel) {
-            newIntance.#builder = mongooseModel.aggregate();
-            newIntance.#stateManagement = new StateManagement();
+            newInstance.#builder = mongooseModel.aggregate();
+            newInstance.#stateManagement = new StateManagement();
         }
 
-        return newIntance;
+        return newInstance;
     }
 
     /**
-     * 
-     * @param {import('mongoose').Model=} mongooseModel 
-     * @param {AggregateBuilder} builder 
-     * @returns 
+     *
+     * @param {import('mongoose').Model=} mongooseModel
+     * @param {AggregateBuilder} builder
+     * @returns
      */
     static from(mongooseModel, builder) {
-        const newIntance = new AggregateBuilder();
+        const newInstance = new AggregateBuilder();
         const queryDocument = builder.getQueryDocument();
-        newIntance.#builder = mongooseModel.aggregate(builder.getPipeline());
+        newInstance.#builder = mongooseModel.aggregate(builder.getPipeline());
 
-        newIntance.#filterDocument = queryDocument.filterDocument;
-        newIntance.#sortDocument = queryDocument.sortDocument;
-        newIntance.#searchDocument = queryDocument.searchDocument;
-        newIntance.#limit = queryDocument.limit;
-        newIntance.#offset = queryDocument.offset;
-        newIntance.#stateManagement = queryDocument.stateManagement;
+        newInstance.#filterDocument = queryDocument.filterDocument;
+        newInstance.#sortDocument = queryDocument.sortDocument;
+        newInstance.#searchDocument = queryDocument.searchDocument;
+        newInstance.#limit = queryDocument.limit;
+        newInstance.#offset = queryDocument.offset;
+        newInstance.#stateManagement = queryDocument.stateManagement;
 
-        return newIntance;
+        return newInstance;
     }
 
     getBuilder() {
@@ -84,7 +84,7 @@ export class AggregateBuilder {
         return {
             limit: this.#limit,
             offset: this.#offset,
-            filteDocument: this.#filterDocument,
+            filterDocument: this.#filterDocument,
             sortDocument: this.#sortDocument,
             searchDocument: this.#searchDocument,
             stateManagement: this.#stateManagement
@@ -95,9 +95,9 @@ export class AggregateBuilder {
      * @description
      * - lazySet = true -> builder will not project the fields
      * so that we need to call project() after setSelectedFields()
-     * @param {*} fields 
-     * @param {*} lazySet 
-     * @returns 
+     * @param {*} fields
+     * @param {*} lazySet
+     * @returns
      */
     setSelectedFields(fields, lazySet = false) {
         if (!isEmpty(fields)) {
@@ -119,8 +119,8 @@ export class AggregateBuilder {
             this.#associates = associates;
 
             if (!isEmpty(this.#associates)) {
-                this.#associates.forEach(associete => {
-                    this.#builder.lookup(associete);
+                this.#associates.forEach(associate => {
+                    this.#builder.lookup(associate);
                 });
             }
         }
@@ -128,9 +128,9 @@ export class AggregateBuilder {
     }
 
     /**
-     * 
-     * @param {string} field 
-     * @param {string=} value 
+     *
+     * @param {string} field
+     * @param {string=} value
      * @returns {this}
      */
     addField(field, value = AggregateBuilder.SELECT_FIELD_SIGNAL) {
@@ -147,7 +147,7 @@ export class AggregateBuilder {
     }
 
     /**
-     * @param {number} offset 
+     * @param {number} offset
      */
     addOffset(offset) {
         this.#offset = offset;
@@ -161,7 +161,7 @@ export class AggregateBuilder {
     }
 
     /**
-     * @param {number} limit 
+     * @param {number} limit
      */
     addLimit(limit) {
         this.#limit = limit;
@@ -176,9 +176,9 @@ export class AggregateBuilder {
 
     /**
      * @implements Must skip before limit
-     * @param {number} offset 
+     * @param {number} offset
      * @param {number} limit
-     * @returns {this} 
+     * @returns {this}
      */
     addOffsetAndLimit(offset, limit) {
         this.#offset = offset;
@@ -220,7 +220,7 @@ export class AggregateBuilder {
     }
 
     /**
-     * @param {typeof import('../../modules/query/filter.query').FilterQuery} filter 
+     * @param {typeof import('../../modules/query/filter.query').FilterQuery} filter
      * @returns {this}
      */
     addFilter(filter) {
@@ -266,7 +266,7 @@ export class AggregateBuilder {
     }
 
     /**
-     * @param {typeof import('../../modules/query/sort.query').SortQuery} sort 
+     * @param {typeof import('../../modules/query/sort.query').SortQuery} sort
      */
     addSort(sort) {
         if (sort) {
@@ -282,8 +282,8 @@ export class AggregateBuilder {
     }
 
     /**
-     * 
-     * @param {string} countKey 
+     *
+     * @param {string} countKey
      * @returns {this}
      */
     addCount(countKey) {

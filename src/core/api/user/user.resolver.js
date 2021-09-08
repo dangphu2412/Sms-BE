@@ -1,5 +1,6 @@
 import { generateDocBasedOnSchema, ObjectId } from 'core/common/swagger';
 import { hasAdminRole, hasLeaderRole } from 'core/modules/auth';
+import { MediaInterceptor } from 'core/modules/document';
 import { interceptIdObject } from 'core/modules/mongoose/objectId.interceptor';
 import { changePasswordInterceptor, createUserInterceptor, UpdateProfileInterceptor } from 'core/modules/user';
 import { Module } from 'packages/handler/Module';
@@ -62,6 +63,27 @@ export const UserResolver = Module.builder()
             guards: [hasAdminRole],
             controller: UserController.createOne,
             preAuthorization: true
+        },
+        {
+            route: '/avatar',
+            method: 'post',
+            consumes: ['multipart/form-data'],
+            interceptors: [new MediaInterceptor()],
+            guards: [hasAdminRole],
+            controller: UserController.uploadAvatar,
+            preAuthorization: true
+        },
+        {
+            route: '/:id/avatar',
+            method: 'patch',
+            params: [ObjectId],
+            consumes: ['multipart/form-data'],
+            interceptors: [
+                interceptIdObject,
+                new MediaInterceptor()
+            ],
+            controller: UserController.updateAvatar,
+            preAuthorization: true,
         },
         {
             route: '/password',

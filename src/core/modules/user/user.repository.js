@@ -16,7 +16,7 @@ class UserRepositoryImpl extends DataRepository {
 
     getDetailById(id) {
         return this.model.findById(id,
-            ['_id', 'email', 'profile', 'status'],
+            ['_id', 'email', 'profile', 'status', 'avatar'],
             { timestamps: true });
     }
 

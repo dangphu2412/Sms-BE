@@ -28,8 +28,8 @@ class TimetableRequestServiceImpl extends DataPersistenceService {
         await new TimetableRequestCreationValidator(TimetableRequestDto).validate();
 
         const mappedTimetableRequestToModel = mapToModelByTimetableRequestCreationDto(TimetableRequestDto);
- const createdTimetableRequest = await this.createOneSafety(mappedTimetableRequestToModel, () => new InternalServerException('Getting internal error when creating new timetable request'));
-        return { _id: createdTimetableRequest._id };       
+        const createdTimetableRequest = await this.createOneSafety(mappedTimetableRequestToModel, () => new InternalServerException('Getting internal error when creating new timetable request'));
+        return { _id: createdTimetableRequest._id };
     }
 
     async approveOneTimetableRequest(id, userId) {

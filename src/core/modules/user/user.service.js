@@ -16,12 +16,14 @@ import {
 import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
 import { MONGOOSE_ID_KEY } from 'core/common/constants';
 import { DocumentCleanerVisitor } from 'packages/restBuilder/core/dataHandler/document-cleaner.visitor';
+import { unlink } from 'fs';
 import { UserRepository } from './user.repository';
 import { GroupRepository } from '../group';
 import { TimetableRepository, TimetablePopulateKey } from '../timetable';
 import { UserQueryService } from './user-query.service';
 import { QueryField } from '../../common/query';
 import { CreateUserValidator } from './validator';
+import { MediaService } from '../document';
 
 class UserServiceImpl extends DataPersistenceService {
     static RETRY_SEND_MAIL_TIMES = 3;
@@ -29,6 +31,7 @@ class UserServiceImpl extends DataPersistenceService {
     constructor() {
         super(UserRepository);
         this.userQueryService = UserQueryService;
+        this.mediaService = MediaService;
         this.bcryptService = BcryptService;
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
@@ -137,7 +140,7 @@ class UserServiceImpl extends DataPersistenceService {
      * @returns
      */
     async updateProfile(id, updateProfileDto) {
-        const user = await this.repository.findById(id);
+        const user = await this.repository.findById(id, [], false);
         if (!user) {
             throw new NotFoundException('User not found');
         }
@@ -146,6 +149,36 @@ class UserServiceImpl extends DataPersistenceService {
 
         user.profile = { ...user.profile, ...updateProfileDto.profile };
         if (updateProfileDto.status) user.status = updateProfileDto.status;
+        return user.save();
+    }
+
+    async updateAvatar(id, file, folderName) {
+        const user = await this.repository.findById(id, [], false);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        // Delete old avatar if exist
+        if (user.avatar) {
+            const pattern = 'upload\\/(?:v\\d+\\/)?([^\\.]+)';
+            const imageId = user.avatar.match(pattern)[1];
+
+            const deleteResponse = await this.mediaService.deleteOne(imageId);
+            if (deleteResponse.result === 'not found') {
+                // delete image in server's hard drive
+                unlink(file.path, err => {
+                    if (err) {
+                        this.logger.error(err.message);
+                        throw new InternalServerException(err.message);
+                    }
+                });
+                throw new NotFoundException('Image not found');
+            }
+        }
+
+        // Upload image to cloudinary
+        const uploadResponse = await this.mediaService.uploadOne(file, folderName);
+        user.avatar = uploadResponse.url;
         return user.save();
     }
 

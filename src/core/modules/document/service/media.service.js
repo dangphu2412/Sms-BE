@@ -8,14 +8,12 @@ class Service {
         this.logger = LoggerFactory.create('MediaService');
     }
 
-    async uploadOne(file, folderUrl = '') {
+    async uploadOne(file, folderName = '') {
         try {
-            const response = await cloudinaryUploader.upload(file.path, { folder: folderUrl });
+            const response = await cloudinaryUploader.upload(file.path, { folder: folderName });
             return {
                 originalName: response.original_filename,
-                url: response.secure_url,
-                width: response.width,
-                height: response.height
+                url: response.secure_url
             };
         } catch (error) {
             throw new InternalServerException(error.message);
@@ -29,8 +27,8 @@ class Service {
         }
     }
 
-    async uploadMany(files, folderUrl = '') {
-        const uploadTasks = files.map(file => this.uploadOne(file, folderUrl));
+    async uploadMany(files, folderName = '') {
+        const uploadTasks = files.map(file => this.uploadOne(file, folderName));
 
         return Promise.all(uploadTasks);
     }
@@ -45,7 +43,7 @@ class Service {
         const response = await cloudinaryUploader.destroy(id);
         return {
             id,
-            result: response.result
+            ...response
         };
     }
 }

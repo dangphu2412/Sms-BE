@@ -96,10 +96,8 @@ export class DataRepository {
         return this.model.findOne(condition, fields).lean();
     }
 
-    findById(id, fields = [], isLean = true) {
-        const query = this.model.findById(id, fields);
-        if (isLean) return query.lean();
-        return query;
+    findById(id, fields = []) {
+        return this.model.findById(id, fields).lean();
     }
 
     updateById(id, payload) {

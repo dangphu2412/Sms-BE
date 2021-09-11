@@ -13,6 +13,12 @@ export const TimetableSettingResolver = Module.builder()
     .register([
         {
             route: '/',
+            method: 'get',
+            controller: TimetableSettingController.findAll,
+            preAuthorization: true,
+        },
+        {
+            route: '/',
             method: 'post',
             interceptors: [createTimetableSettingInterceptor],
             controller: TimetableSettingController.createOne,

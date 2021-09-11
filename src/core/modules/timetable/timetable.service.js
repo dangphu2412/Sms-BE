@@ -1,154 +1,237 @@
 import keyBy from 'lodash/keyBy';
-import { ActivityRepository } from 'core/modules/activity';
+import { ActivityRepository } from 'core/modules/activity/activity.repository';
 import { UnprocessableEntityException } from 'packages/httpException';
+import { toObjectId } from 'core/modules/mongoose/utils/objectId.utils';
+import { LoggerFactory } from 'packages/logger';
+import { WeakSetObjectId } from 'core/modules/mongoose/weak-set-objectid';
+import { takeInvalidIds } from 'core/modules/mongoose/utils/array.utils';
 import { TimetableRepository } from './timetable.repository';
 import { TimetableSettingRepository } from '../timetable-setting';
+import { mapToModel } from './timtable.mapper';
 
-class Service {
+class TimetableServiceImpl {
     constructor() {
+        this.logger = LoggerFactory.create(TimetableServiceImpl.name);
         this.timetableRepository = TimetableRepository;
         this.timetableSettingRepository = TimetableSettingRepository;
         this.activityRepository = ActivityRepository;
     }
 
     /**
-     * @param {CreateTimetableDtos} payload
+     * @param {import('.').ICreateMemberTimetableDto[]} dtos
      */
     async createMemberTimetables(dtos) {
-        const activityIds = [];
-        const registerTimeIds = [];
+        this.#mustNotContainsDuplicatedUserWithTimetableSetting(dtos);
+
+        let activityIds = new WeakSetObjectId();
+        let timetableSettingIds = new WeakSetObjectId();
+
+        dtos.forEach(currentDto => {
+            activityIds.add(toObjectId(currentDto.activityId));
+            timetableSettingIds.add(toObjectId(currentDto.registerTimeId));
+        });
+
+        activityIds = activityIds.toArray();
+        timetableSettingIds = timetableSettingIds.toArray();
+
+        const activities = await this.activityRepository.findByIds(activityIds);
+
+        if (activities.length !== activityIds.length) {
+            const invalidActivityIds = takeInvalidIds(activityIds, activities);
+            throw new UnprocessableEntityException(`Invalid activity ids: ${invalidActivityIds.toString()}`);
+        }
+
+        const activeTimetableSettings = await this.timetableSettingRepository.findActiveTimetableSettingsByIds(timetableSettingIds);
+
+        if (activeTimetableSettings.length !== timetableSettingIds.length) {
+            const invalidTimetableSettingIds = takeInvalidIds(timetableSettingIds, activeTimetableSettings);
+            throw new UnprocessableEntityException(`Invalid timetable setting ids: ${invalidTimetableSettingIds.toString()}`);
+        }
+
+        const activeTimetableSettingsKeyById = keyBy(activeTimetableSettings, '_id');
+
+        const timetableKeyByRelatedUser = await this.#getTimetablesKeyByRelatedUser(dtos);
+
+        const newTimetables = [];
+        const patchTimetables = [];
 
         dtos.forEach(dto => {
-            activityIds.push(dto.activityId);
-            registerTimeIds.push(dto.registerTimeId);
-        });
+            if (timetableKeyByRelatedUser[dto.userId]) {
+                if (this.#timetableNotContainActivityId(timetableKeyByRelatedUser[dto.userId], dto.activityId)) {
+                    this.#addActivityIdIntoTimetable(timetableKeyByRelatedUser[dto.userId], dto.activityId);
 
-        const userAndRegisterTimeSet = dtos.map(({ userId, registerTimeId }) => `${userId}-${registerTimeId}`);
-        if (userAndRegisterTimeSet.length !== [...new Set(userAndRegisterTimeSet)].length) {
-            throw new UnprocessableEntityException(
-                'userId and registerTimeId are exclusive unique',
-            );
-        }
-
-        const activityIdSet = [...new Set(activityIds)];
-        const registerTimeIdSet = [...new Set(registerTimeIds)];
-        const activities = await this.activityRepository.findWithActiveByIds(
-            activityIds,
-            '_id deletedAt',
-        );
-
-        if (activityIdSet.length !== activities.length) {
-            throw new UnprocessableEntityException(
-                'activity in payload is unexisted or deleted',
-            );
-        }
-
-        const registerTimetables = await this.timetableSettingRepository.findWithActiveByIds(
-            registerTimeIdSet,
-        );
-        const registerTimetableSettingMap = keyBy(registerTimetables, '_id');
-        const currentTimetableOfUser = await this.timetableRepository.getManyByUserAndRegisterTime(dtos);
-        const currentTimetableOfUserMap = keyBy(
-            currentTimetableOfUser,
-            'user',
-        );
-
-        dtos.forEach((item, index) => {
-            item.registerTime = registerTimetableSettingMap[item.registerTimeId];
-
-            delete item.registerTimeId;
-
-            if (!item.registerTime) {
-                throw new UnprocessableEntityException(
-                    'registerTime in payload is unexisted or deleted',
-                );
-            }
-
-            // If user has been registered for the timetable_settings --> append to it
-            if (currentTimetableOfUserMap[item.userId]) {
-                if (
-                    !currentTimetableOfUserMap[item.userId].activities.includes(
-                        item.activityId,
-                    )
-                ) {
-                    currentTimetableOfUserMap[item.userId].activities.push(
-                        item.activityId,
-                    );
+                    patchTimetables.push(timetableKeyByRelatedUser[dto.userId]);
                 }
-                dtos[index] = currentTimetableOfUserMap[item.userId];
             } else {
-                dtos[index].activities = [item.activityId];
+                const model = mapToModel(dto);
+                model.user = toObjectId(dto.userId);
+                model.registerTime = activeTimetableSettingsKeyById[dto.userId];
+
+                newTimetables.push(model);
             }
-            delete item.activityId;
         });
 
-        const existedTimeTableIds = (dtos.filter(timetable => timetable._id) || []).map(
-            timetable => timetable._id
-        );
-        await this.timetableRepository.model.insertMany(dtos.filter(timetable => !timetable._id));
-        if (existedTimeTableIds.length) {
-            await Promise.all(dtos.filter(timetable => timetable._id !== null)?.map(async timetable => {
-                await this.timetableRepository.updateById(timetable._id, timetable);
-            }));
+        try {
+            await this.timetableRepository.model.insertMany(newTimetables);
+        } catch (error) {
+            this.logger.error(error.message);
+            this.logger.error(error.stack);
+            throw new UnprocessableEntityException(error.message);
+        }
+
+        try {
+            await this.timetableRepository.batchUpdate(patchTimetables);
+        } catch (error) {
+            this.logger.error(error.message);
+            this.logger.error(error.stack);
+            throw new UnprocessableEntityException(error.message);
         }
     }
 
+    /**
+     * @param {import('.').ICreateGroupTimetableDto[]} dtos
+     */
     async createGroupTimetable(dtos) {
-        const groupAndRegisterTimeSet = dtos.map(({ groupId, registerTimeId }) => `${groupId}-${registerTimeId}`);
-        if (groupAndRegisterTimeSet.length !== [...new Set(groupAndRegisterTimeSet)].length) {
-            throw new UnprocessableEntityException(
-                'groupId and registerTimeId are exclusive unique',
-            );
-        }
+        this.#mustNotContainsDuplicatedGroupWithTimetableSetting();
 
-        const registerTimetables = await this.timetableSettingRepository.findWithActiveByIds(dtos.map(timetable => timetable.registerTimeId));
-        const registerTimetableSettingMap = keyBy(registerTimetables, '_id');
+        let activityIds = new WeakSetObjectId();
+        let timetableSettingIds = new WeakSetObjectId();
 
-        const currentTimetableOfGroup = await this.timetableRepository.getManyByGroupAndRegisterTime(dtos);
-        const currentTimetableOfGroupMap = keyBy(
-            currentTimetableOfGroup,
-            'group',
-        );
-
-        dtos.forEach((item, index) => {
-            item.registerTime = registerTimetableSettingMap[item.registerTimeId];
-            delete item.registerTimeId;
-
-            if (!item.registerTime) {
-                throw new UnprocessableEntityException(
-                    'registerTime in payload is unexisted or deleted',
-                );
-            }
-
-            // If user has been registered for the timetable_settings --> append to it
-            if (currentTimetableOfGroupMap[item.userId]) {
-                if (
-                    !currentTimetableOfGroupMap[item.userId].activities.includes(
-                        item.activityId,
-                    )
-                ) {
-                    currentTimetableOfGroupMap[item.userId].activities.push(
-                        item.activityId,
-                    );
-                }
-                dtos[index] = currentTimetableOfGroupMap[item.userId];
-            } else {
-                dtos[index].activities = [item.activityId];
-            }
-            delete item.activityId;
+        dtos.forEach(currentDto => {
+            activityIds.add(toObjectId(currentDto.activityId));
+            timetableSettingIds.add(toObjectId(currentDto.registerTimeId));
         });
 
-        const existedTimeTableIds = (dtos.filter(timetable => timetable._id) || []).map(
-            timetable => timetable._id
-        );
+        activityIds = activityIds.toArray();
+        timetableSettingIds = timetableSettingIds.toArray();
 
-        await this.timetableRepository.model.insertMany(dtos.filter(timetable => !timetable._id));
-        if (existedTimeTableIds.length) {
-            await Promise.all(dtos.filter(timetable => timetable._id !== null)?.map(async timetable => {
-                await this.timetableRepository.updateById(timetable._id, timetable);
-            }));
+        const activities = await this.activityRepository.findByIds(activityIds);
+
+        if (activities.length !== activityIds.length) {
+            const invalidActivityIds = takeInvalidIds(activityIds, activities);
+            throw new UnprocessableEntityException(`Invalid activity ids: ${invalidActivityIds.toString()}`);
         }
+
+        const activeTimetableSettings = await this.timetableSettingRepository.findActiveTimetableSettingsByIds(timetableSettingIds);
+
+        if (activeTimetableSettings.length !== timetableSettingIds.length) {
+            const invalidTimetableSettingIds = takeInvalidIds(timetableSettingIds, activeTimetableSettings);
+            throw new UnprocessableEntityException(`Invalid timetable setting ids: ${invalidTimetableSettingIds.toString()}`);
+        }
+
+        const activeTimetableSettingsKeyById = keyBy(activeTimetableSettings, '_id');
+
+        const timetableKeyByRelatedGroup = await this.#getTimetablesKeyByRelatedGroup(dtos);
+
+        const newTimetables = [];
+        const patchTimetables = [];
+
+        dtos.forEach(dto => {
+            if (timetableKeyByRelatedGroup[dto.groupId]) {
+                if (this.#timetableNotContainActivityId(timetableKeyByRelatedGroup[dto.groupId], dto.activityId)) {
+                    this.#addActivityIdIntoTimetable(timetableKeyByRelatedGroup[dto.groupId], dto.activityId);
+
+                    patchTimetables.push(timetableKeyByRelatedGroup[dto.groupId]);
+                }
+            } else {
+                const model = mapToModel(dto);
+                model.group = toObjectId(dto.groupId);
+                model.registerTime = activeTimetableSettingsKeyById[dto.groupId];
+
+                newTimetables.push(model);
+            }
+        });
+
+        try {
+            await this.timetableRepository.model.insertMany(newTimetables);
+        } catch (error) {
+            this.logger.error(error.message);
+            this.logger.error(error.stack);
+            throw new UnprocessableEntityException(error.message);
+        }
+
+        try {
+            await this.timetableRepository.batchUpdate(patchTimetables);
+        } catch (error) {
+            this.logger.error(error.message);
+            this.logger.error(error.stack);
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+    /**
+     * @param {import('.').ICreateMemberTimetableDto[]} dtos
+     */
+    #mustNotContainsDuplicatedUserWithTimetableSetting = dtos => {
+        const uniqueUserWithTimetableSettingMap = {};
+
+        dtos.forEach(currentDto => {
+            if (uniqueUserWithTimetableSettingMap[`${currentDto.userId}${currentDto.registerTimeId}`]) {
+                throw new UnprocessableEntityException(
+                    `User with id: ${currentDto.userId} is creating duplicated timetableSetting`
+                );
+            } else {
+                uniqueUserWithTimetableSettingMap[`${currentDto.userId}${currentDto.registerTimeId}`] = true;
+            }
+        });
+    }
+
+    /**
+     * @param {import('.').ICreateGroupTimetableDto[]} dtos
+     */
+    #mustNotContainsDuplicatedGroupWithTimetableSetting = dtos => {
+        const uniqueUserWithTimetableSettingMap = {};
+
+        dtos.forEach(currentDto => {
+            if (uniqueUserWithTimetableSettingMap[`${currentDto.groupId}${currentDto.registerTimeId}`]) {
+                throw new UnprocessableEntityException(
+                    `Group with id: ${currentDto.groupId} is creating duplicated timetableSetting`
+                );
+            } else {
+                uniqueUserWithTimetableSettingMap[`${currentDto.groupId}${currentDto.registerTimeId}`] = true;
+            }
+        });
+    }
+
+    /**
+     * @param {import('.').ICreateMemberTimetableDto[]} dtos
+     */
+    #getTimetablesKeyByRelatedUser = async dtos => {
+        const conditions = dtos?.map(dto => ({
+            user: toObjectId(dto.userId),
+            'registerTime._id': toObjectId(dto.registerTimeId)
+        }));
+
+        const timetables = await this.timetableRepository.find({
+            $or: conditions,
+            isActive: true,
+        });
+
+        return keyBy(timetables, 'user');
+    }
+
+    /**
+     * @param {import('.').ICreateGroupTimetableDto[]} dtos
+     */
+    #getTimetablesKeyByRelatedGroup = async dtos => {
+        const conditions = dtos?.map(dto => ({
+            group: toObjectId(dto.groupId),
+            'registerTime._id': toObjectId(dto.registerTimeId)
+        }));
+
+        const timetables = await this.timetableRepository.find({
+            $or: conditions,
+            isActive: true,
+        });
+
+        return keyBy(timetables, 'group');
+    }
+
+    #timetableNotContainActivityId = (timetable, activityId) => !timetable.activities.some(activity => activity.equals(activityId))
+
+    #addActivityIdIntoTimetable = (timetable, activityId) => {
+        timetable.activities.push(toObjectId(activityId));
     }
 }
 
-export const TimetableService = new Service();
+export const TimetableService = new TimetableServiceImpl();

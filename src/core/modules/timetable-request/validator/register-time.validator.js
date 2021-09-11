@@ -1,6 +1,7 @@
+import { mapByKeyWithObjectIdParser } from 'core/modules/mongoose/utils/array.utils';
 import { TimetableSettingRepository } from 'core/modules/timetable-setting';
 import { TimetableRepository } from 'core/modules/timetable/timetable.repository';
-import { mapByKey, mapParsedObjectIdToArr, Optional } from 'core/utils';
+import { mapByKey, Optional } from 'core/utils';
 import { BadRequestException, NotFoundException } from 'packages/httpException';
 
 export class RegisterTimeValidatorForTimetableRequestCreation {
@@ -11,8 +12,8 @@ export class RegisterTimeValidatorForTimetableRequestCreation {
     }
 
     async validate() {
-        const registerTimeIdsFromDto = mapParsedObjectIdToArr(this.dto, 'registerTimeId');
-        const timetableIdsFromDto = mapParsedObjectIdToArr(this.dto, 'timetableId');
+        const registerTimeIdsFromDto = mapByKeyWithObjectIdParser(this.dto, 'registerTimeId');
+        const timetableIdsFromDto = mapByKeyWithObjectIdParser(this.dto, 'timetableId');
 
         Optional
             .of(await this.repository.findByIds(registerTimeIdsFromDto, ['deletedAt', 'isActive']))

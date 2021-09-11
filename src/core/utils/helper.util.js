@@ -1,9 +1,4 @@
-import { keysIn } from 'lodash';
-import mongoose from 'mongoose';
-
-export function toObjectId(str) {
-    return mongoose.Types.ObjectId(str);
-}
+import keysIn from 'lodash/keysIn';
 
 export function filterDuplicateValueByKey(desObj, refObj) {
     const desObjKeys = keysIn(desObj);

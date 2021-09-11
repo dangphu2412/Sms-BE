@@ -55,15 +55,25 @@ export class Module {
     }
 
     static #produceGuard = guardClass => {
-        if (!guardClass['canActive']) {
+        if (!guardClass.canActive) {
             throw new MethodRequired(guardClass.constructor.name, 'canActive');
         }
         return async (req, res, next) => {
-            const canActive = await guardClass.canActive(req);
+            let canActive;
+
+            try {
+                canActive = await guardClass.canActive(req);
+            } catch (error) {
+                return next(error);
+            }
 
             if (!canActive) {
+                if (guardClass.getMessage) {
+                    return next(new ForbiddenException(guardClass.getMessage()));
+                }
                 return next(new ForbiddenException('You do not have permission to do this action! Please contact admin about this'));
             }
+
             return next();
         };
     }

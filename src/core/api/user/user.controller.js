@@ -4,6 +4,7 @@ import { getUserContext } from 'packages/authModel/module/user';
 import { RequestTransformer } from 'packages/restBuilder/core/requestTransformer';
 import { ValidHttpResponse } from 'packages/handler/response';
 import { MediaService } from 'core/modules/document';
+import { AVATAR_FOLDER_NAME } from 'core/common/constants/cloudinary.constant';
 import UserOverviewSearch from './user-overview.query.json';
 
 class Controller {
@@ -49,12 +50,12 @@ class Controller {
     }
 
     uploadAvatar = async req => {
-        const data = await this.mediaService.uploadOne(req.file, 'Avatar');
+        const data = await this.mediaService.uploadOne(req.file, AVATAR_FOLDER_NAME);
         return ValidHttpResponse.toOkResponse(data);
     }
 
     updateAvatar = async req => {
-        await this.service.updateAvatar(req.params.id, req.file, 'Avatar');
+        await this.service.updateAvatar(req.params.id, req.file, AVATAR_FOLDER_NAME);
         return ValidHttpResponse.toNoContentResponse();
     }
 }

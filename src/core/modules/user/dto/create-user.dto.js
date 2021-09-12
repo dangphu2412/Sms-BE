@@ -12,10 +12,12 @@ ApiDocument.addModel('Profile',
         facebook: SwaggerDocument.ApiProperty({ type: 'string' }),
         universityId: SwaggerDocument.ApiProperty({ type: 'string' })
     });
-ApiDocument.addModel('Avatar', {
-    url: SwaggerDocument.ApiProperty({ type: 'string' }),
-    publicId: SwaggerDocument.ApiProperty({ type: 'string' })
-});
+
+ApiDocument.addModel('Avatar',
+    {
+        url: SwaggerDocument.ApiProperty({ type: 'string' }),
+        publicId: SwaggerDocument.ApiProperty({ type: 'string' })
+    });
 
 ApiDocument.addModel('UpsertUserDto',
     {

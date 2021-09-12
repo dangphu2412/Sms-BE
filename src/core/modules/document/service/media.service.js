@@ -13,7 +13,8 @@ class Service {
             const response = await cloudinaryUploader.upload(file.path, { folder: folderName });
             return {
                 originalName: response.original_filename,
-                url: response.secure_url
+                url: response.secure_url,
+                publicId: response.public_id
             };
         } catch (error) {
             throw new InternalServerException(error.message);

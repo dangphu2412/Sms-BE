@@ -49,7 +49,7 @@ class Controller {
     }
 
     uploadAvatar = async req => {
-        const data = await this.mediaService.uploadOne(req.file);
+        const data = await this.mediaService.uploadOne(req.file, 'Avatar');
         return ValidHttpResponse.toOkResponse(data);
     }
 

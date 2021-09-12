@@ -156,25 +156,16 @@ class UserServiceImpl extends DataPersistenceService {
             .throwIfNotPresent(new NotFoundException('User not found'))
             .get();
 
-        if (user.avatar) {
-            await this.deleteOldAvatar(user.avatar);
+        if (user.avatar.imageId) {
+            try {
+                await this.mediaService.deleteOne(user.avatar.imageId);
+            } catch (error) {
+                this.logger.error(error.message);
+            }
         }
 
         const imageProperties = await this.mediaService.uploadOne(file, folderName);
-        await this.repository.updateById(id, { avatar: imageProperties.url });
-    }
-
-    async deleteOldAvatar(avatarUrl) {
-        const imageId = this.getImageId(avatarUrl);
-        if (imageId) {
-            await this.mediaService.deleteOne(imageId);
-        }
-    }
-
-    getImageId(imageUrl) {
-        const IMAGE_ID_INDEX = 1;
-        const IMAGE_ID_PATTERN = 'upload\\/(?:v\\d+\\/)?([^\\.]+)';
-        return imageUrl.match(IMAGE_ID_PATTERN) ? imageUrl.match(IMAGE_ID_PATTERN)[IMAGE_ID_INDEX] : null;
+        await this.repository.updateById(id, { avatar: { url: imageProperties.url, publicId: imageProperties.publicId } });
     }
 
     deleteOne(id) {

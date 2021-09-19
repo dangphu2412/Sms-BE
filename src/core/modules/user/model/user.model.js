@@ -40,9 +40,15 @@ const schema = extendBaseModel({
         facebook: { type: String, trim: true, default: null },
         universityId: { type: Schema.Types.ObjectId, ref: 'University', default: null },
     },
+    /**
+     * Add default url and productId refer to the official cloudinary url before deploying
+     */
     avatar: {
-        type: String,
-        default: 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg'
+        url: {
+            type: String,
+            default: 'https://png.pngtree.com/element_our/png/20181206/users-vector-icon-png_260862.jpg'
+        },
+        publicId: { type: String, trim: true, require: true }
     },
     isPasswordChanged: {
         type: Boolean,

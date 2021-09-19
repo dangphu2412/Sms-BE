@@ -13,6 +13,10 @@ export const createUserInterceptor = new DefaultValidatorInterceptor(
             .optional(),
         specializedGroupId: JoiUtils.objectId(true)
             .message('Invalid specializedGroupId, should be formatted as Object id'),
+        avatar: Joi.object().keys({
+            url: Joi.string().required(),
+            publicId: Joi.string().required()
+        }).optional(),
         profile: Joi.object().keys({
             firstName: JoiUtils.optionalString().min(0),
             lastName: JoiUtils.optionalString().min(0),

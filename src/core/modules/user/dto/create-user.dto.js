@@ -13,12 +13,19 @@ ApiDocument.addModel('Profile',
         universityId: SwaggerDocument.ApiProperty({ type: 'string' })
     });
 
+ApiDocument.addModel('Avatar',
+    {
+        url: SwaggerDocument.ApiProperty({ type: 'string' }),
+        publicId: SwaggerDocument.ApiProperty({ type: 'string' })
+    });
+
 ApiDocument.addModel('UpsertUserDto',
     {
         email: SwaggerDocument.ApiProperty({ type: 'string' }),
         password: SwaggerDocument.ApiProperty({ type: 'string' }),
         fingerprint: SwaggerDocument.ApiProperty({ type: 'string' }),
         status: SwaggerDocument.ApiProperty({ type: 'string' }),
+        avatar: SwaggerDocument.ApiProperty({ type: 'model', model: 'Avatar' }),
         profile: SwaggerDocument.ApiProperty({ type: 'model', model: 'Profile' }),
     });
 
@@ -28,6 +35,10 @@ export const CreateUserDto = body => ({
     fingerprint: body?.fingerprint,
     status: body?.status,
     specializedGroupId: body?.specializedGroupId,
+    avatar: {
+        url: body?.avatar?.url,
+        publicId: body?.avatar?.publicId
+    },
     profile: {
         firstName: body?.profile?.firstName,
         lastName: body?.profile?.lastName,

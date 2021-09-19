@@ -3,11 +3,14 @@ import { ChangePasswordDto } from 'core/modules/user/dto';
 import { getUserContext } from 'packages/authModel/module/user';
 import { RequestTransformer } from 'packages/restBuilder/core/requestTransformer';
 import { ValidHttpResponse } from 'packages/handler/response';
+import { MediaService } from 'core/modules/document';
+import { AVATAR_FOLDER_NAME } from 'core/common/constants/cloudinary.constant';
 import UserOverviewSearch from './user-overview.query.json';
 
 class Controller {
     constructor() {
         this.service = UserService;
+        this.mediaService = MediaService;
     }
 
     findAll = async req => {
@@ -43,6 +46,16 @@ class Controller {
 
     changePassword = async req => {
         await this.service.changePassword(getUserContext(req), ChangePasswordDto(req.body));
+        return ValidHttpResponse.toNoContentResponse();
+    }
+
+    uploadAvatar = async req => {
+        const data = await this.mediaService.uploadOne(req.file, AVATAR_FOLDER_NAME);
+        return ValidHttpResponse.toOkResponse(data);
+    }
+
+    updateAvatar = async req => {
+        await this.service.updateAvatar(req.params.id, req.file, AVATAR_FOLDER_NAME);
         return ValidHttpResponse.toNoContentResponse();
     }
 }

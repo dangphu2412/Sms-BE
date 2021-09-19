@@ -22,6 +22,7 @@ import { TimetableRepository, TimetablePopulateKey } from '../timetable';
 import { UserQueryService } from './user-query.service';
 import { QueryField } from '../../common/query';
 import { CreateUserValidator } from './validator';
+import { MediaService } from '../document';
 
 class UserServiceImpl extends DataPersistenceService {
     static RETRY_SEND_MAIL_TIMES = 3;
@@ -29,6 +30,7 @@ class UserServiceImpl extends DataPersistenceService {
     constructor() {
         super(UserRepository);
         this.userQueryService = UserQueryService;
+        this.mediaService = MediaService;
         this.bcryptService = BcryptService;
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
@@ -147,6 +149,23 @@ class UserServiceImpl extends DataPersistenceService {
         user.profile = { ...user.profile, ...updateProfileDto.profile };
         if (updateProfileDto.status) user.status = updateProfileDto.status;
         return user.save();
+    }
+
+    async updateAvatar(id, file, folderName) {
+        const user = Optional.of(await this.repository.findById(id))
+            .throwIfNotPresent(new NotFoundException('User not found'))
+            .get();
+
+        if (user.avatar.imageId) {
+            try {
+                await this.mediaService.deleteOne(user.avatar.imageId);
+            } catch (error) {
+                this.logger.error(error.message);
+            }
+        }
+
+        const imageProperties = await this.mediaService.uploadOne(file, folderName);
+        await this.repository.updateById(id, { avatar: { url: imageProperties.url, publicId: imageProperties.publicId } });
     }
 
     deleteOne(id) {

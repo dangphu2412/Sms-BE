@@ -15,7 +15,7 @@ import {
 } from 'core/utils';
 import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
 import { MONGOOSE_ID_KEY } from 'core/common/constants';
-import { filterUndefinedKey } from 'core/utils/helper.util';
+import { documentCleanerVisitor } from 'packages/restBuilder/core/dataHandler/document-cleaner.visitor';
 import { UserRepository } from './user.repository';
 import { GroupRepository } from '../group';
 import { TimetableRepository, TimetablePopulateKey } from '../timetable';
@@ -107,12 +107,10 @@ class UserServiceImpl extends DataPersistenceService {
 
         createUserDto.password = this.bcryptService.hash(createUserDto.password);
 
-        const mappedUserCreateDtoToModel = mapToModelByUserCreationDto(createUserDto);
+        const mappedToModel = documentCleanerVisitor(mapToModelByUserCreationDto(createUserDto));
 
-        const createdUser = await this.createOneSafety(
-            mappedUserCreateDtoToModel,
-            () => new InternalServerException('Getting internal error during create new user')
-        );
+        const createdUser = await this.createOneSafety(mappedToModel,
+            () => new InternalServerException('Getting internal error during create new user'));
 
         await this.notifyMailToUser(createdUser);
 
@@ -144,19 +142,21 @@ class UserServiceImpl extends DataPersistenceService {
      * @returns
      */
     async updateOne(id, updateProfileDto) {
-        const user = await this.repository.model.findById(id);
-
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+        const user = Optional
+            .of(await this.repository.model.findById(id))
+            .throwIfNotPresent(new NotFoundException('User not found'))
+            .get();
 
         await UpdateProfileValidator.validate(updateProfileDto);
 
-        updateProfileDto.profile = filterUndefinedKey(updateProfileDto.profile);
-        updateProfileDto = mapToModelByUserUpdateDto(updateProfileDto);
-        updateProfileDto.profile = { ...user.profile, ...updateProfileDto.profile };
+        if (!updateProfileDto?.profile?.firstName) {
+            updateProfileDto.profile.firstName = user.profile.firstName;
+        }
+        if (!updateProfileDto?.profile?.lastName) {
+            updateProfileDto.profile.lastName = user.profile.lastName;
+        }
 
-        await this.repository.updateById(id, updateProfileDto);
+        await super.patchOne(id, user, mapToModelByUserUpdateDto(updateProfileDto));
     }
 
     async updateAvatar(id, file, folderName) {

@@ -13,11 +13,17 @@ export class QueueConsumer {
     queue;
 
     constructor(name) {
-        this.queue = new Queue(name, QueueConsumer.REDIS_URL, {
-            redis: {
-                tls: { rejectUnauthorized: QueueConsumer.IS_TLS_REQUIRED === 'true' && true }
-            }
-        });
+        const isProd = ConfigService.getSingleton().get('NODE_ENV') === 'production';
+
+        if (isProd) {
+            this.queue = new Queue(name, QueueConsumer.REDIS_URL, {
+                redis: {
+                    tls: { rejectUnauthorized: QueueConsumer.IS_TLS_REQUIRED === 'true' && true }
+                }
+            });
+        } else {
+            this.queue = new Queue(name, QueueConsumer.REDIS_URL);
+        }
         LoggerFactory.globalLogger.info(`[${QueueConsumer.name}] is creating ${name} queue in Redis`);
     }
 
@@ -44,8 +50,8 @@ export class QueueConsumer {
     }
 
     /**
-     * 
-     * @param {any} data 
+     *
+     * @param {any} data
      * @param {import('bull').JobOptions} options
      * @description This method will create a job for queue with the data provided in params
      */

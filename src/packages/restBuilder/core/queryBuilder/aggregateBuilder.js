@@ -333,7 +333,7 @@ export class AggregateBuilder {
 
     project() {
         if (this.#stateManagement.isLocked(StateManagement.STATE_KEY.FIELD)) {
-            throw new Error('project has been called. If you want to add more fields after call #setSelectedFields please use lazySet = true');
+            throw new Error('Project has been called. If you want to add more fields after call #setSelectedFields please use lazySet = true');
         }
         this.#builder.project(this.#selectedFields);
         return this;

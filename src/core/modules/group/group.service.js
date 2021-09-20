@@ -15,7 +15,7 @@ class GroupServiceImpl extends DataPersistenceService {
     }
 
     /**
-     * @param {import('./dto/createGroup.dto').ICreateGroupDto} groupCreationDto 
+     * @param {import('./dto/createGroup.dto').ICreateGroupDto} groupCreationDto
      * @returns {Promise<{_id: string}>}
      */
     async createOne(groupCreationDto) {
@@ -52,7 +52,7 @@ class GroupServiceImpl extends DataPersistenceService {
     }
 
     /**
-     * @param {import('./dto/updateGroup.dto').IUpdateGroupDto} updateGroupDto 
+     * @param {import('./dto/updateGroup.dto').IUpdateGroupDto} updateGroupDto
      * @returns {Promise<void>}
      */
     async patchOne(id, updateGroupDto) {
@@ -81,8 +81,8 @@ class GroupServiceImpl extends DataPersistenceService {
     }
 
     /**
-     * @param {[]} sourceTimetables 
-     * @param {[]} targetGroups 
+     * @param {[]} sourceTimetables
+     * @param {[]} targetGroups
      */
     #pickTimetablesToRightGroups = (sourceTimetables, targetGroups) => {
         const timetableMapChildren = {};

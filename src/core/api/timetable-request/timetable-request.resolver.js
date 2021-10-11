@@ -1,5 +1,5 @@
 import { hasAdminRole } from 'core/modules/auth/guard/role.manager';
-import { CreateTimetableRequestInterceptor, GetTimetableRequestQueryInterceptor } from 'core/modules/timetable-request';
+import { CreateTimetableRequestInterceptor, getTimetableRequestQueryInterceptor } from 'core/modules/timetable-request';
 import { getTimetableRequestQuerySwagger } from 'core/modules/timetable-request/dto/get-timetable-request.swagger';
 import { Module } from 'packages/handler';
 import { interceptIdObject } from 'core/modules/mongoose/objectId.interceptor';
@@ -16,9 +16,7 @@ export const TimetableRequestResolver = Module.builder()
             route: '/',
             method: 'get',
             params: getTimetableRequestQuerySwagger,
-            interceptors: [
-                new GetTimetableRequestQueryInterceptor()
-            ],
+            interceptors: [getTimetableRequestQueryInterceptor],
             controller: TimetableRequestController.getByType,
             preAuthorization: true
         },

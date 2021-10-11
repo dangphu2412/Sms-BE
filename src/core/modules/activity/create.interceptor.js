@@ -1,9 +1,10 @@
-import { BaseValidateInterceptor } from 'core/infrastructure/interceptor';
+import { DefaultValidatorInterceptor } from 'core/infrastructure/interceptor';
+import { JoiUtils } from 'core/utils';
 import Joi from 'joi';
 
-export class ActivityInterceptor extends BaseValidateInterceptor {
-  getSchema = () => Joi.object({
-      name: Joi.string().required(),
-      isActive: Joi.boolean().optional()
-  })
-}
+export const ActivityInterceptor = new DefaultValidatorInterceptor(
+    Joi.object({
+        name: JoiUtils.requiredString(),
+        isActive: Joi.boolean().optional()
+    })
+);

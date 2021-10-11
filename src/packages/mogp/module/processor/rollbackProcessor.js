@@ -34,7 +34,7 @@ export class RollbackProcessor extends BaseProcessor {
                 useUnifiedTopology: true
             });
         } catch (error) {
-            throw new Error('Please recheck connectionString in mogb.config.json');
+            throw new Error('Please recheck connectionString in mogp.config.json');
         }
 
         await this.collector.collect();

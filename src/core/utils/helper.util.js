@@ -1,12 +1,8 @@
-import { pickBy, keysIn } from 'lodash';
+import { keysIn } from 'lodash';
 import mongoose from 'mongoose';
 
 export function toObjectId(str) {
     return mongoose.Types.ObjectId(str);
-}
-
-export function filterUndefinedKey(obj) {
-    return pickBy(obj, value => value !== undefined);
 }
 
 export function filterDuplicateValueByKey(desObj, refObj) {

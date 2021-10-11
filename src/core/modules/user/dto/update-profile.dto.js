@@ -14,10 +14,10 @@ export const UpdateProfileDto = body => ({
         firstName: body.profile?.firstName,
         lastName: body.profile?.lastName,
         gender: body.profile?.gender,
-        universityId: body.profile?.universityId,
         birthday: body.profile?.birthday,
         phone: body.profile?.phone,
         hometown: body.profile?.hometown,
         facebook: body.profile?.facebook,
+        universityId: body.profile?.universityId,
     }
 });

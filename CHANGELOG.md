@@ -1,5 +1,5 @@
 #CHANGELOG-26/4/2021
-## [Structure] ☕ Seperate middleware into guard and interceptor
+## [Structure] ☕ Separate middleware into guard and interceptor
 
 - Change middlewares into two layers: Interceptor and Guard:
     - Interceptor implement method intercept with params as a normal middleware:
@@ -134,7 +134,7 @@ Optional
     .throwIfPresent(new DuplicateException('Something is not existed'));
 ```
 - Below is an example of Optional class. Optional support that we can create a reference to variable and then validate them with built-in function of class
-- There are some usefull function that we re now supporting:
+- There are some useful function that we re now supporting:
 ```javascript
 Optional
     // First we need to take a reference to that data by calling of

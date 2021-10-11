@@ -44,8 +44,8 @@ export class CreateTimetableRequestInterceptor extends AbstractInputValidatorInt
         return Joi.object().keys({
             userId: JoiUtils.objectId().required(),
             type: Joi.string().valid(...Object.values(TIMETABLE_REQUEST_TYPE)).required(),
-            description: Joi.string().required(),
-            attachment: JoiUtils.optionalString().optional(),
+            description: JoiUtils.requiredString(),
+            attachment: JoiUtils.optionalString(),
             tempTimetables: Joi.array().items(Joi.object().keys({
                 userId: JoiUtils.objectId().required(),
                 groupId: JoiUtils.objectId().optional(),

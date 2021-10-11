@@ -7,12 +7,12 @@ export class AbstractInputValidatorInterceptor {
       * @param {string} req need when schema will be defined based on request data
       * Schema to be validate
       */
-    getSchema(req) { throw new Error(`${AbstractInputValidatorInterceptor.name}  need to implment getSchema`); }
+    getSchema(req) { throw new Error(`${AbstractInputValidatorInterceptor.name}  need to implement getSchema`); }
 
     /**
      * @returns return value get from request to be validated
      */
-    getValueToValidate(req) { throw new Error(`${AbstractInputValidatorInterceptor.name} need to implment getValueToValidate`); }
+    getValueToValidate(req) { throw new Error(`${AbstractInputValidatorInterceptor.name} need to implement getValueToValidate`); }
 
     /**
      * @returns error handler of joi. Base handler is the utility function responseJoiError

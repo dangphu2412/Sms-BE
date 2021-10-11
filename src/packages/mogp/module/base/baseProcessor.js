@@ -11,8 +11,8 @@ export class BaseProcessor {
     #tasks = [];
 
     /**
-     * 
-     * @param {BaseContainer} collector 
+     *
+     * @param {BaseContainer} collector
      */
     constructor(collector) {
         if (!(collector instanceof BaseContainer)) {
@@ -71,7 +71,7 @@ export class BaseProcessor {
                 useUnifiedTopology: true
             });
         } catch (error) {
-            throw new Error('Please recheck connectionString in mogb.config.json');
+            throw new Error('Please recheck connectionString in mogp.config.json');
         }
 
         await this.preProcess(this.#tasks);

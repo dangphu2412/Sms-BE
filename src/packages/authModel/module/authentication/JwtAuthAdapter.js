@@ -22,7 +22,7 @@ export class JwtAuthAdapter {
         }
     }
 
-    #detachAuthContextToReq = req => {
+    #attachAuthContextToReq = req => {
         if (this.#userDetail) {
             req[AUTH_CONTEXT.KEY_AUTH_CONTEXT] = this.#userDetail;
         }
@@ -45,11 +45,9 @@ export class JwtAuthAdapter {
                 .applyToken(this.#token)
                 .validate()
                 .getPayload();
-
             this.#userDetail = new JwtAuthAdapter.USER_DETAIL_CLASS(body);
             this.#applyPreAuthorizationToUserDetail();
-
-            this.#detachAuthContextToReq(req);
+            this.#attachAuthContextToReq(req);
         }
     }
 }

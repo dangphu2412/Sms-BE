@@ -35,7 +35,7 @@ class Controller {
     }
 
     patchOne = async req => {
-        await this.service.updateProfile(req.params.id, UpdateProfileDto(req.body));
+        await this.service.updateOne(req.params.id, UpdateProfileDto(req.body));
         return ValidHttpResponse.toNoContentResponse();
     }
 

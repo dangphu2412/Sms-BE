@@ -128,11 +128,11 @@ export class DataRepository {
         return this.model.deleteMany(conditions, options);
     }
 
-    hasRecord(field, value, filter = {}) {
-        return this.model.countDocuments({
+    async hasRecord(field, value, filter = {}) {
+        return await this.model.countDocuments({
             [field]: value,
             ...filter
-        });
+        }) > 0;
     }
 
     /**

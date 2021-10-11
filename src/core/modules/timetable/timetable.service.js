@@ -1,6 +1,6 @@
 import keyBy from 'lodash/keyBy';
 import { ActivityRepository } from 'core/modules/activity';
-import { UnprocessableEntityExeception } from 'packages/httpException';
+import { UnprocessableEntityException } from 'packages/httpException';
 import { TimetableRepository } from './timetable.repository';
 import { TimetableSettingRepository } from '../timetable-setting';
 
@@ -25,7 +25,7 @@ class Service {
 
         const userAndRegisterTimeSet = dtos.map(({ userId, registerTimeId }) => `${userId}-${registerTimeId}`);
         if (userAndRegisterTimeSet.length !== [...new Set(userAndRegisterTimeSet)].length) {
-            throw new UnprocessableEntityExeception(
+            throw new UnprocessableEntityException(
                 'userId and registerTimeId are exclusive unique',
             );
         }
@@ -38,7 +38,7 @@ class Service {
         );
 
         if (activityIdSet.length !== activities.length) {
-            throw new UnprocessableEntityExeception(
+            throw new UnprocessableEntityException(
                 'activity in payload is unexisted or deleted',
             );
         }
@@ -59,7 +59,7 @@ class Service {
             delete item.registerTimeId;
 
             if (!item.registerTime) {
-                throw new UnprocessableEntityExeception(
+                throw new UnprocessableEntityException(
                     'registerTime in payload is unexisted or deleted',
                 );
             }
@@ -96,7 +96,7 @@ class Service {
     async createGroupTimetable(dtos) {
         const groupAndRegisterTimeSet = dtos.map(({ groupId, registerTimeId }) => `${groupId}-${registerTimeId}`);
         if (groupAndRegisterTimeSet.length !== [...new Set(groupAndRegisterTimeSet)].length) {
-            throw new UnprocessableEntityExeception(
+            throw new UnprocessableEntityException(
                 'groupId and registerTimeId are exclusive unique',
             );
         }
@@ -115,7 +115,7 @@ class Service {
             delete item.registerTimeId;
 
             if (!item.registerTime) {
-                throw new UnprocessableEntityExeception(
+                throw new UnprocessableEntityException(
                     'registerTime in payload is unexisted or deleted',
                 );
             }

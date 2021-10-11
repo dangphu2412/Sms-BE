@@ -10,7 +10,7 @@ export class BaseMulterInterceptor {
 
     constructor(uploader) {
         if (!(uploader instanceof MulterUploader)) {
-            throw new Error(`uploader must be instance of ${MulterUploader.name}`);
+            throw new Error(`Uploader must be instance of ${MulterUploader.name}`);
         }
 
         this.#uploader = uploader;

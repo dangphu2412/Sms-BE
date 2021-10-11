@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import { LoggerFactory, TransportFactory, TransportGenerator } from 'packages/logger';
 import { FileOutputFormat } from 'packages/logger/format/file.format';
 import { FilterQuery } from 'packages/restBuilder/modules/query/filter.query';
@@ -5,7 +6,7 @@ import { PaginationQuery } from 'packages/restBuilder/modules/query/pagination.q
 import { SearchQuery } from 'packages/restBuilder/modules/query/search.query';
 import { SortQuery } from 'packages/restBuilder/modules/query/sort.query';
 import { DataRepository } from './data.repository';
-import { DocumentCleanerVisitor } from './document-cleaner.visitor';
+import { documentCleanerVisitor } from './document-cleaner.visitor';
 
 export class DataPersistenceService {
     static logger = LoggerFactory.createByTransports(
@@ -57,9 +58,9 @@ export class DataPersistenceService {
     }
 
     /**
-     * @param {any} dto 
-     * @param {() => typeof import('packages/httpException/HttpException').HttpException} exceptionDealingWithDatabaseError 
-     * @returns 
+     * @param {any} dto
+     * @param {() => typeof import('packages/httpException/HttpException').HttpException} exceptionDealingWithDatabaseError
+     * @returns
      */
     async createOneSafety(dto, exceptionDealingWithDatabaseError) {
         let createdData;
@@ -76,22 +77,22 @@ export class DataPersistenceService {
     }
 
     /**
-     * @param {any} id 
-     * @param {Record<any, any>} sourceDocument 
-     * @param {Record<any, any>} updateDocument 
+     * @param {any} id
+     * @param {Record<any, any>} sourceDocument
+     * @param {Record<any, any>} updateDocument
      */
     async patchOne(id, sourceDocument, updateDocument) {
-        new DocumentCleanerVisitor(updateDocument).visit();
-        const updateDoc = { ...sourceDocument, ...updateDocument };
+        documentCleanerVisitor(updateDocument);
+        const updateDoc = merge(sourceDocument, updateDocument);
         await this.repository.model.updateOne({
             _id: id
         }, updateDoc);
     }
 
     /**
-     * @param {any} id 
-     * @param {() => typeof import('packages/httpException/HttpException').HttpException} notFoundRecordException 
-     * @returns 
+     * @param {any} id
+     * @param {() => typeof import('packages/httpException/HttpException').HttpException} notFoundRecordException
+     * @returns
      */
     async softDeleteById(id, notFoundRecordException) {
         let isDeleted;

@@ -1,5 +1,5 @@
 import { uploadMediaSwagger } from 'core/common/swagger';
-import { DeleteMediasInterceptor, MediaInterceptor } from 'core/modules/document';
+import { deleteMediasInterceptor, MediaInterceptor } from 'core/modules/document';
 import { Module } from 'packages/handler';
 import { MediaController } from './media.controller';
 
@@ -22,7 +22,7 @@ export const MediaResolver = Module.builder()
         {
             route: '/images',
             method: 'delete',
-            interceptors: [new DeleteMediasInterceptor()],
+            interceptors: [deleteMediasInterceptor],
             body: 'DeleteFileDto',
             controller: MediaController.deleteMany,
             preAuthorization: true

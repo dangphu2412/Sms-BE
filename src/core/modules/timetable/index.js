@@ -3,4 +3,4 @@ export * from './create-timetable.dto';
 export * from './timetable.model';
 export * from './timetable.repository';
 export * from './timetable.service';
-export * from './timtable.constant';
+export * from './timetable.constant';

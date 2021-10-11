@@ -34,19 +34,19 @@ export class QueryBuilder {
      * @returns
      */
     static builder(queryBuilder) {
-        const newIntance = new QueryBuilder();
+        const newInstance = new QueryBuilder();
         if (queryBuilder) {
             const queryDocument = queryBuilder.getQueryDocument();
-            newIntance.#filterDocument = queryDocument.filterDocument;
-            newIntance.#sortDocument = queryDocument.sortDocument;
-            newIntance.#searchDocument = queryDocument.searchDocument;
-            newIntance.#limit = queryDocument.limit;
-            newIntance.#offset = queryDocument.offset;
+            newInstance.#filterDocument = queryDocument.filterDocument;
+            newInstance.#sortDocument = queryDocument.sortDocument;
+            newInstance.#searchDocument = queryDocument.searchDocument;
+            newInstance.#limit = queryDocument.limit;
+            newInstance.#offset = queryDocument.offset;
         }
         return {
-            find: newIntance.#init(BUILDER_TYPE.FIND),
-            findOne: newIntance.#init(BUILDER_TYPE.FIND_ONE),
-            countDocuments: newIntance.#init(BUILDER_TYPE.COUNT)
+            find: newInstance.#init(BUILDER_TYPE.FIND),
+            findOne: newInstance.#init(BUILDER_TYPE.FIND_ONE),
+            countDocuments: newInstance.#init(BUILDER_TYPE.COUNT)
         };
     }
 

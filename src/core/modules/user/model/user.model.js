@@ -6,17 +6,17 @@ import { saveFullNameHook } from './hooks';
 const schema = extendBaseModel({
     email: {
         type: String,
+        trim: true,
         unique: true,
         lowercase: true,
         required: [true, 'User email is empty'],
     },
     password: {
         type: String,
-        trim: true,
         minlength: 6,
         default: '$2b$10$tJvN9XpgtetH7vkscie.YeakA/R2mxaI5bklFp1Khsc8jtL.OGqyK'
     },
-    fingerPrint: { type: String, default: null },
+    fingerPrint: { type: String, trim: true, default: null },
     status: {
         type: String,
         default: UserStatus.AVAILABLE,
@@ -35,10 +35,10 @@ const schema = extendBaseModel({
         },
         birthday: { type: Date, default: null },
         phone: { type: String, trim: true, default: null },
-        hometown: { type: String, default: null },
+        hometown: { type: String, default: null, trim: true },
         gender: { type: Boolean, default: null },
         facebook: { type: String, trim: true, default: null },
-        universityId: { type: Schema.Types.ObjectId, ref: 'University', default: null },
+        university: { type: Schema.Types.ObjectId, default: null, ref: 'universities' },
     },
     /**
      * Add default url and productId refer to the official cloudinary url before deploying

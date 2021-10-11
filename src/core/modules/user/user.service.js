@@ -15,7 +15,7 @@ import {
 } from 'core/utils';
 import { BcryptService } from 'core/modules/auth/service/bcrypt.service';
 import { MONGOOSE_ID_KEY } from 'core/common/constants';
-import { DocumentCleanerVisitor } from 'packages/restBuilder/core/dataHandler/document-cleaner.visitor';
+import { documentCleanerVisitor } from 'packages/restBuilder/core/dataHandler/document-cleaner.visitor';
 import { UserRepository } from './user.repository';
 import { GroupRepository } from '../group';
 import { TimetableRepository, TimetablePopulateKey } from '../timetable';
@@ -23,6 +23,8 @@ import { UserQueryService } from './user-query.service';
 import { QueryField } from '../../common/query';
 import { CreateUserValidator } from './validator';
 import { MediaService } from '../document';
+import { mapToModelByUserCreationDto, mapToModelByUserUpdateDto } from './mapper/user.mapper';
+import { UpdateProfileValidator } from './validator/update-profile.validator';
 
 class UserServiceImpl extends DataPersistenceService {
     static RETRY_SEND_MAIL_TIMES = 3;
@@ -35,6 +37,7 @@ class UserServiceImpl extends DataPersistenceService {
         this.groupRepository = GroupRepository;
         this.timetableRepository = TimetableRepository;
         this.createUserValidator = CreateUserValidator;
+        this.updateProfileValidator = UpdateProfileValidator;
         this.logger = LoggerFactory.create(UserServiceImpl.name);
         this.mailConsumer = MailConsumer;
     }
@@ -104,10 +107,10 @@ class UserServiceImpl extends DataPersistenceService {
 
         createUserDto.password = this.bcryptService.hash(createUserDto.password);
 
-        const createdUser = await this.createOneSafety(
-            createUserDto,
-            () => new InternalServerException('Getting internal error during create new user')
-        );
+        const mappedToModel = documentCleanerVisitor(mapToModelByUserCreationDto(createUserDto));
+
+        const createdUser = await this.createOneSafety(mappedToModel,
+            () => new InternalServerException('Getting internal error during create new user'));
 
         await this.notifyMailToUser(createdUser);
 
@@ -133,22 +136,27 @@ class UserServiceImpl extends DataPersistenceService {
     }
 
     /**
-     * 
+     *
      * @param {string} id
      * @param {import('core/modules/user').UpdateProfileDto} updateProfileDto
      * @returns
      */
-    async updateProfile(id, updateProfileDto) {
-        const user = await this.repository.findById(id);
-        if (!user) {
-            throw new NotFoundException('User not found');
+    async updateOne(id, updateProfileDto) {
+        const user = Optional
+            .of(await this.repository.model.findById(id))
+            .throwIfNotPresent(new NotFoundException('User not found'))
+            .get();
+
+        await UpdateProfileValidator.validate(updateProfileDto);
+
+        if (!updateProfileDto?.profile?.firstName) {
+            updateProfileDto.profile.firstName = user.profile.firstName;
+        }
+        if (!updateProfileDto?.profile?.lastName) {
+            updateProfileDto.profile.lastName = user.profile.lastName;
         }
 
-        new DocumentCleanerVisitor(user.profile).visit();
-
-        user.profile = { ...user.profile, ...updateProfileDto.profile };
-        if (updateProfileDto.status) user.status = updateProfileDto.status;
-        return user.save();
+        await super.patchOne(id, user, mapToModelByUserUpdateDto(updateProfileDto));
     }
 
     async updateAvatar(id, file, folderName) {

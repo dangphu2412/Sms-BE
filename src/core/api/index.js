@@ -9,6 +9,7 @@ import { ExcelResolver } from './excel';
 import { MediaResolver } from './media';
 import { GroupTagResolver } from './group-tag';
 import { TimetableRequestResolver } from './timetable-request';
+import { ActivityResolver } from './activity';
 
 export const ModuleResolver = HandlerResolver
     .builder()
@@ -22,5 +23,6 @@ export const ModuleResolver = HandlerResolver
         ExcelResolver,
         MediaResolver,
         GroupTagResolver,
-        TimetableRequestResolver
+        TimetableRequestResolver,
+        ActivityResolver
     ]);

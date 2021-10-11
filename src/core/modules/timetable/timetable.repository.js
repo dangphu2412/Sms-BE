@@ -7,60 +7,6 @@ class Repository extends DataRepository {
     }
 
     /**
-     * Get current timetable of users according to setting
-     * @param {Array} conditions
-     * [
-     *  {
-     *    userId: ObjectId,
-     *    registerTimeId: ObjectId
-     *  }
-     * ]
-     * @returns
-     */
-    getManyByUserAndRegisterTime(conditions) {
-        conditions = conditions?.map(item => ({
-            user: item.userId,
-            'registerTime._id': item.registerTimeId
-        }));
-        return this.find({
-            $or: conditions,
-            isActive: true,
-        });
-    }
-
-    getByMemberIds(userId) {
-        const selectFields = '_id name registerTime._id registerTime.name registerTime.isActive registerTime.startTime registerTime.endTime type dayOfWeek startDate endDate isActive';
-        return this.model.find({ user: userId }, selectFields)
-            .populate({
-                path: 'activities',
-                match: { deletedAt: { $eq: null } },
-                select: 'name isActive'
-            });
-    }
-
-    /**
-     * Get current timetable of group according to setting
-     * @param {Array} conditions
-     * [
-     *  {
-     *    groupId: ObjectId,
-     *    registerTimeId: ObjectId
-     *  }
-     * ]
-     * @returns
-     */
-    getManyByGroupAndRegisterTime(conditions) {
-        conditions = conditions?.map(item => ({
-            group: item.groupId,
-            'registerTime._id': item.registerTimeId
-        }));
-        return this.find({
-            $or: conditions,
-            isActive: true,
-        });
-    }
-
-    /**
      * Get current timetable of group
      * @param {*} startDate
      * @param {*} endDate

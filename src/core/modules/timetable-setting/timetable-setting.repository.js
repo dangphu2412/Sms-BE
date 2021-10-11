@@ -6,7 +6,7 @@ class Repository extends DataRepository {
         super(TimetableSettingModel);
     }
 
-    findWithActiveByIds(ids, fields = '') {
+    findActiveTimetableSettingsByIds(ids, fields = '') {
         return this.model.find({
             _id: {
                 $in: ids

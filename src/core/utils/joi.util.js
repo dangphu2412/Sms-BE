@@ -1,24 +1,20 @@
 import { SocialKind } from 'core/common/enum/social.enum';
 import Joi from 'joi';
 
+const MONGOOSE_ID_OBJECT_FORMAT = /^[0-9a-fA-F]{24}$/;
+
+const PHONE_NUMBER_FORMAT = /^[0-9+ ]{10,11}$/;
+
+const DATE_YYYY_MM_DD_FORMAT = /^\d{4}-\d{2}-\d{2}$/;
+
+const FACEBOOK_PROFILE_URI_FORMAT = /(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i;
+
+// Required from 6-30 char, contains special char
+const PWD_FORMAT = /^[a-zA-Z0-9\d@$!%*?&]{6,30}$/;
+
 export class JoiUtils {
-    static VALIDATE_ID_OBJECT_PATTERN = /^[0-9a-fA-F]{24}$/;
-
-    static VALIDATE_PHONE_NUMBER_PATTERN = /^[0-9+ ]{10,11}$/;
-
-    static VALIDATE_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-    static VALIDATE_FACEBOOK_PATTERN = /(https?:\/\/www.facebook|fb|m\.facebook)\.(?:com|me)\/(\w+)?\/?/i;
-
-    static VALIDATE_PWD_PATTERN_V1 = /^[a-zA-Z0-9\d@$!%*?&]{6,30}$/
-
-    static VALIDATE_PWD_PATTERN_V2 = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    static objectId(custom = false) {
-        return custom
-            ? Joi.string().regex(JoiUtils.VALIDATE_ID_OBJECT_PATTERN)
-            : Joi.string().regex(JoiUtils.VALIDATE_ID_OBJECT_PATTERN)
-                .message('Invalid IdObject format');
+    static objectId() {
+        return Joi.string().regex(MONGOOSE_ID_OBJECT_FORMAT);
     }
 
     static optionalString() {
@@ -34,30 +30,21 @@ export class JoiUtils {
             .required();
     }
 
-    static phoneNumber(custom = false) {
-        return custom
-            ? Joi.string().regex(JoiUtils.VALIDATE_PHONE_NUMBER_PATTERN)
-            : Joi.string().regex(JoiUtils.VALIDATE_PHONE_NUMBER_PATTERN)
-                .message('Invalid phone number format');
+    static phoneNumber() {
+        return Joi.string().regex(PHONE_NUMBER_FORMAT);
     }
 
     static email = () => Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } });
 
-    static date(custom = false) {
-        return custom
-            ? Joi.string().regex(JoiUtils.VALIDATE_DATE_PATTERN)
-            : Joi.string().regex(JoiUtils.VALIDATE_DATE_PATTERN)
-                .message('Invalid date format. Should be YYYY-MM-DD');
+    static date() {
+        return Joi.string().regex(DATE_YYYY_MM_DD_FORMAT);
     }
 
-    static social(kind, custom = false) {
+    static social(kind) {
         let builder;
         switch (kind) {
             case SocialKind.FACEBOOK:
-                builder = custom
-                    ? Joi.string().regex(JoiUtils.VALIDATE_FACEBOOK_PATTERN)
-                    : Joi.string().regex(JoiUtils.VALIDATE_FACEBOOK_PATTERN)
-                        .message('Invalid facebook format');
+                builder = Joi.string().regex(FACEBOOK_PROFILE_URI_FORMAT);
                 break;
             case SocialKind.GOOGLE:
             case SocialKind.TWITTER:
@@ -67,11 +54,8 @@ export class JoiUtils {
         return builder;
     }
 
-    static password(custom = false) {
-        return custom
-            ? Joi.string().regex(JoiUtils.VALIDATE_PWD_PATTERN_V1)
-            : Joi.string().regex(JoiUtils.VALIDATE_PWD_PATTERN_V1)
-                .message('Invalid password format. Minimum 6 characters');
+    static password() {
+        return Joi.string().regex(PWD_FORMAT);
     }
 
     static optionalStrings() {

@@ -8,6 +8,10 @@ class TimetableSettingServiceImpl extends DataPersistenceService {
         super(TimetableSettingRepository);
     }
 
+    findAll() {
+        return this.timetableSettingRepository.find();
+    }
+
     createOne(payload) {
         return this.timetableSettingRepository.model.create(payload);
     }

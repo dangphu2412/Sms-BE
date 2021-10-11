@@ -10,17 +10,22 @@ class Controller {
         this.service = TimetableSettingService;
     }
 
-    createOne = async ({ body }) => {
+    findAll = async () => {
+        const data = await this.service.findAll();
+        return ValidHttpResponse.toOkResponse(data);
+    };
+
+    createOne = async req => {
         const data = await this.service.createOne(
-            CreateTimetableSettingDto(body),
+            CreateTimetableSettingDto(req.body),
         );
         return ValidHttpResponse.toOkResponse(data);
     };
 
-    updateOne = async ({ params, body }) => {
+    updateOne = async req => {
         const data = await this.service.updateOne(
-            params.id,
-            UpdateTimetableSettingDto(body),
+            req.params.id,
+            UpdateTimetableSettingDto(req.body),
         );
         return ValidHttpResponse.toOkResponse(data);
     };

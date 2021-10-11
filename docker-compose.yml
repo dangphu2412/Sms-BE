@@ -1,36 +1,36 @@
 version: '3.8'
 services:
-  nginx:
-    container_name: sms-nginx
-    image: nginx:1.21.1-alpine
-    build:
-      context: ./docker/nginx
-    ports:
-      - "80:80"
+    nginx:
+        container_name: sms-nginx
+        image: nginx:1.21.1-alpine
+        build:
+            context: ./docker/nginx
+        ports:
+            - '3000:80'
 
-  mongo:
-    container_name: sms-mongo
-    image: mongo:4.0.26-xenial
-    restart: always
-    volumes: 
-      - ./docker/data:/data/db
+    mongo:
+        container_name: sms-mongo
+        image: mongo:4.0.26-xenial
+        restart: always
+        volumes:
+            - ./docker/data:/data/db
 
-  backend:
-    container_name: sms-be
-    image: sms/be
-    build: 
-      context: .
-    restart: always
-    env_file: .env
-    depends_on: 
-      - mongo
-    links:
-      - mongo
-      - redis
+    backend:
+        container_name: sms-be
+        image: sms/be
+        build:
+            context: .
+        restart: always
+        env_file: .env
+        depends_on:
+            - mongo
+        links:
+            - mongo
+            - redis
 
-  redis:
-    container_name: sms-redis
-    image: redis:6.2.5-alpine
+    redis:
+        container_name: sms-redis
+        image: redis:6.2.5-alpine
 
-volumes: 
-  data:
+volumes:
+    data:

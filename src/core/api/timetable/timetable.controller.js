@@ -7,17 +7,17 @@ class Controller {
     }
 
     createMemberTimetables = async req => {
-        const data = await this.service.createMemberTimetables(
+        await this.service.createMemberTimetables(
             CreateMemberTimetableDtos(req.body),
         );
-        return ValidHttpResponse.toCreatedResponse(data);
+        return ValidHttpResponse.toNoContentResponse();
     };
 
     createGroupTimetable = async req => {
-        const data = await this.service.createGroupTimetable(
+        await this.service.createGroupTimetable(
             CreateGroupTimetableDtos(req.body),
         );
-        return ValidHttpResponse.toCreatedResponse(data);
+        return ValidHttpResponse.toNoContentResponse();
     };
 }
 

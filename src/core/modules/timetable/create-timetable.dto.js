@@ -1,6 +1,26 @@
 import { ApiDocument } from 'core/config/swagger.config';
 import { SwaggerDocument } from 'packages/swagger';
 
+/**
+ * @typedef ICreateMemberTimetableDto
+ * @property {string} userId
+ * @property {string} registerTimeId
+ * @property {string} activityId
+ * @property {Date} startDate
+ * @property {Date} endDate
+ * @property {boolean} isActive
+ */
+
+/**
+ * @typedef ICreateGroupTimetableDto
+ * @property {string} groupId
+ * @property {string} registerTimeId
+ * @property {string} activityId
+ * @property {Date} startDate
+ * @property {Date} endDate
+ * @property {boolean} isActive
+ */
+
 ApiDocument.addModel('CreateMemberTimetableDtos', {
     userId: SwaggerDocument.ApiProperty({ type: 'string' }),
     registerTimeId: SwaggerDocument.ApiProperty({ type: 'string' }),

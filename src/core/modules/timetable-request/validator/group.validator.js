@@ -1,7 +1,8 @@
 import { GroupRepository } from 'core/modules/group';
+import { mapByKeyWithObjectIdParser } from 'core/modules/mongoose/utils/array.utils';
 import { UserRepository } from 'core/modules/user';
 import {
-    isSortedArrayEqual, mapByKey, mapParsedObjectIdToArr, Optional
+    isSortedArrayEqual, mapByKey, Optional
 } from 'core/utils';
 import { BadRequestException, NotFoundException } from 'packages/httpException';
 
@@ -23,7 +24,7 @@ export class GroupValidatorForTimetableRequestCreation {
             }
         });
         if (userIdsWithGroupIdsFromDto.length > 0) {
-            const groupIdsFromDto = mapParsedObjectIdToArr(userIdsWithGroupIdsFromDto, 'groupId');
+            const groupIdsFromDto = mapByKeyWithObjectIdParser(userIdsWithGroupIdsFromDto, 'groupId');
 
             Optional
                 .of(await this.repository.findByIds(groupIdsFromDto, ['deletedAt', 'isActive']))

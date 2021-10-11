@@ -1,13 +1,7 @@
-import { extendBaseModel } from 'core/infrastructure/model';
-import { model } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
-const schema = extendBaseModel({
-    name: { type: String, required: true },
-    isActive: { type: Boolean, default: true },
+const schema = new Schema({
+    description: { type: String, required: true },
 });
 
-export const ActivityModel = model(
-    'ActivityModel',
-    schema,
-    'activities'
-);
+export const ActivityModel = model('activities', schema);

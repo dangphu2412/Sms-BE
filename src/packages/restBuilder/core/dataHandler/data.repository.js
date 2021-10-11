@@ -2,6 +2,7 @@ import { UnsupportedMethodException } from 'core/infrastructure/exceptions/unsup
 import { LoggerFactory } from 'packages/logger/factory/logger.factory';
 import { camelCase, upperFirst } from 'lodash';
 import { parallel } from 'packages/taskExecution';
+import { ArrayUtils } from 'packages/utils/array.util';
 import { BUILDER_TYPE } from '../../enum/buildType.enum';
 import { QueryBuilder, AggregateBuilder } from '../queryBuilder';
 
@@ -81,22 +82,21 @@ export class DataRepository {
     * =======================================================================
     */
 
-    find(query = {}, fields = []) {
+    find(query = {}, fields = '') {
         return this.model.find(query).select(fields).lean();
     }
 
-    findByIds(ids, fields = []) {
+    findByIds(ids, fields = '') {
         return this.model
-            .find({ _id: { $in: ids } })
-            .select(fields)
+            .find({ _id: { $in: ids } }, fields)
             .lean();
     }
 
-    findOne(condition, fields = []) {
+    findOne(condition, fields = '') {
         return this.model.findOne(condition, fields).lean();
     }
 
-    findById(id, fields = []) {
+    findById(id, fields = '') {
         return this.model.findById(id, fields).lean();
     }
 
@@ -109,6 +109,22 @@ export class DataRepository {
             { _id: { $in: ids } },
             { ...fields }
         );
+    }
+
+    async batchUpdate(dtos) {
+        if (ArrayUtils.isPresent(dtos)) {
+            await this.model.collection.bulkWrite(dtos.map(data => ({
+                updateOne: {
+                    upsert: true,
+                    filter: {
+                        _id: data._id
+                    },
+                    update: {
+                        $set: data
+                    }
+                }
+            })));
+        }
     }
 
     softDeleteById(id) {
